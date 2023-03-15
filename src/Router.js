@@ -16,7 +16,7 @@ export function DeskTopRouter() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/">
+        <Route path="/" exact>
           <Home />
         </Route>
       </Switch>
