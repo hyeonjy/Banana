@@ -4,10 +4,6 @@ import Desktopnext from "./desktopnext";
 import MovileNext from "./movilenext";
 import { DeskTopRouter, MobileRouter } from "./Router";
 
-const Home = ({ aa }) => {
-  return <h1>{aa}</h1>;
-};
-
 function App() {
   return (
     <>
