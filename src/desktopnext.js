@@ -1,5 +1,5 @@
-function desktopnext() {
+function Desktopnext() {
   return <>this is desktop next page!!</>;
 }
 
-export default desktopnext;
+export default Desktopnext;
