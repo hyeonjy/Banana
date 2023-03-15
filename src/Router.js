@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Mhome from "./MobileView/routes/mHome";
+import Home from "./DesktopView/routes/Home";
 export function MobileRouter() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact>
-          모바일
-        </Route>
+        <Route path="/" exact component={<Mhome />} />
       </Switch>
     </BrowserRouter>
   );
@@ -14,9 +14,7 @@ export function DeskTopRouter() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact>
-          데스크탑
-        </Route>
+        <Route path="/" exact component={<Home />} />
       </Switch>
     </BrowserRouter>
   );
