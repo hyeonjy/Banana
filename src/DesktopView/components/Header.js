@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link } from "react-router-dom";
+import "../../App.css";
 
 const Container = styled.div`
   width: 100%;
@@ -22,6 +23,7 @@ const Logo = styled(Link)`
   color: yellow;
   font-weight: 900;
   text-decoration: none;
+  font-family: yg-jalnan;
 `;
 
 const SearchBox = styled.div`
