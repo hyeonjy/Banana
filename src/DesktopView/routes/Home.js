@@ -1,73 +1,95 @@
 import styled from "styled-components";
 import Header from "../components/Header";
 import Nav from "../components/Nav";
-import banana from "../../Image/bananaimg.png";
+import banana from "../../Img/banana.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../components/Footer";
+import Banner from "../components/Banner";
 
 /*첫번째 배너 코드- 시작*/
 
-const Banner = styled.div`
-  width: 100%;
-  height: 550px;
-  background-color: #efeb6d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// const Banner = styled.div`
+//   width: 100%;
+//   height: 650px;
+//   /* background-color: #efeb6d; */
+//   background-color: #ff8868;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
-const ImgCircle = styled.div`
-  width: 400px;
-  height: 400px;
-  background-color: white;
-  border-radius: 50%;
-  overflow: hidden;
-`;
+// const ImgCircle = styled.div`
+//   width: 400px;
+//   height: 400px;
+//   background-color: white;
+//   border-radius: 50%;
+//   overflow: hidden;
+// `;
 
-const BannerImg = styled.img.attrs({
-  src: `${banana}`,
-})`
-  width: 350px;
-  height: 500px;
-  margin-top: 10px;
-  margin-left: 40px;
-`;
+// const BannerImg = styled.img.attrs({
+//   src: `${banana}`,
+// })`
+//   width: 350px;
+//   height: 500px;
+//   margin-top: 10px;
+//   margin-left: 40px;
+// `;
 
-const BannerDetail = styled.div`
-  width: 400px;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 120px;
-`;
+// const BannerDetail = styled.div`
+//   width: 400px;
+//   height: 650px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   margin-left: 120px;
+// `;
 
-const BannerTitleBox = styled.div`
-  height: 250px;
-  display: flex;
-  flex-direction: column;
-`;
+// const BannerTitleBox = styled.div`
+//   height: 400px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-around;
+//   margin-bottom: 30px;
+// `;
 
-const BannerTitle = styled.h1`
-  font-size: 40px;
-  color: black;
-  font-weight: 600;
-  margin-top: 20px;
-`;
+// const BannerTitleSpan = styled.span``;
 
-const BannerContentBox = styled.div`
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-`;
+// const BannerTitle = styled.div`
+//   color: black;
+//   font-weight: 600;
+//   /* margin-top: 20px; */
+//   display: inline;
+//   ${BannerTitleSpan} {
+//     font-size: 45px;
+//     font-weight: 500;
+//     font-family: yg-jalnan;
+//     /* color: rgb(82 82 82); */
+//     span {
+//       //font-style: italic;
+//       font-size: 72px;
+//       font-weight: 800;
+//       margin-right: 30px;
+//       color: rgb(255 232 78);
+//       font-family: "yg-jalnan";
+//       text-shadow: rgb(255 197 96) 0px 0px, rgb(255 197 96) 0px 0px,
+//         rgb(255 197 96) 3px 0px, rgb(255 197 96) 3px 2px;
+//     }
+//   }
+// `;
 
-const BannerContent = styled.h1`
-  font-size: 25px;
-  color: white;
-  margin: 5px;
-  font-weight: 600;
-`;
+// const BannerContentBox = styled.div`
+//   height: 100px;
+//   display: flex;
+//   flex-direction: column;
+// `;
+
+// const BannerContent = styled.h1`
+//   font-size: 25px;
+//   color: white;
+//   margin: 5px;
+//   font-weight: 600;
+// `;
 /*첫번째 배너 그림 - 끝*/
 
 const ProductList = [
@@ -199,23 +221,33 @@ function Home() {
       <Header />
       <Nav />
       {/* 배너 */}
-      <Banner>
-        <ImgCircle>
-          <BannerImg />
-        </ImgCircle>
+      {/* <Banner>
+        <BannerImg />
         <BannerDetail>
           <BannerTitleBox>
-            <BannerTitle>바로</BannerTitle>
-            <BannerTitle>나누고</BannerTitle>
-            <BannerTitle>나눔받자</BannerTitle>
+            <BannerTitle>
+              <BannerTitleSpan>
+                <span>바</span>로
+              </BannerTitleSpan>
+            </BannerTitle>
+            <BannerTitle>
+              <BannerTitleSpan>
+                <span>나</span>누고
+              </BannerTitleSpan>
+            </BannerTitle>
+            <BannerTitle>
+              <BannerTitleSpan>
+                <span>나</span>눔 받자
+              </BannerTitleSpan>
+            </BannerTitle>
           </BannerTitleBox>
           <BannerContentBox>
             <BannerContent>Banana는 의류 나눔을 통해</BannerContent>
             <BannerContent>친환경적인 세상을 만듭니다.</BannerContent>
           </BannerContentBox>
         </BannerDetail>
-      </Banner>
-
+      </Banner> */}
+      <Banner />
       {/* New 상품 리스트 */}
       <Products>
         <ProductsTitle>
@@ -223,8 +255,8 @@ function Home() {
           ew
         </ProductsTitle>
         <ProductsBox>
-          {ProductList.map((item) => (
-            <Product>
+          {ProductList.map((item, index) => (
+            <Product key={index}>
               <ProductImg src={item.imgURL} />
               <ProductTitle>{item.title}</ProductTitle>
               <ProductDetail>{item.detail}</ProductDetail>
@@ -241,8 +273,8 @@ function Home() {
           Hot
         </ProductsTitle>
         <ProductsBox>
-          {ProductList.map((item) => (
-            <Product>
+          {ProductList.map((item, index) => (
+            <Product key={index}>
               <ProductImg src={item.imgURL} />
               <ProductTitle>{item.title}</ProductTitle>
               <ProductDetail>{item.detail}</ProductDetail>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faHeart } from "@fortawesome/free-solid-svg-icons";
-import "./MobileView.css";
+import "../../App.css";
 import ShowItem from "../components/ShowItem";
 
 import banana from "../../Img/banana.png";
