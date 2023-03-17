@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faHeart } from "@fortawesome/free-solid-svg-icons";
-import "./MobileView.css";
+import "../../App.css";
 import ShowItem from "../components/ShowItem";
 
 import banana from "../../Img/banana.png";
@@ -9,6 +9,7 @@ import HomeMenu from "../components/HomeMenu";
 import Footer from "../components/Footer";
 import { categoryList } from "../components/CategoryIist";
 import { useState } from "react";
+import { Banner1, Banner2, Vanner1, Vanner2 } from "../components/Banner";
 const Container = styled.div``;
 const Header = styled.header`
   position: fixed;
@@ -59,6 +60,7 @@ const MainCharacter = styled.div`
   background-position: 45% -20%;
   background-repeat: no-repeat;
 `;
+const MainCharImg = styled.div``;
 const MainTitleSpan = styled.span``;
 const MainTitleDiv = styled.div`
   height: 70%;
@@ -174,20 +176,8 @@ function Mhome() {
           <FontAwesomeIcon icon={faHeart} color="red" />
         </Icons>
       </Header>
-      <Vanner>
-        <MainCharacter />
-        <MainTitleDiv>
-          <MainTitleSpan>
-            <span>바</span>로
-          </MainTitleSpan>
-          <MainTitleSpan>
-            <span>나</span>누고
-          </MainTitleSpan>
-          <MainTitleSpan>
-            <span>나</span>눔받자!
-          </MainTitleSpan>
-        </MainTitleDiv>
-      </Vanner>
+
+      <Banner2 />
       <CategoryWrap>
         <Category>
           {categoryList.map((categoryItem) => (

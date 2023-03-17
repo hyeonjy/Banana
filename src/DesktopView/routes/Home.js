@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Header from "../components/Header";
 import Nav from "../components/Nav";
-import banana from "../../Image/bananaimg.png";
+import banana from "../../Img/banana.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../components/Footer";
