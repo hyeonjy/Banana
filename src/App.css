@@ -148,3 +148,38 @@
   font-weight: normal;
   font-style: normal;
 }
+.swiper-button-next,
+.swiper-button-prev {
+  color: black !important;
+  display: none !important;
+}
+.swiper-button-next,
+.swiper-button-prev {
+  scale: 0.7 !important;
+}
+.swiper-pagination-bullet-active {
+  background: black !important;
+}
+.swiper-slide {
+  opacity: 0 !important;
+  transition: opacity 1s ease-out !important;
+}
+
+.swiper-slide-active {
+  opacity: 1 !important;
+}
+
+@font-face {
+  font-family: "KOTRA_BOLD-Bold";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.1/KOTRA_BOLD-Bold.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Cafe24Ohsquare";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/Cafe24Ohsquare.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}

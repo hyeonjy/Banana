@@ -1,14 +1,20 @@
 import styled from "styled-components";
 import banana from "../../Img/banana.png";
 import earth3 from "../../Img/earth3.png";
-const BannerFirst = styled.div`
+import present from "../../Img/present.png";
+import bananaIcon from "../../Img/bananaIcon.png";
+
+const Banner = styled.div`
   width: 100%;
   height: 200px;
   background-color: antiquewhite;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
   padding-top: 55px;
+`;
+const BannerFirst = styled(Banner)`
+  background-color: #ffe84e;
+  justify-content: space-evenly;
 `;
 const MainCharacter = styled.div`
   border-radius: 50%;
@@ -16,6 +22,7 @@ const MainCharacter = styled.div`
   width: 143px;
   height: 143px;
   background-color: #ffb52d;
+  background-color: white;
   background-image: url(${banana});
   background-size: auto 120%;
   background-position: 45% -20%;
@@ -32,30 +39,26 @@ const MainTitleDiv = styled.div`
   transform: rotate(-0deg);
   ${MainTitleSpan} {
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 700;
     color: rgb(82 82 82);
+    letter-spacing: 1px;
     span {
-      //font-style: italic;
+      font-style: italic;
       font-size: 30px;
       font-weight: 800;
       margin-right: 15px;
       color: rgb(255 232 78);
+      color: rgb(255 250 215);
       font-family: "yg-jalnan";
       text-shadow: rgb(255 197 96) 0px 0px, rgb(255 197 96) 0px 0px,
         rgb(255 197 96) 3px 0px, rgb(255 197 96) 3px 2px;
     }
   }
 `;
-
-const BannerSec = styled.div`
+const BannerSec = styled(Banner)`
   position: relative;
-  width: 100%;
-  height: 200px;
   background-color: #cef2be;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  padding-top: 55px;
   overflow: hidden;
 `;
 const MainTitleDiv2 = styled.div`
@@ -96,13 +99,6 @@ const MainEarth = styled.img`
   height: 160px;
   z-index: 50;
 `;
-const Clothes = styled.img`
-  position: absolute;
-  top: 0;
-  left: -10px;
-  width: 30px;
-  height: 30px;
-`;
 const Triangle = styled.div`
   transform: rotate(-42deg) translate(0%, 77%);
   background-color: #80d092;
@@ -111,6 +107,58 @@ const Triangle = styled.div`
   position: absolute;
   right: 0%;
   bottom: 0%;
+`;
+
+const BannerThird = styled(Banner)`
+  background-color: #fac2c2;
+
+  justify-content: center;
+`;
+
+const PresentImg = styled.img`
+  width: 160px;
+  padding-left: 0px;
+  padding-bottom: 10px;
+`;
+const BananaIcon = styled.img`
+  width: 35px;
+  position: absolute;
+  left: -13px;
+  top: -30%;
+`;
+const MainTitleDiv3 = styled.div`
+  transform: rotate(-5deg);
+  margin-bottom: 13px;
+  margin-left: 20px;
+`;
+const MainSubtitle3 = styled.div`
+  position: relative;
+  background-color: #eba2a2;
+  width: 105px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  border-radius: 10px;
+  color: white;
+  margin-bottom: 18px;
+  font-weight: 700;
+  padding: 3px;
+  padding-right: 15px;
+  font-size: 11px;
+`;
+const MainTitleSpan3 = styled.span`
+  display: block;
+  margin-bottom: 10px;
+  color: white;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: 3px;
+  font-family: "KOTRA_BOLD-Bold";
+
+  text-shadow: black 0px 0px, black 0px 0px, #eba2a2 3px 4px, #eba2a2 3px 2px;
 `;
 export const Banner1 = () => {
   return (
@@ -149,6 +197,18 @@ export const Banner2 = () => {
   );
 };
 
-export const Vanner3 = () => {
-  return <></>;
+export const Banner3 = () => {
+  return (
+    <BannerThird>
+      <MainTitleDiv3>
+        <MainSubtitle3>
+          <BananaIcon src={bananaIcon} />
+          노랑 멤버십 달성 시
+        </MainSubtitle3>
+        <MainTitleSpan3>업사이클링 의류</MainTitleSpan3>
+        <MainTitleSpan3 style={{ paddingLeft: "5px" }}>선택증정</MainTitleSpan3>
+      </MainTitleDiv3>
+      <PresentImg src={present} />
+    </BannerThird>
+  );
 };

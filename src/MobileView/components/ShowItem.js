@@ -4,6 +4,7 @@ const ItemDiv = styled.div`
   width: 100%;
   height: auto;
   font-family: "Pretendard";
+  min-height: calc(100vh - 360px - 160px); ;
 `;
 const ItemTitle = styled.span``;
 const ItemContent = styled.span``;
@@ -51,21 +52,40 @@ const Item = styled.div`
   padding: 10px;
 `;
 
-function ShowItem() {
+const EmptyPage = styled.div`
+  width: 100%;
+  height: calc(100vh - 360px - 160px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+`;
+
+function ShowItem({ main, sub }) {
+  const filterItemObj = ItemObj.filter(
+    (item) => item.main === main && item.sub === sub
+  );
+
   return (
-    <ItemDiv>
-      {ItemObj.map((item, index) => (
-        <Item key={index}>
-          <ItemText>
-            <ItemTitle>{item.title}</ItemTitle>
-            <ItemContent>{item.content}</ItemContent>
-            <ItemArea>{item.area}</ItemArea>
-            <ItemTimeAgo>{item.timeAge}</ItemTimeAgo>
-          </ItemText>
-          <ItemImg src={require(`../../Img/${item.img}`)} />
-        </Item>
-      ))}
-    </ItemDiv>
+    <>
+      {filterItemObj.length > 0 ? (
+        <ItemDiv>
+          {filterItemObj.map((item, index) => (
+            <Item key={index}>
+              <ItemText>
+                <ItemTitle>{item.title}</ItemTitle>
+                <ItemContent>{item.content}</ItemContent>
+                <ItemArea>{item.area}</ItemArea>
+                <ItemTimeAgo>{item.timeAge}</ItemTimeAgo>
+              </ItemText>
+              <ItemImg src={require(`../../Img/${item.img}`)} />
+            </Item>
+          ))}
+        </ItemDiv>
+      ) : (
+        <EmptyPage>나눔이 없습니다</EmptyPage>
+      )}
+    </>
   );
 }
 export default ShowItem;
