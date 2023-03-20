@@ -11,7 +11,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import "../../DesktopView/Desktop.css";
+import "../../DesktopView/Desktop.module.css";
 
 const Container = styled.div`
   height: 650px;
@@ -271,7 +271,7 @@ function Banner() {
         slidesPerView={1}
         navigation
         pagination={{ clickable: true }}
-        // autoplay={{ delay: 3000, disableOnInteraction: false }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
       >
         <SwiperSlide>
