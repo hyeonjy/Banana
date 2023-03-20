@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import "../../App.css";
-import "../mobile.module.css";
+import "../mobile.css";
 import ShowItem from "../components/ShowItem";
 
 import HomeMenu from "../components/HomeMenu";
@@ -115,7 +115,6 @@ function Mhome() {
           disableOnInteraction: false,
         }}
         modules={[Navigation, Pagination, Autoplay]}
-        navigation
         spaceBetween={0}
         slidesPerView={1}
         pagination={{ clickable: true }}
