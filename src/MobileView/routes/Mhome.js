@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import "../../App.css";
-import "../mobile.css";
+import "../mobile.module.css";
 import ShowItem from "../components/ShowItem";
 
 import HomeMenu from "../components/HomeMenu";
