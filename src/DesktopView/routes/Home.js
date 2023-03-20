@@ -6,151 +6,59 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../components/Footer";
 import Banner from "../components/Banner";
+import { useEffect, useRef } from "react";
 
-/*첫번째 배너 코드- 시작*/
-
-// const Banner = styled.div`
-//   width: 100%;
-//   height: 650px;
-//   /* background-color: #efeb6d; */
-//   background-color: #ff8868;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// `;
-
-// const ImgCircle = styled.div`
-//   width: 400px;
-//   height: 400px;
-//   background-color: white;
-//   border-radius: 50%;
-//   overflow: hidden;
-// `;
-
-// const BannerImg = styled.img.attrs({
-//   src: `${banana}`,
-// })`
-//   width: 350px;
-//   height: 500px;
-//   margin-top: 10px;
-//   margin-left: 40px;
-// `;
-
-// const BannerDetail = styled.div`
-//   width: 400px;
-//   height: 650px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   margin-left: 120px;
-// `;
-
-// const BannerTitleBox = styled.div`
-//   height: 400px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-around;
-//   margin-bottom: 30px;
-// `;
-
-// const BannerTitleSpan = styled.span``;
-
-// const BannerTitle = styled.div`
-//   color: black;
-//   font-weight: 600;
-//   /* margin-top: 20px; */
-//   display: inline;
-//   ${BannerTitleSpan} {
-//     font-size: 45px;
-//     font-weight: 500;
-//     font-family: yg-jalnan;
-//     /* color: rgb(82 82 82); */
-//     span {
-//       //font-style: italic;
-//       font-size: 72px;
-//       font-weight: 800;
-//       margin-right: 30px;
-//       color: rgb(255 232 78);
-//       font-family: "yg-jalnan";
-//       text-shadow: rgb(255 197 96) 0px 0px, rgb(255 197 96) 0px 0px,
-//         rgb(255 197 96) 3px 0px, rgb(255 197 96) 3px 2px;
-//     }
-//   }
-// `;
-
-// const BannerContentBox = styled.div`
-//   height: 100px;
-//   display: flex;
-//   flex-direction: column;
-// `;
-
-// const BannerContent = styled.h1`
-//   font-size: 25px;
-//   color: white;
-//   margin: 5px;
-//   font-weight: 600;
-// `;
-/*첫번째 배너 그림 - 끝*/
+const Container = styled.div`
+  padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
+`;
 
 const ProductList = [
   {
     imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
+      "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjAzMDNfNDcg%2FMDAxNjQ2MjkwNzY4MTQw.a0zttEs2wrt2La7WnvRn1cTUv3oWGNwiuYqVPgceaxIg.HymdJ1VTq4-VKp2SC361AXtYhWEQ4AL6zcbUbYHlzK4g.JPEG.caroline77f%2F1097546_16.jpg&type=a340",
+    title: "핑크색 블라우스",
+    detail: "광진구 | 11시간전",
+  },
+  {
+    imgURL:
+      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fhawaiiseoulcdn.bunjang.net%2Fproduct%2F62244276_1_1478659249_w640.jpg&type=a340",
+    title: "니트, 치마 세트",
+    detail: "일산 | 10시간 전",
+  },
+  {
+    imgURL:
+      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F70485637_1_1497101153_w640.jpg&type=sc960_832",
+    title: "남자 슬랙스",
+    detail: "일산 | 8시간 전",
+  },
+  {
+    imgURL:
+      "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fd2192bm55jmxp1.cloudfront.net%2Fresize%2Fl%2Farticle%2F201709%2F81E00B7DA926F42E5516A860B5031182EADFF2ADDAAFD8B3A6DE0337BA79A235.jpg&type=a340",
+    title: "자켓",
+    detail: "부산 | 6시간 전",
+  },
+  {
+    imgURL:
+      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fhawaiiseoulcdn.bunjang.net%2Fproduct%2F64529415_1_1483944028_w640.jpg&type=a340",
+    title: "멜빵 치마",
     detail: "지역 | 1분전",
   },
   {
     imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
+      "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxNzA4MzFfOTMg%2FMDAxNTA0MTU3OTc0NzQ4.LIZoLMF1BLMqpoVUb7a0CfON7FXIfDrTkNUkPaMdvZcg.4XraEmmSlXm_FMeHBOixKO_RGpE0eaXVS54VvLxYdjog.JPEG.snsdml88%2F1.jpeg&type=a340",
+    title: "검정색 에코백",
     detail: "지역 | 1분전",
   },
   {
     imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
+      "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fccimg.hellomarket.com%2Fimages%2F2018%2Fitem%2F11%2F14%2F22%2F4014_2021699_1.jpg%3Fsize%3Ds4&type=a340",
+    title: "체크무늬 블라우스",
     detail: "지역 | 1분전",
   },
   {
     imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=https%3A%2F%2Fshopping-phinf.pstatic.net%2Fmain_8114288%2F81142883676.jpg&type=f372_372",
-    title: "제목",
+      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F72820533_1_1502812035_w640.jpg&type=a340",
+    title: "세트",
     detail: "지역 | 1분전",
   },
 ];
@@ -158,7 +66,6 @@ const ProductList = [
 /*상품 리스트 - 시작*/
 
 const Products = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -169,55 +76,70 @@ const Products = styled.div`
 
 const ProductsTitle = styled.h1`
   width: 90%;
-  font-size: 35px;
+  font-size: 30px;
   font-weight: 600;
   margin-bottom: 30px;
   margin-left: 20px;
+  text-align: first;
 `;
 
 const ProductsTitleIcon = styled(FontAwesomeIcon)`
-  font-size: 35px;
+  font-size: 30px;
   color: ${(props) => props.color};
   margin-right: 5px;
 `;
 
 const ProductsBox = styled.div`
-  width: 90%;
+  max-width: 90%;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const Product = styled.div`
-  width: 250px;
+  /* width: 250px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 10px;
+  margin: 15px;
 `;
 
 const ProductImg = styled.img`
-  width: 230px;
-  height: 230px;
-  border-radius: 15px;
+  width: 250px;
+  height: 280px;
+  border-radius: 8px;
 `;
 
 const ProductTitle = styled.h1`
-  font-size: 25px;
-  margin: 10px;
+  font-size: 20px;
+  margin-top: 10px;
+  margin-left: 5px;
 `;
 
 const ProductDetail = styled.span`
-  font-size: 15px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.4);
-  margin: 10px;
+  margin-top: 10px;
+  margin-left: 5px;
+`;
+
+const MoreBtn = styled.div`
+  width: 100px;
+  height: 50px;
+  font-size: 25px;
+  border: 1px solid gray;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: gray;
 `;
 
 /*상품 리스트 - 끝*/
 
 function Home() {
   return (
-    <>
+    <Container>
       <Header />
       <Nav />
       {/* 배너 */}
@@ -263,6 +185,7 @@ function Home() {
             </Product>
           ))}
         </ProductsBox>
+        <MoreBtn>더보기</MoreBtn>
       </Products>
 
       {/* Hot 상품 리스트 */}
@@ -284,7 +207,7 @@ function Home() {
       </Products>
 
       <Footer />
-    </>
+    </Container>
   );
 }
 

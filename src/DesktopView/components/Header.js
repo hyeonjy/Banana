@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartShopping,
@@ -7,6 +7,7 @@ import {
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link } from "react-router-dom";
 import "../../App.css";
+import { useEffect, useRef, useState } from "react";
 
 const Container = styled.div`
   width: 100%;
@@ -15,6 +16,11 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  z-index: 4;
 `;
 
 const Logo = styled(Link)`
@@ -33,7 +39,7 @@ const SearchBox = styled.div`
   align-items: center;
 `;
 
-const Search = styled.input`
+const Search = styled.input.attrs({ type: "text" })`
   width: 400px;
   height: 30px;
   border-radius: 8px;
@@ -46,17 +52,61 @@ const SearchIcon = styled(FontAwesomeIcon)`
 `;
 
 const UserBox = styled.div`
-  width: 120px;
   height: 70px;
   display: flex;
   align-items: center;
 `;
 
-const UserBoxIcon = styled(FontAwesomeIcon)`
+const UserIcon = styled(FontAwesomeIcon)`
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-size: 25px;
   color: gray;
-  margin: 14px;
   cursor: pointer;
+  ${(props) =>
+    props.isUser &&
+    css`
+      &:hover ~ ${DropdownMenu} {
+        display: block;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    `}
+`;
+
+const ShoppingIcon = styled(UserIcon)`
+  margin-right: 20px;
+`;
+
+const UserDropdown = styled.div`
+  width: 100px;
+  padding-top: 105px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const DropdownMenu = styled.div`
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #9c9c9c;
+  display: none;
+  margin-top: -5px;
+  &:hover {
+    display: block;
+  }
+  span {
+    margin: 5px 0;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    &:hover {
+      color: #e62a2a;
+    }
+  }
 `;
 
 function Header() {
@@ -68,8 +118,15 @@ function Header() {
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchBox>
       <UserBox>
-        <UserBoxIcon icon={faUser} />
-        <UserBoxIcon icon={faCartShopping} />
+        <UserDropdown>
+          <UserIcon icon={faUser} isUser={true} />
+          <DropdownMenu>
+            <span>마이페이지</span>
+            <span>글쓰기</span>
+            <span>채팅하기</span>
+          </DropdownMenu>
+        </UserDropdown>
+        <ShoppingIcon icon={faCartShopping} />
       </UserBox>
     </Container>
   );

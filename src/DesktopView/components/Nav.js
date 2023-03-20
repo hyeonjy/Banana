@@ -1,123 +1,189 @@
 import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 
 const Container = styled.div`
   width: 100%;
-  height: 70px;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 70px;
+  z-index: 3;
 `;
 
 const Box = styled.div`
-  width: 33%;
   display: flex;
   align-items: center;
+  justify-content: center;
 `;
 
 const MenuIcon = styled(FontAwesomeIcon)`
   font-size: 30px;
-  margin-left: 12px;
   cursor: pointer;
+  margin-left: 15px;
 `;
 
+const items = [
+  {
+    id: 0,
+    main: "상의",
+    sub: ["티셔츠", "블라우스", "셔츠", "니트", "아우터"],
+  },
+  {
+    id: 1,
+    main: "하의",
+    sub: ["청바지", "슬랙스", "스커트", "레깅스", "기타"],
+  },
+  { id: 2, main: "신발", sub: ["운동화", "구두", "워커", "샌들", "슬리퍼"] },
+  {
+    id: 3,
+    main: "악세서리",
+    sub: ["목걸이", "반지", "귀걸이", "팔찌", "발찌"],
+  },
+  { id: 4, main: "패션잡화", sub: ["가방", "시계", "모자", "안경", "기타"] },
+];
+
 const ListBox = styled(Box)`
-  align-items: center;
-  justify-content: center;
+  width: 90%;
+  height: 70px;
+  text-align: center;
+  /* margin-left: 100px; */
+  /* background-color: orange; */
 `;
 
 const List = styled.li`
-  font-size: 16px;
-  margin: 10px;
+  height: 70px;
+  padding-top: 25px;
+  font-size: 18px;
   cursor: pointer;
+  width: 140px;
+  box-sizing: border-box;
+  font-weight: 600;
+  /* background-color: yellow; */
+
   ${(props) =>
     props.isBorder &&
     css`
       font-weight: 600;
-      color: green;
+      color: #e62a2a;
+      border-bottom: 3px solid #e62a2a;
+      ${SubList} {
+        /* font-weight: 600; */
+      }
     `}
 `;
 
-const ChoiceBox = styled.div`
+const SubListBox = styled.div`
+  height: 159px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  color: black;
+  margin-top: 28px;
+  /* background-color: green; */
+  box-sizing: border-box;
+`;
+
+const SubList = styled.li`
+  width: 140px;
+  font-size: 16px;
+  cursor: pointer;
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 80px;
-  background-color: black;
-`;
-
-const Choice = styled.li`
-  color: white;
-  font-size: 16px;
+  margin: 5px 0;
   font-weight: 400;
-  margin: 30px;
-  cursor: pointer;
+  background-color: white;
+  &:hover {
+    font-weight: 700;
+  }
+  ${(props) =>
+    props.isBorder &&
+    css`
+      &:hover {
+        color: #e62a2a;
+      }
+    `}
 `;
 
-const items = [
-  { id: "상의", name: ["니트", "아우터", "티셔츠", "블라우스", "셔츠"] },
-  { id: "하의", name: ["청바지", "슬랙스", "스커트", "레깅스", "기타"] },
-  { id: "신발", name: ["운동화", "구두", "워커", "샌들", "슬리퍼"] },
-  { id: "악세서리", name: ["목걸이", "반지", "귀걸이", "팔찌", "발찌"] },
-  { id: "패션잡화", name: ["가방", "시계", "모자", "안경", "기타"] },
-];
-
-const DropDown = (props) => {
-  return (
-    <ChoiceBox as="ul">
-      {props.item.map((li) => (
-        <Choice key={li}>{li}</Choice>
-      ))}
-    </ChoiceBox>
-  );
-};
+const MainContainer = styled(Container)`
+  background-color: white;
+`;
+const SubContainer = styled.div`
+  width: 100%;
+  height: 230px;
+  background-color: white;
+`;
 
 function Nav() {
-  const [isActive, setIsActive] = useState(false);
-  const [item, setItem] = useState(null);
-  const [itemID, setItemID] = useState(null);
+  const [isActive, setIsActive] = useState(false); /**서브 메뉴 활성화 여부 */
+  const [select, setSelect] = useState(null); /** 현재 선택한 메인 메뉴 아이디*/
 
-  console.log("item:", item);
-  console.log(isActive);
+  /** 메뉴를 제외한 요소 클릭 시 서브메뉴 창 닫는 코드 */
+  const el = useRef();
+
+  useEffect(() => {
+    window.addEventListener("click", CloseSubList);
+    return () => {
+      window.removeEventListener("click", CloseSubList);
+    };
+  }, []);
+
+  const CloseSubList = (e) => {
+    if (!el.current.contains(e.target)) setIsActive(false);
+  };
+
   return (
     <>
-      <Container>
-        <Box>
-          <MenuIcon
-            icon={faBars}
-            onClick={() => {
-              setIsActive(!isActive);
-              setItem(items[0].name);
-              setItemID(items[0].id);
-            }}
-          />
-        </Box>
-        <ListBox as="ul">
-          {items.map((item) => (
-            <List
-              key={item.id}
+      <Container ref={el}>
+        <MainContainer>
+          <Box>
+            <MenuIcon
+              icon={faBars}
               onClick={() => {
-                {
-                  isActive && item.id === itemID
-                    ? setIsActive(false)
-                    : setIsActive(true);
-                }
-                setItem(item.name);
-                setItemID(item.id);
+                setIsActive(!isActive);
+                setSelect(null);
               }}
-              isBorder={isActive && item.id === itemID}
-            >
-              {item.id}
-            </List>
-          ))}
-        </ListBox>
-        <Box />
+            />
+          </Box>
+
+          <ListBox as="ul">
+            {items.map((item, index) => (
+              <List
+                key={item.main}
+                onClick={() => {
+                  {
+                    isActive && item.id === select
+                      ? setIsActive(false)
+                      : setIsActive(true);
+                  }
+                  setSelect(item.id);
+                }}
+                isBorder={isActive && item.id === select}
+              >
+                {item.main}
+                {isActive && (
+                  <SubListBox as="ul">
+                    {item.sub.map((li, idx) => {
+                      return (
+                        <SubList
+                          key={idx}
+                          isBorder={isActive && item.id === select}
+                        >
+                          {li}
+                        </SubList>
+                      );
+                    })}
+                  </SubListBox>
+                )}
+              </List>
+            ))}
+          </ListBox>
+        </MainContainer>
+        {isActive && <SubContainer />}
       </Container>
-      {isActive && <DropDown item={item} />}
     </>
   );
 }
