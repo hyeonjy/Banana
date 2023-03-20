@@ -11,7 +11,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import "../../DesktopView/Desktop.module.css";
+import "../Desktop.css";
 
 const Container = styled.div`
   height: 650px;
