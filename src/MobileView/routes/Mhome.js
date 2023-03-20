@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import "../../App.css";
+import "../mobile.css";
 import ShowItem from "../components/ShowItem";
 
 import HomeMenu from "../components/HomeMenu";
@@ -110,7 +111,7 @@ function Mhome() {
       <HeaderComponent />
       <Swiper
         autoplay={{
-          delay: 7000,
+          delay: 4000,
           disableOnInteraction: false,
         }}
         modules={[Navigation, Pagination, Autoplay]}

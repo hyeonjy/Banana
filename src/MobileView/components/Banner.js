@@ -3,7 +3,8 @@ import banana from "../../Img/banana.png";
 import earth3 from "../../Img/earth3.png";
 import present from "../../Img/present.png";
 import bananaIcon from "../../Img/bananaIcon.png";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLeaf } from "@fortawesome/free-solid-svg-icons";
 const Banner = styled.div`
   width: 100%;
   height: 200px;
@@ -29,7 +30,9 @@ const MainCharacter = styled.div`
   background-repeat: no-repeat;
 `;
 const MainCharImg = styled.div``;
-const MainTitleSpan = styled.span``;
+const MainTitleSpan = styled.span`
+  font-family: "KOTRA_BOLD-Bold";
+`;
 const MainTitleDiv = styled.div`
   height: 70%;
   display: flex;
@@ -73,7 +76,7 @@ const MainTitleDiv2 = styled.div`
 const MainSubtitle = styled.div`
   font-size: 12px;
   display: block;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 20px;
   color: #4f4f4f;
 `;
@@ -134,11 +137,10 @@ const MainTitleDiv3 = styled.div`
 const MainSubtitle3 = styled.div`
   position: relative;
   background-color: #eba2a2;
-  width: 105px;
+  width: 120px;
   height: 20px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 
   border-radius: 10px;
   color: white;
@@ -154,7 +156,7 @@ const MainTitleSpan3 = styled.span`
   color: white;
   font-weight: 500;
   font-style: italic;
-  font-size: 20px;
+  font-size: 23px;
   letter-spacing: 3px;
   font-family: "KOTRA_BOLD-Bold";
 
@@ -202,7 +204,13 @@ export const Banner3 = () => {
     <BannerThird>
       <MainTitleDiv3>
         <MainSubtitle3>
-          <BananaIcon src={bananaIcon} />
+          {/*           <BananaIcon src={bananaIcon} />*/}
+          <FontAwesomeIcon
+            style={{ marginRight: "5px" }}
+            icon={faLeaf}
+            size="2x"
+            color="yellow"
+          />
           노랑 멤버십 달성 시
         </MainSubtitle3>
         <MainTitleSpan3>업사이클링 의류</MainTitleSpan3>
