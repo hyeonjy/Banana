@@ -124,7 +124,7 @@ const PresentImg = styled.img`
   padding-bottom: 10px;
 `;
 const BananaIcon = styled.img`
-  width: 35px;
+  width: 36px;
   position: absolute;
   left: -13px;
   top: -30%;
