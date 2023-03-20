@@ -148,11 +148,6 @@
   font-weight: normal;
   font-style: normal;
 }
-.swiper-button-next,
-.swiper-button-prev {
-  color: black !important;
-  display: none !important;
-}
 
 @font-face {
   font-family: "KOTRA_BOLD-Bold";
