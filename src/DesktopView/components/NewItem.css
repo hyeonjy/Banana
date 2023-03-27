@@ -1,0 +1,22 @@
+.next,
+.prev {
+  cursor: pointer;
+  position: absolute;
+  color: rgba(138, 138, 138, 0.779);
+  top: 50% !important;
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  transform: translate(0, -50%);
+  border: 1px solid rgba(129, 129, 129, 0.638);
+}
+
+.next {
+  right: 8px !important;
+}
+
+.prev {
+  left: 8px !important;
+}

@@ -4,78 +4,31 @@ import Nav from "../components/Nav";
 import banana from "../../Img/banana.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
-import Footer from "../components/Footer";
+
 import Banner from "../components/Banner";
-import { useEffect, useRef } from "react";
+import { ProductList } from "../ItemObject";
+import { Link } from "react-router-dom";
 
-const Container = styled.div`
+export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
+  min-height: calc(100vh - 300px); //300px은 footer height
 `;
-
-const ProductList = [
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMjAzMDNfNDcg%2FMDAxNjQ2MjkwNzY4MTQw.a0zttEs2wrt2La7WnvRn1cTUv3oWGNwiuYqVPgceaxIg.HymdJ1VTq4-VKp2SC361AXtYhWEQ4AL6zcbUbYHlzK4g.JPEG.caroline77f%2F1097546_16.jpg&type=a340",
-    title: "핑크색 블라우스",
-    detail: "광진구 | 11시간전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fhawaiiseoulcdn.bunjang.net%2Fproduct%2F62244276_1_1478659249_w640.jpg&type=a340",
-    title: "니트, 치마 세트",
-    detail: "일산 | 10시간 전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F70485637_1_1497101153_w640.jpg&type=sc960_832",
-    title: "남자 슬랙스",
-    detail: "일산 | 8시간 전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fd2192bm55jmxp1.cloudfront.net%2Fresize%2Fl%2Farticle%2F201709%2F81E00B7DA926F42E5516A860B5031182EADFF2ADDAAFD8B3A6DE0337BA79A235.jpg&type=a340",
-    title: "자켓",
-    detail: "부산 | 6시간 전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fhawaiiseoulcdn.bunjang.net%2Fproduct%2F64529415_1_1483944028_w640.jpg&type=a340",
-    title: "멜빵 치마",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxNzA4MzFfOTMg%2FMDAxNTA0MTU3OTc0NzQ4.LIZoLMF1BLMqpoVUb7a0CfON7FXIfDrTkNUkPaMdvZcg.4XraEmmSlXm_FMeHBOixKO_RGpE0eaXVS54VvLxYdjog.JPEG.snsdml88%2F1.jpeg&type=a340",
-    title: "검정색 에코백",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fccimg.hellomarket.com%2Fimages%2F2018%2Fitem%2F11%2F14%2F22%2F4014_2021699_1.jpg%3Fsize%3Ds4&type=a340",
-    title: "체크무늬 블라우스",
-    detail: "지역 | 1분전",
-  },
-  {
-    imgURL:
-      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F72820533_1_1502812035_w640.jpg&type=a340",
-    title: "세트",
-    detail: "지역 | 1분전",
-  },
-];
-
-/*상품 리스트 - 시작*/
 
 const Products = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 100px;
-  margin-bottom: 100px;
+  padding: 50px 0;
+  //margin-bottom: 100px;
+  width: 80%;
+  min-width: 1015px;
+  margin: 0 auto;
 `;
 
 const ProductsTitle = styled.h1`
-  width: 90%;
+  width: 95%;
+
   font-size: 30px;
   font-weight: 600;
   margin-bottom: 30px;
@@ -90,14 +43,15 @@ const ProductsTitleIcon = styled(FontAwesomeIcon)`
 `;
 
 const ProductsBox = styled.div`
-  max-width: 90%;
   display: flex;
+  width: 95%;
   align-items: center;
   flex-wrap: wrap;
 `;
 
 const Product = styled.div`
   /* width: 250px; */
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -105,8 +59,9 @@ const Product = styled.div`
 `;
 
 const ProductImg = styled.img`
-  width: 250px;
-  height: 280px;
+  width: 210px;
+  height: 220px;
+  object-fit: cover;
   border-radius: 8px;
 `;
 
@@ -140,36 +95,11 @@ const MoreBtn = styled.div`
 function Home() {
   return (
     <Container>
-      <Header />
       <Nav />
-      {/* 배너 */}
-      {/* <Banner>
-        <BannerImg />
-        <BannerDetail>
-          <BannerTitleBox>
-            <BannerTitle>
-              <BannerTitleSpan>
-                <span>바</span>로
-              </BannerTitleSpan>
-            </BannerTitle>
-            <BannerTitle>
-              <BannerTitleSpan>
-                <span>나</span>누고
-              </BannerTitleSpan>
-            </BannerTitle>
-            <BannerTitle>
-              <BannerTitleSpan>
-                <span>나</span>눔 받자
-              </BannerTitleSpan>
-            </BannerTitle>
-          </BannerTitleBox>
-          <BannerContentBox>
-            <BannerContent>Banana는 의류 나눔을 통해</BannerContent>
-            <BannerContent>친환경적인 세상을 만듭니다.</BannerContent>
-          </BannerContentBox>
-        </BannerDetail>
-      </Banner> */}
-      <Banner />
+      <div style={{ minWidth: "1015px" }}>
+        <Banner />
+      </div>
+
       {/* New 상품 리스트 */}
       <Products>
         <ProductsTitle>
@@ -179,9 +109,22 @@ function Home() {
         <ProductsBox>
           {ProductList.map((item, index) => (
             <Product key={index}>
-              <ProductImg src={item.imgURL} />
-              <ProductTitle>{item.title}</ProductTitle>
-              <ProductDetail>{item.detail}</ProductDetail>
+              <Link
+                to={{
+                  pathname: `/post/${index}`,
+                  state: {
+                    src: item.imgURL,
+                    title: item.title,
+                    detail: item.detail,
+                    content: item.content,
+                    view: item.view,
+                  },
+                }}
+              >
+                <ProductImg src={item.imgURL[0]} />
+                <ProductTitle>{item.title}</ProductTitle>
+                <ProductDetail>{item.detail}</ProductDetail>
+              </Link>
             </Product>
           ))}
         </ProductsBox>
@@ -205,8 +148,6 @@ function Home() {
           ))}
         </ProductsBox>
       </Products>
-
-      <Footer />
     </Container>
   );
 }
