@@ -23,6 +23,7 @@ const MenuIcon = styled(FontAwesomeIcon)`
   font-size: 30px;
   cursor: pointer;
   margin-left: 15px;
+  display: none;
 `;
 
 const items = [
@@ -46,7 +47,7 @@ const items = [
 ];
 
 const ListBox = styled(Box)`
-  width: 90%;
+  width: 100%;
   height: 70px;
   text-align: center;
   /* margin-left: 100px; */
@@ -55,16 +56,17 @@ const ListBox = styled(Box)`
 
 const List = styled.li`
   height: 70px;
-  padding-top: 25px;
+  padding: 25px 0;
   font-size: 18px;
   cursor: pointer;
   width: 140px;
   box-sizing: border-box;
   font-weight: 600;
+  flex-shrink: 0;
   /* background-color: yellow; */
-
+  position: relative;
   ${(props) =>
-    props.isBorder &&
+    props.border &&
     css`
       font-weight: 600;
       color: #e62a2a;
@@ -76,15 +78,18 @@ const List = styled.li`
 `;
 
 const SubListBox = styled.div`
-  height: 159px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background-color: white;
   color: black;
-  margin-top: 28px;
+  /*margin-top: 28px;*/
+
   /* background-color: green; */
   box-sizing: border-box;
+  position: absolute;
+  top: 100%;
 `;
 
 const SubList = styled.li`
@@ -135,6 +140,15 @@ function Nav() {
     if (!el.current.contains(e.target)) setIsActive(false);
   };
 
+  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [selectCate, setSelctCate] = useState(false);
+
+  const handleSubMenu = () => {
+    setShowSubMenu(!showSubMenu);
+  };
+  const handleSelctCate = (value) => {
+    setSelctCate(value);
+  };
   return (
     <>
       <Container ref={el}>
@@ -149,10 +163,14 @@ function Nav() {
             />
           </Box>
 
-          <ListBox as="ul">
+          <ListBox
+            onMouseEnter={handleSubMenu}
+            onMouseLeave={handleSubMenu}
+            as="ul"
+          >
             {items.map((item, index) => (
               <List
-                key={item.main}
+                key={index}
                 onClick={() => {
                   {
                     isActive && item.id === select
@@ -161,10 +179,13 @@ function Nav() {
                   }
                   setSelect(item.id);
                 }}
-                isBorder={isActive && item.id === select}
+                //isBorder={isActive && item.id === select}
+                onMouseEnter={() => handleSelctCate(item.id)}
+                onMouseLeave={() => handleSelctCate("")}
+                border={selectCate === item.id}
               >
                 {item.main}
-                {isActive && (
+                {showSubMenu && (
                   <SubListBox as="ul">
                     {item.sub.map((li, idx) => {
                       return (
@@ -182,7 +203,7 @@ function Nav() {
             ))}
           </ListBox>
         </MainContainer>
-        {isActive && <SubContainer />}
+        {/* 없어도 되는거 아냐?    {isActive && <SubContainer />} */}
       </Container>
     </>
   );

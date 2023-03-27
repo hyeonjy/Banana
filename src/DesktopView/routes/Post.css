@@ -1,0 +1,60 @@
+.post-next,
+.post-prev {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  color: rgb(255, 255, 255);
+  z-index: 5;
+  border: 0px solid rgb(196, 196, 196);
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.my-custom-disabled {
+  opacity: 0.5;
+}
+.my-custom-hidden {
+  opacity: 0.5;
+}
+
+.post-pagination {
+  position: absolute;
+  bottom: 12px !important;
+  z-index: 50;
+  text-align: center;
+  width: 100%;
+}
+.post-swiper-bullet {
+  opacity: 0.9;
+  cursor: pointer;
+  padding: 2px;
+  background-color: white;
+  border-radius: 50%;
+  width: 6px;
+  height: 6px;
+  display: inline-block;
+}
+
+.post-swiper-bullet-active {
+  background-color: rgb(255, 223, 64);
+
+  width: 7px;
+  height: 7px;
+  position: relative;
+}
+.post-swiper-bullet-active .inner-circle {
+  background-color: rgb(255, 223, 64);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.post-swiper-bullet:not(:last-of-type) {
+  margin-right: 8px;
+}

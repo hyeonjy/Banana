@@ -35,7 +35,7 @@ footer, header, hgroup, main, menu, nav, section {
 }
 body {
   line-height: 1;
-  
+  position: relative;
 }
 menu, ol, ul {
   list-style: none;
@@ -52,7 +52,10 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-
+a{
+  text-decoration: none;
+  color: inherit;
+}
 `;
 function App() {
   return (
