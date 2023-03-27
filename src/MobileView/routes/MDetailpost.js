@@ -29,6 +29,7 @@ const Box = styled.div`
 const Post = styled(Box)`
   flex-direction: column;
   justify-content: space-evenly;
+  border-bottom: none;
 `;
 
 const PostTitle = styled.h1`
@@ -44,6 +45,7 @@ const PostSubtitle = styled.span`
 const PostImg = styled.img`
   width: 100%;
   height: 250px;
+  object-fit: cover;
 `;
 
 const PostContent = styled.div`
@@ -98,14 +100,6 @@ function MDetailpost() {
       {/* 유저 정보 */}
       <User img="banana.png" grade="bananaIcon.png" />
 
-      {/* 게시글 제목 - 카테고리|지역|시간 */}
-      <Post>
-        <PostTitle>{filterItemObj.title}</PostTitle>
-        <PostSubtitle>
-          {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAge}
-        </PostSubtitle>
-      </Post>
-
       {/* 게시글 이미지  */}
       <Swiper
         modules={[Navigation, Pagination]}
@@ -123,6 +117,14 @@ function MDetailpost() {
           );
         })}
       </Swiper>
+
+      {/* 게시글 제목 - 카테고리|지역|시간 */}
+      <Post>
+        <PostTitle>{filterItemObj.title}</PostTitle>
+        <PostSubtitle>
+          {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAge}
+        </PostSubtitle>
+      </Post>
 
       {/* 게시글 내용 */}
       <PostContent>{filterItemObj.content}</PostContent>

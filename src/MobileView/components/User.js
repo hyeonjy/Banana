@@ -9,6 +9,11 @@ const Box = styled.div`
   border-bottom: 1px solid #e9ecef;
 `;
 
+const PrevIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+  justify-content: flex-start;
+`;
+
 // 유저 정보(이름, 프로필이미지, 등급) - 시작
 const UserBox = styled(Box)`
   justify-content: space-between;
@@ -27,6 +32,7 @@ const UserImg = styled.img`
   border-radius: 50%;
   padding: 5px;
   margin-right: 10px;
+  object-fit: cover;
 `;
 
 const UserName = styled.h1`
