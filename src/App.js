@@ -1,6 +1,8 @@
 import { BrowserView, MobileView } from "react-device-detect";
 import { createGlobalStyle } from "styled-components";
-import { DeskTopRouter, MobileRouter } from "./Router";
+import { MobileRouter } from "./Mrouter";
+import { DeskTopRouter } from "./Router";
+
 const GlobalStyle = createGlobalStyle`
 
   html, body, div, span, applet, object, iframe,
