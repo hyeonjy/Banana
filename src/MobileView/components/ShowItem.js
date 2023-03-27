@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { ItemObj } from "../ItemObj";
 const ItemDiv = styled.div`
@@ -71,15 +72,17 @@ function ShowItem({ main, sub }) {
       {filterItemObj.length > 0 ? (
         <ItemDiv>
           {filterItemObj.map((item, index) => (
-            <Item key={index}>
-              <ItemText>
-                <ItemTitle>{item.title}</ItemTitle>
-                <ItemContent>{item.content}</ItemContent>
-                <ItemArea>{item.area}</ItemArea>
-                <ItemTimeAgo>{item.timeAge}</ItemTimeAgo>
-              </ItemText>
-              <ItemImg src={require(`../../Img/${item.img}`)} />
-            </Item>
+            <Link to={`/clothes/${item.id}`} key={item.id}>
+              <Item>
+                <ItemText>
+                  <ItemTitle>{item.title}</ItemTitle>
+                  <ItemContent>{item.content}</ItemContent>
+                  <ItemArea>{item.area}</ItemArea>
+                  <ItemTimeAgo>{item.timeAge}</ItemTimeAgo>
+                </ItemText>
+                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
+              </Item>
+            </Link>
           ))}
         </ItemDiv>
       ) : (

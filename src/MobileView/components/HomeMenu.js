@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const MenuSpan = styled.div`
@@ -20,12 +21,20 @@ const MenuDiv = styled.div`
   z-index: 998;
 `;
 
-const MenuList = ["HOME", "채팅하기", "지역별", "마이페이지"];
+const MenuList = [
+  { name: "HOME", url: "/" },
+  { name: "채팅하기", url: "/" },
+  { name: "지역별", url: "/" },
+  { name: "마이페이지", url: "/mypage" },
+];
+
 function HomeMenu() {
   return (
     <MenuDiv>
       {MenuList.map((Menu, index) => (
-        <MenuSpan key={index}>{Menu}</MenuSpan>
+        <Link to={Menu.url} key={index}>
+          <MenuSpan>{Menu.name}</MenuSpan>
+        </Link>
       ))}
     </MenuDiv>
   );
