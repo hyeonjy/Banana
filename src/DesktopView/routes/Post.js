@@ -81,6 +81,7 @@ function Post() {
   function handleImageClick() {
     const searchParams = new URLSearchParams();
     searchParams.append("object", item.id);
+    searchParams.append("index", imgCurrentIdx);
     history.push({
       pathname: "/img",
       state: { index: imgCurrentIdx }, //현재 이미지 index
@@ -102,7 +103,7 @@ function Post() {
           {/* Post Image Slider */}
           <div>
             <StyledSwiper
-              containerClassNane="post-swiper"
+              //containerClassName="post-swiper"
               className="post-swiper"
               onSlideChange={handleSlideChange}
               modules={[Navigation, Pagination]}

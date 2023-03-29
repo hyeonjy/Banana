@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { itemsGroup } from "../ItemGroup";
 
 const Container = styled.div`
   width: 100%;
@@ -27,26 +29,6 @@ const MenuIcon = styled(FontAwesomeIcon)`
   display: none;
 `;
 
-const items = [
-  {
-    id: 0,
-    main: "상의",
-    sub: ["티셔츠", "블라우스", "셔츠", "니트", "아우터"],
-  },
-  {
-    id: 1,
-    main: "하의",
-    sub: ["청바지", "슬랙스", "스커트", "레깅스", "기타"],
-  },
-  { id: 2, main: "신발", sub: ["운동화", "구두", "워커", "샌들", "슬리퍼"] },
-  {
-    id: 3,
-    main: "악세서리",
-    sub: ["목걸이", "반지", "귀걸이", "팔찌", "발찌"],
-  },
-  { id: 4, main: "패션잡화", sub: ["가방", "시계", "모자", "안경", "기타"] },
-];
-
 const ListBox = styled(Box)`
   width: 100%;
   height: 70px;
@@ -55,7 +37,7 @@ const ListBox = styled(Box)`
   /* background-color: orange; */
 `;
 
-const List = styled.li`
+const List = styled(Link)`
   height: 70px;
 
   padding: 25px 0;
@@ -87,7 +69,7 @@ const SubListBox = styled.div`
   box-sizing: border-box;
 `;
 
-const SubList = styled.li`
+const SubList = styled.div`
   width: 140px;
   font-size: 14px;
   flex-grow: 1;
@@ -181,12 +163,13 @@ function Nav() {
           </Box>
 
           <ListBox as="ul">
-            {items.map((item, index) => (
+            {itemsGroup.map((item, index) => (
               <List
+                to={{ pathname: "/group", search: `?category=${item.id}` }}
                 key={index}
                 onMouseEnter={() => handleSelctCate(item.id)}
                 onMouseLeave={() => handleSelctCate("")}
-                border={selectCate === item.id}
+                border={selectCate === item.id ? 1 : 0}
               >
                 {item.main}
               </List>
@@ -196,7 +179,7 @@ function Nav() {
         {showSubMenu && (
           <>
             <SubContainer ref={subCate}>
-              {items.map((mainCate, index) => (
+              {itemsGroup.map((mainCate, index) => (
                 <SubListBox key={index}>
                   {mainCate.sub.map((subCate, idx) => (
                     <SubList key={idx}>{subCate}</SubList>

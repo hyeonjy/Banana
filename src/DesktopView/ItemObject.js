@@ -5,7 +5,7 @@ export const ProductList = [
       "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fhawaiiseoulcdn.bunjang.net%2Fproduct%2F62244276_1_1478659249_w640.jpg&type=a340",
       "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F70485637_1_1497101153_w640.jpg&type=sc960_832",
     ],
-    title: "핑크색 블라우스",
+    title: "핑크색 블라우스 하자 없고 거의 새거입니다 가져가실 분 드려요",
     detail: "광진구 | 11시간전",
     view: "75",
     main: "상의",
@@ -21,9 +21,22 @@ export const ProductList = [
     title: "니트, 치마 세트",
     detail: "일산 | 10시간 전",
     view: "75",
-    main: "상의",
-    sub: "블라우스",
+    main: "하의",
+    sub: "스커트",
     id: 1,
+    content:
+      "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
+  },
+  {
+    imgURL: [
+      "https://search.pstatic.net/sunny/?src=http%3A%2F%2Fseoul-p-studio.bunjang.net%2Fproduct%2F70485637_1_1497101153_w640.jpg&type=sc960_832",
+    ],
+    title: "남자 슬랙스",
+    detail: "일산 | 8시간 전",
+    view: "75",
+    main: "상의",
+    sub: "티셔츠",
+    id: 2,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },

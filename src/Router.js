@@ -6,6 +6,8 @@ import Post from "./DesktopView/routes/Post";
 import Footer from "./DesktopView/components/Footer";
 import ScrollToTop from "./ScrollToTop";
 import ImgFullPage from "./DesktopView/routes/ImgFullPage";
+import Gruop from "./DesktopView/routes/Gruop";
+import SubGroup from "./DesktopView/routes/SubGroup";
 
 export function DeskTopRouter() {
   return (
@@ -25,6 +27,12 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/img">
           <ImgFullPage />
+        </Route>
+        <Route path="/group" exact>
+          <Gruop />
+        </Route>
+        <Route path="/group/:main" exact>
+          <SubGroup />
         </Route>
       </Switch>
       <Footer />
