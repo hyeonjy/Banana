@@ -8,7 +8,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link } from "react-router-dom";
 import "../../App.css";
 
-const Container = styled.div`
+export const Container = styled.div`
   width: 100%;
   height: 70px;
   display: flex;
@@ -120,18 +120,22 @@ const UserDropdown = styled.div`
 `;
 
 const ShoppingIcon = styled(UserIcon)``;
+const ShopIconLink = styled(Link)`
+  text-align: center;
+`;
 const UserBox = styled.div`
   margin: 0 15px;
   height: 70px;
   display: flex;
   align-items: center;
   width: 90px;
-  ${UserDropdown}, ${ShoppingIcon} {
+  ${UserDropdown}, ${ShopIconLink} {
     flex-grow: 1;
   }
 `;
 
 function Header() {
+  //if (window.location.pathname.slice(0, 4) === "/img") return null;
   return (
     <Container>
       <Logo to="/">BANANA</Logo>
@@ -151,7 +155,9 @@ function Header() {
             <span>채팅하기</span>
           </DropdownMenu>
         </UserDropdown>
-        <ShoppingIcon icon={faCartShopping} />
+        <ShopIconLink to="/mypage/heart">
+          <ShoppingIcon icon={faCartShopping} />
+        </ShopIconLink>
       </UserBox>
     </Container>
   );

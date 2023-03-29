@@ -21,10 +21,21 @@
 
 .post-pagination {
   position: absolute;
-  bottom: 12px !important;
+  bottom: 0px !important;
   z-index: 50;
   text-align: center;
   width: 100%;
+  height: 50px;
+  background-image: linear-gradient(
+    to top,
+    rgb(45 45 45 / 50%),
+    rgb(255 255 255 / 0%)
+  );
+  background-blend-mode: multiply;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .post-swiper-bullet {
   opacity: 0.9;

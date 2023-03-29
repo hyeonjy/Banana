@@ -2,19 +2,21 @@ import styled from "styled-components";
 import { ProductList } from "../ItemObject";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper";
+import { Navigation } from "swiper";
 import "swiper/css";
-//import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./NewItem.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const NewContainer = styled.div`
   width: 96%;
   margin: 30px auto;
 `;
+
+//----상단 : New 타이틀 + pagination/Navigation----//
 const Header = styled.div`
   display: flex;
   line-height: 50px;
@@ -35,30 +37,6 @@ const Newtitle = styled.span`
     margin-right: 3px;
   }
 `;
-const ItemDiv = styled(Swiper)`
-  /* display: flex;
-  justify-content: space-between; */
-`;
-const EachItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  //width: 200px;
-`;
-const EachThum = styled.img`
-  width: 190px;
-  height: 150px;
-  object-fit: cover;
-`;
-const EachTitle = styled.span`
-  font-weight: 600;
-  line-height: 35px;
-  display: block;
-  margin-top: 3px;
-`;
-const EachDetail = styled.span`
-  font-size: 12px;
-`;
 
 const NavWrap = styled.div`
   position: relative;
@@ -77,8 +55,31 @@ const NavSpan = styled.span`
   color: black;
 `;
 
+//----하단 : Post List----//
+const ItemDiv = styled(Swiper)``;
+const EachItem = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+`;
+const EachThum = styled.img`
+  width: 190px;
+  height: 150px;
+  object-fit: cover;
+`;
+const EachTitle = styled.span`
+  font-weight: 600;
+  line-height: 35px;
+  display: block;
+  margin-top: 3px;
+`;
+const EachDetail = styled.span`
+  font-size: 12px;
+`;
+//------------------------------//
+
 function NewItem() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
       <NewContainer>
@@ -121,7 +122,7 @@ function NewItem() {
         >
           {ProductList.map((item, index) => (
             <SwiperSlide key={index}>
-              <EachItem>
+              <EachItem to={`/post/${item.id}`}>
                 <EachThum src={item.imgURL[0]} />
                 <EachTitle>{item.title}</EachTitle>
                 <EachDetail>{item.detail}</EachDetail>

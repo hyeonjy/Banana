@@ -2,11 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import profile from "../../Img/profile.jpg";
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
 import { useState } from "react";
 import Modal from "../components/Modal";
+import { useEffect } from "react";
 
 const Container = styled.div`
   padding-top: 90px;
@@ -117,8 +118,16 @@ const NavLi = styled.li`
 `;
 
 function MyPage() {
-  const [currentPage, setCurrentPage] = useState("share");
-  const [activeGrade, setActiveGrade] = useState(false);
+  const [currentPage, setCurrentPage] = useState(""); // sideNav 현재 페이지에 따라 Active
+  const [activeGrade, setActiveGrade] = useState(false); // Modal
+  const heartPage = useRouteMatch("/mypage/heart"); //현재 찜 페이지인지 여부 (t/f)
+  const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
+
+  useEffect(() => {
+    if (heartPage) setCurrentPage("heart");
+    else if (sharePage) setCurrentPage("share");
+    else setCurrentPage("");
+  }, [heartPage, sharePage]);
   return (
     <>
       <Container activeGrade={activeGrade}>

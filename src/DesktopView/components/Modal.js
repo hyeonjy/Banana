@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faX,
-  faLeaf,
   faTree,
   faLemon,
   faSeedling,
