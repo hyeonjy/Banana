@@ -23,7 +23,7 @@ export function MobileRouter() {
           <MDetailpost />
         </Route>
 
-        <Route exact path="/images/:clothesid">
+        <Route exact path="/images">
           <Mimages />
         </Route>
 

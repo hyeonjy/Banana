@@ -115,8 +115,8 @@ function Mmypage() {
         />
         <MainWrap>
           {MainList.map((li, index) => (
-            <MainDiv>
-              <Link to={li.url} key={index}>
+            <MainDiv key={index}>
+              <Link to={li.url}>
                 <MainCircle>{li.icon}</MainCircle>
                 <MainSpan>{li.name}</MainSpan>
               </Link>
@@ -126,7 +126,7 @@ function Mmypage() {
         <SubListDiv>
           {SubList.map((li, index) => (
             <Link to={li.url} key={index}>
-              <ListSpan>{li.name}</ListSpan>
+              <ListSpan key={li.name}>{li.name}</ListSpan>
             </Link>
           ))}
         </SubListDiv>
