@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const ExplainGrade = styled.div`
   position: fixed;
@@ -27,6 +27,11 @@ const ExplainGrade = styled.div`
     display: inline-block;
     font-weight: 700;
   }
+  ${(props) =>
+    props.isMobile &&
+    css`
+      top: 350px;
+    `}
 `;
 const XIcon = styled(FontAwesomeIcon)`
   float: right;
@@ -93,7 +98,7 @@ const GradeIcon = styled(FontAwesomeIcon)`
   font-size: 25px;
 `;
 
-function Modal({ setActiveGrade }) {
+function Modal({ setActiveGrade, isMobile }) {
   const greadeRef = useRef();
 
   //esc 입력 시 모달 해제
@@ -130,7 +135,7 @@ function Modal({ setActiveGrade }) {
   }, []);
 
   return (
-    <ExplainGrade ref={greadeRef}>
+    <ExplainGrade ref={greadeRef} isMobile={isMobile}>
       <div style={{ height: "25px", lineHeight: "25px", marginBottom: "15px" }}>
         <h3>멤버십 등급</h3>
         <XIcon onClick={() => setActiveGrade(false)} icon={faX} />
