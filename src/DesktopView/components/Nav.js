@@ -117,7 +117,8 @@ const Blur = styled.div`
 
 function Nav() {
   const [isActive, setIsActive] = useState(false); /**서브 메뉴 활성화 여부 */
-  const [select, setSelect] = useState(null); /** 현재 선택한 메인 메뉴 아이디*/
+  const [select, setSelect] =
+    useState(null); /** 현재 선택한 메인 메뉴 아이디 s*/
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [selectCate, setSelctCate] = useState(false);
