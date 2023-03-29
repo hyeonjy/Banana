@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { ProductList } from "../ItemObject";
 
@@ -16,7 +17,7 @@ export const ItemWrap = styled.div`
   margin: 0 auto 30px;
 `;
 
-export const ItemDiv = styled.div`
+export const ItemDiv = styled(Link)`
   height: fit-content;
   width: 50%;
   display: flex;
@@ -63,15 +64,15 @@ export const NavTitle = styled.h4`
     width: 70%;
   }
 `;
+
 function ShareList() {
   return (
     <PageContainer>
       <NavTitle>나눔 목록 ({ProductList.length})</NavTitle>
-
       <ItemWrap>
         {ProductList ? (
           ProductList.map((item, index) => (
-            <ItemDiv key={index}>
+            <ItemDiv key={index} to={`/post/${item.id}`}>
               <ItemImg src={item.imgURL} />
               <ItemDetailDiv>
                 <ItemTitle>{item.title}</ItemTitle>

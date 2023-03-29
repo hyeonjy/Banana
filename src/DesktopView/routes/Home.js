@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import Header from "../components/Header";
 import Nav from "../components/Nav";
-import banana from "../../Img/banana.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
 
@@ -94,61 +92,59 @@ const MoreBtn = styled.div`
 
 function Home() {
   return (
-    <Container>
+    <>
       <Nav />
-      <div style={{ minWidth: "1015px" }}>
-        <Banner />
-      </div>
+      <Container>
+        <div style={{ minWidth: "1015px" }}>
+          <Banner />
+        </div>
 
-      {/* New 상품 리스트 */}
-      <Products>
-        <ProductsTitle>
-          <ProductsTitleIcon icon={faN} color={"orange"} />
-          ew
-        </ProductsTitle>
-        <ProductsBox>
-          {ProductList.map((item, index) => (
-            <Product key={index}>
-              <Link
-                to={{
-                  pathname: `/post/${index}`,
-                  state: {
-                    src: item.imgURL,
-                    title: item.title,
-                    detail: item.detail,
-                    content: item.content,
-                    view: item.view,
-                  },
-                }}
-              >
-                <ProductImg src={item.imgURL[0]} />
+        {/* New 상품 리스트 */}
+        <Products>
+          <ProductsTitle>
+            <ProductsTitleIcon icon={faN} color={"orange"} />
+            ew
+          </ProductsTitle>
+          <ProductsBox>
+            {ProductList.map((item, index) => (
+              <Product key={index}>
+                <Link
+                  to={{
+                    pathname: `/post/${item.id}`,
+                    state: {
+                      item,
+                    },
+                  }}
+                >
+                  <ProductImg src={item.imgURL[0]} />
+                  <ProductTitle>{item.title}</ProductTitle>
+                  <ProductDetail>{item.detail}</ProductDetail>
+                </Link>
+              </Product>
+            ))}
+          </ProductsBox>
+          <MoreBtn>더보기</MoreBtn>
+        </Products>
+
+        {/* Hot 상품 리스트 */}
+
+        <Products>
+          <ProductsTitle>
+            <ProductsTitleIcon icon={faFire} color={"red"} />
+            Hot
+          </ProductsTitle>
+          <ProductsBox>
+            {ProductList.map((item, index) => (
+              <Product key={index}>
+                <ProductImg src={item.imgURL} />
                 <ProductTitle>{item.title}</ProductTitle>
                 <ProductDetail>{item.detail}</ProductDetail>
-              </Link>
-            </Product>
-          ))}
-        </ProductsBox>
-        <MoreBtn>더보기</MoreBtn>
-      </Products>
-
-      {/* Hot 상품 리스트 */}
-
-      <Products>
-        <ProductsTitle>
-          <ProductsTitleIcon icon={faFire} color={"red"} />
-          Hot
-        </ProductsTitle>
-        <ProductsBox>
-          {ProductList.map((item, index) => (
-            <Product key={index}>
-              <ProductImg src={item.imgURL} />
-              <ProductTitle>{item.title}</ProductTitle>
-              <ProductDetail>{item.detail}</ProductDetail>
-            </Product>
-          ))}
-        </ProductsBox>
-      </Products>
-    </Container>
+              </Product>
+            ))}
+          </ProductsBox>
+        </Products>
+      </Container>
+    </>
   );
 }
 

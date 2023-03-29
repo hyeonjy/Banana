@@ -8,6 +8,9 @@ export const ProductList = [
     title: "핑크색 블라우스",
     detail: "광진구 | 11시간전",
     view: "75",
+    main: "상의",
+    sub: "티셔츠",
+    id: 0,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -18,6 +21,9 @@ export const ProductList = [
     title: "니트, 치마 세트",
     detail: "일산 | 10시간 전",
     view: "75",
+    main: "상의",
+    sub: "블라우스",
+    id: 1,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -28,6 +34,9 @@ export const ProductList = [
     title: "남자 슬랙스",
     detail: "일산 | 8시간 전",
     view: "75",
+    main: "상의",
+    sub: "티셔츠",
+    id: 2,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -38,6 +47,9 @@ export const ProductList = [
     title: "자켓",
     detail: "부산 | 6시간 전",
     view: "75",
+    main: "상의",
+    sub: "블라우스",
+    id: 3,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -48,6 +60,9 @@ export const ProductList = [
     title: "멜빵 치마",
     detail: "지역 | 1분전",
     view: "75",
+    main: "하의",
+    sub: "청바지",
+    id: 4,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -58,6 +73,9 @@ export const ProductList = [
     title: "검정색 에코백",
     detail: "지역 | 1분전",
     view: "75",
+    main: "하의",
+    sub: "기타",
+    id: 5,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -68,6 +86,9 @@ export const ProductList = [
     title: "체크무늬 블라우스",
     detail: "지역 | 1분전",
     view: "75",
+    main: "패션잡화",
+    sub: "가방",
+    id: 6,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },
@@ -78,6 +99,9 @@ export const ProductList = [
     title: "세트",
     detail: "지역 | 1분전",
     view: "75",
+    main: "신발",
+    sub: "운동화",
+    id: 7,
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다",
   },

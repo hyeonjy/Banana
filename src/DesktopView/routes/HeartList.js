@@ -18,7 +18,7 @@ function HeartList() {
       <ItemWrap>
         {ProductList ? (
           ProductList.slice(0, 3).map((item, index) => (
-            <ItemDiv key={index}>
+            <ItemDiv key={index} to={`/post/${item.id}`}>
               <ItemImg src={item.imgURL} />
               <ItemDetailDiv>
                 <ItemTitle>{item.title}</ItemTitle>

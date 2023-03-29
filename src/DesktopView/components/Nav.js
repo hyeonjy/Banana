@@ -11,6 +11,7 @@ const Container = styled.div`
   position: fixed;
   top: 70px;
   z-index: 3;
+  flex-direction: column;
 `;
 
 const Box = styled.div`
@@ -56,11 +57,13 @@ const ListBox = styled(Box)`
 
 const List = styled.li`
   height: 70px;
+
   padding: 25px 0;
-  font-size: 18px;
+  font-size: 17px;
   cursor: pointer;
   width: 140px;
   box-sizing: border-box;
+
   font-weight: 600;
   flex-shrink: 0;
   /* background-color: yellow; */
@@ -70,75 +73,69 @@ const List = styled.li`
     css`
       font-weight: 600;
       color: #e62a2a;
-      border-bottom: 3px solid #e62a2a;
-      ${SubList} {
-        /* font-weight: 600; */
-      }
+      border-bottom: 5px solid #e62a2a;
     `}
 `;
 
 const SubListBox = styled.div`
-  height: 180px;
+  height: 210px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background-color: white;
   color: black;
-  /*margin-top: 28px;*/
-
-  /* background-color: green; */
   box-sizing: border-box;
-  position: absolute;
-  top: 100%;
 `;
 
 const SubList = styled.li`
   width: 140px;
-  font-size: 16px;
+  font-size: 14px;
+  flex-grow: 1;
   cursor: pointer;
   display: flex;
   justify-content: center;
   margin: 5px 0;
   font-weight: 400;
   background-color: white;
+  transition: all 0.1s;
+  align-items: center;
+  border-radius: 10px;
   &:hover {
     font-weight: 700;
+    background-color: #dcdcdc66;
   }
-  ${(props) =>
-    props.isBorder &&
-    css`
-      &:hover {
-        color: #e62a2a;
-      }
-    `}
 `;
 
-const MainContainer = styled(Container)`
+const MainContainer = styled.div`
   background-color: white;
+  height: 70px;
+  display: flex;
+  justify-content: center;
 `;
 const SubContainer = styled.div`
   width: 100%;
-  height: 230px;
+  height: 220px;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 25px;
+  z-index: 6;
+`;
+const Blur = styled.div`
+  position: absolute;
+  top: 70px;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(15px);
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
 `;
 
 function Nav() {
   const [isActive, setIsActive] = useState(false); /**서브 메뉴 활성화 여부 */
   const [select, setSelect] = useState(null); /** 현재 선택한 메인 메뉴 아이디*/
-
-  /** 메뉴를 제외한 요소 클릭 시 서브메뉴 창 닫는 코드 */
-  const el = useRef();
-
-  useEffect(() => {
-    window.addEventListener("click", CloseSubList);
-    return () => {
-      window.removeEventListener("click", CloseSubList);
-    };
-  }, []);
-
-  const CloseSubList = (e) => {
-    if (!el.current.contains(e.target)) setIsActive(false);
-  };
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [selectCate, setSelctCate] = useState(false);
@@ -149,10 +146,30 @@ function Nav() {
   const handleSelctCate = (value) => {
     setSelctCate(value);
   };
+  /** 커서 메뉴(+서브메뉴) 벗어나면 close */
+  const mainCate = useRef();
+  const subCate = useRef();
+  useEffect(() => {
+    const CloseSubList = (event) => {
+      if (
+        mainCate.current &&
+        subCate.current &&
+        !mainCate.current.contains(event.target) &&
+        !subCate.current.contains(event.target)
+      ) {
+        setShowSubMenu(false);
+      }
+    };
+    window.addEventListener("mouseover", CloseSubList);
+    return () => {
+      window.removeEventListener("mouseover", CloseSubList);
+    };
+  }, []);
+
   return (
     <>
-      <Container ref={el}>
-        <MainContainer>
+      <Container onMouseEnter={handleSubMenu} onMouseLeave={handleSubMenu}>
+        <MainContainer ref={mainCate}>
           <Box>
             <MenuIcon
               icon={faBars}
@@ -163,47 +180,33 @@ function Nav() {
             />
           </Box>
 
-          <ListBox
-            onMouseEnter={handleSubMenu}
-            onMouseLeave={handleSubMenu}
-            as="ul"
-          >
+          <ListBox as="ul">
             {items.map((item, index) => (
               <List
                 key={index}
-                onClick={() => {
-                  {
-                    isActive && item.id === select
-                      ? setIsActive(false)
-                      : setIsActive(true);
-                  }
-                  setSelect(item.id);
-                }}
-                //isBorder={isActive && item.id === select}
                 onMouseEnter={() => handleSelctCate(item.id)}
                 onMouseLeave={() => handleSelctCate("")}
                 border={selectCate === item.id}
               >
                 {item.main}
-                {showSubMenu && (
-                  <SubListBox as="ul">
-                    {item.sub.map((li, idx) => {
-                      return (
-                        <SubList
-                          key={idx}
-                          isBorder={isActive && item.id === select}
-                        >
-                          {li}
-                        </SubList>
-                      );
-                    })}
-                  </SubListBox>
-                )}
               </List>
             ))}
           </ListBox>
         </MainContainer>
-        {/* 없어도 되는거 아냐?    {isActive && <SubContainer />} */}
+        {showSubMenu && (
+          <>
+            <SubContainer ref={subCate}>
+              {items.map((mainCate, index) => (
+                <SubListBox key={index}>
+                  {mainCate.sub.map((subCate, idx) => (
+                    <SubList key={idx}>{subCate}</SubList>
+                  ))}
+                </SubListBox>
+              ))}
+            </SubContainer>
+            <Blur />
+          </>
+        )}
       </Container>
     </>
   );

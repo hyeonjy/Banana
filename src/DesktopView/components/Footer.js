@@ -14,27 +14,32 @@ const Container = styled.div`
   flex-direction: column;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 `;
-
-const Box = styled.div`
-  width: 100%;
-  height: 150px;
-  display: flex;
-  justify-content: space-between;
-`;
-
 const BoxContent = styled.div`
-  width: 30%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   margin-left: 100px;
 `;
+const Box = styled.div`
+  width: 100%;
+  margin-bottom: 30px;
+
+  display: flex;
+  justify-content: space-between;
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+    ${BoxContent} {
+      width: fit-content;
+    }
+  }
+`;
 
 const BoxContent2 = styled(BoxContent)`
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-right: 100px;
 `;
 
@@ -59,9 +64,10 @@ const SNSIcon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
-const SecondBox = styled(Box)`
+const SecondBox = styled.div`
   justify-content: center;
   align-items: center;
+  display: flex;
 `;
 
 function Footer() {
