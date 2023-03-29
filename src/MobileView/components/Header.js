@@ -2,6 +2,8 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+
 const Header = styled.header`
   position: fixed;
   display: flex;
@@ -13,7 +15,7 @@ const Header = styled.header`
   z-index: 999;
   align-items: center;
 `;
-const Logo = styled.span`
+const Logo = styled(Link)`
   font-size: 20px;
   color: #ffe84e;
   font-weight: 800;
@@ -66,7 +68,7 @@ function HeaderComponent() {
 
   return (
     <Header>
-      <Logo>BANANA</Logo>
+      <Logo to="/">BANANA</Logo>
       <Icons>
         <SerchForm action="" autocomplete="on" toggle={searchBtnClick}>
           <InputText
@@ -88,11 +90,13 @@ function HeaderComponent() {
         </SerchForm>
         {/*<FontAwesomeIcon icon={faMagnifyingGlass} color="gray" />
          */}
-        <FontAwesomeIcon
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-          icon={faHeart}
-          color="red"
-        />
+        <Link to="/mypage/basket">
+          <FontAwesomeIcon
+            style={{ display: "inline-block", verticalAlign: "middle" }}
+            icon={faHeart}
+            color="red"
+          />
+        </Link>
       </Icons>
     </Header>
   );
