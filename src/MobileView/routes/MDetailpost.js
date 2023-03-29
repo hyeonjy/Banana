@@ -84,7 +84,7 @@ const PostImg = styled.img`
 const PostContent = styled.div`
   padding: 20px;
   padding-top: 0px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 25px;
 `;
 
@@ -143,14 +143,29 @@ const ChatBtn = styled.div`
 function MDetailpost(props) {
   const [hits, setHits] = useState(123); /**조회수 */
   const [heart, setHeart] = useState(false); /**좋아요 */
+  const [index, setIndex] = useState(0); /**사진 인덱스 */
   const { clothesid } = useParams();
   const history = useHistory();
 
   const [activeGrade, setActiveGrade] = useState(false);
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
-  const filterItemObj = {
-    ...ItemObj.filter((item) => item.id === parseInt(clothesid))[0],
+  const filterItemObj = ItemObj.find((item) => item.id === Number(clothesid));
+
+  //img 클릭 시 Fullscreen
+  function handleImageClick(props) {
+    const searchParams = new URLSearchParams();
+    searchParams.append("object", clothesid);
+    searchParams.append("index", index);
+    history.push({
+      pathname: "/images",
+      search: "?" + searchParams.toString(),
+    });
+  }
+
+  // swiper onSlideChange 시 - 현재 img index 저장
+  const handleSlideChange = (currentIndex) => {
+    setIndex(currentIndex.activeIndex);
   };
 
   return (
@@ -179,30 +194,23 @@ function MDetailpost(props) {
         />
 
         {/* 게시글 이미지  */}
-        {/* 사진 클릭하면 Mimages.js로 이동, Link to로 filterItemObj props 전달 */}
-        <Link
-          to={{
-            pathname: `/images/${clothesid}`,
-            state: { obj: { filterItemObj } },
-          }}
+        {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={0}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          onSwiper={(swiper) => {}}
+          onSlideChange={handleSlideChange}
         >
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={0}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-            onSlideChange={() => {}}
-            onSwiper={(swiper) => {}}
-          >
-            {filterItemObj.img.map((img, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <PostImg src={require(`../../Img/${img}.jpg`)} />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </Link>
+          {filterItemObj.img.map((img, index) => {
+            return (
+              <SwiperSlide key={index} onClick={handleImageClick}>
+                <PostImg src={require(`../../Img/${img}.jpg`)} />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
         {/* 게시글 제목 - 카테고리|지역|시간 */}
         <Post>
           <PostTitle>{filterItemObj.title}</PostTitle>

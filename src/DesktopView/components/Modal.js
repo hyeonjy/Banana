@@ -141,8 +141,8 @@ function Modal({ setActiveGrade, isMobile }) {
         <XIcon onClick={() => setActiveGrade(false)} icon={faX} />
       </div>
 
-      {gradeList.map((grade) => (
-        <EachGradeDiv>
+      {gradeList.map((grade, index) => (
+        <EachGradeDiv key={index}>
           <GradeIcon icon={grade.icon} color={grade.iconColor} />
           <div style={{ display: "inline-block" }}>
             <h4>{grade.grade}</h4>

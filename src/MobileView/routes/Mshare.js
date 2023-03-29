@@ -6,7 +6,7 @@ import styled from "styled-components";
 const Container = styled.div``;
 
 const Header = styled.div`
-  height: 50px;
+  height: 30px;
   display: flex;
   padding: 10px 20px;
   align-items: center;
@@ -14,12 +14,12 @@ const Header = styled.div`
 `;
 
 const PrevIcon = styled(FontAwesomeIcon)`
-  font-size: 20px;
+  font-size: 18px;
   justify-content: flex-start;
 `;
 
 const HeaderSpan = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   width: 100%;
   text-align: center;
   margin-right: 5px;
