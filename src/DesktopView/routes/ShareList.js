@@ -43,6 +43,10 @@ export const ItemTitle = styled.div`
   font-size: 16px;
   line-height: 40px;
   font-weight: 500;
+  overflow: hidden; // 을 사용해 영역을 감출 것
+  text-overflow: ellipsis; // 로 ... 을 만들기
+  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+  word-break: break-all;
 `;
 export const ItemDetail = styled.div`
   font-size: 12px;

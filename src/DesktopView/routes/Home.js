@@ -67,6 +67,11 @@ const ProductTitle = styled.h1`
   font-size: 20px;
   margin-top: 10px;
   margin-left: 5px;
+  width: 210px;
+  overflow: hidden; // 을 사용해 영역을 감출 것
+  text-overflow: ellipsis; // 로 ... 을 만들기
+  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+  word-break: break-all;
 `;
 
 const ProductDetail = styled.span`

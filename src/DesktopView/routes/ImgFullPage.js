@@ -69,10 +69,8 @@ const ImgFullPage = () => {
   const searchItem = ProductList.find(
     (item) => item.id === Number(objectValue)
   );
-
   // post page에서 클릭한 Img 그대로 DP
-  const index = location.state.index;
-
+  const index = Number(searchParams.get("index"));
   return (
     <ImgContainer>
       <StyledSwiper
