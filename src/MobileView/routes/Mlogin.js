@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +17,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const PrevIcon = styled(FontAwesomeIcon)`
+export const PrevIcon = styled(FontAwesomeIcon)`
   font-size: 25px;
   color: #ffe84e;
   position: absolute;
@@ -25,7 +25,7 @@ const PrevIcon = styled(FontAwesomeIcon)`
   left: 15px;
 `;
 
-const TitleH1 = styled.h1`
+export const TitleH1 = styled.h1`
   width: 350px;
   font-size: 37px;
   font-family: "yg-jalnan";
@@ -34,7 +34,7 @@ const TitleH1 = styled.h1`
   color: #ffe84e;
 `;
 
-const TitleSpan = styled.span`
+export const TitleSpan = styled.span`
   width: 240px;
   font-size: 15px;
   text-align: center;
@@ -44,14 +44,14 @@ const TitleSpan = styled.span`
   font-style: italic;
 `;
 
-const LoginForm = styled.form`
+export const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
   width: 90%;
   margin-top: 50px;
 `;
 
-const LoginInput = styled.input`
+export const LoginInput = styled.input`
   height: 50px;
   padding: 0 15px;
   border-radius: 24px;
@@ -63,7 +63,7 @@ const LoginInput = styled.input`
   }
 `;
 
-const SubmitBtn = styled.button`
+export const SubmitBtn = styled.button`
   height: 50px;
   padding: 0 15px;
   border-radius: 24px;
@@ -72,11 +72,11 @@ const SubmitBtn = styled.button`
   font-weight: 700;
 `;
 
-const DetailDiv = styled.div`
+export const DetailDiv = styled.div`
   margin-top: 20px;
 `;
 
-const DetailSpan = styled.span`
+export const DetailSpan = styled.span`
   color: rgba(0, 0, 0, 0.6);
   font-size: 13px;
 `;

@@ -72,6 +72,10 @@ const EachTitle = styled.span`
   line-height: 35px;
   display: block;
   margin-top: 3px;
+  overflow: hidden; // 을 사용해 영역을 감출 것
+  text-overflow: ellipsis; // 로 ... 을 만들기
+  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+  word-break: break-all;
 `;
 const EachDetail = styled.span`
   font-size: 12px;
