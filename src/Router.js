@@ -8,6 +8,8 @@ import ScrollToTop from "./ScrollToTop";
 import ImgFullPage from "./DesktopView/routes/ImgFullPage";
 import Gruop from "./DesktopView/routes/Gruop";
 import SubGroup from "./DesktopView/routes/SubGroup";
+import Login from "./DesktopView/components/Login";
+import Upload from "./DesktopView/routes/Upload";
 
 export function DeskTopRouter() {
   return (
@@ -33,6 +35,12 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/group/:main" exact>
           <SubGroup />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/upload" exact>
+          <Upload />
         </Route>
       </Switch>
       <Footer />
