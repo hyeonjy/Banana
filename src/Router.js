@@ -10,7 +10,6 @@ import Gruop from "./DesktopView/routes/Gruop";
 import SubGroup from "./DesktopView/routes/SubGroup";
 import Login from "./DesktopView/components/Login";
 import Upload from "./DesktopView/routes/Upload";
-
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
