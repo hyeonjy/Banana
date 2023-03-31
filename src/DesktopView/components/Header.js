@@ -19,7 +19,7 @@ export const Container = styled.div`
   background-color: white;
   position: fixed;
   top: 0;
-  z-index: 4;
+  z-index: 25;
 `;
 
 const Logo = styled(Link)`
@@ -151,7 +151,9 @@ function Header() {
               <span>마이페이지</span>
             </Link>
 
-            <span>글쓰기</span>
+            <Link to="/upload">
+              <span>글쓰기</span>
+            </Link>
             <span>채팅하기</span>
           </DropdownMenu>
         </UserDropdown>

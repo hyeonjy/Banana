@@ -48,6 +48,9 @@ const PostContents = styled.div`
 const PostTitle = styled.span`
   font-size: 18px;
   font-weight: 600;
+  width: 74%;
+  word-break: keep-all;
+  line-height: 25px;
 `;
 const PostDetail = styled.span`
   font-size: 14px;

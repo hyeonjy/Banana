@@ -88,14 +88,14 @@ const ContentDiv = styled.div`
   height: auto;
 `;
 const navItem = [
-  { title: "나눔 목록", path: "share" },
-  { title: "찜 목록", path: "heart" },
-  { title: "테마설정", path: "" },
-  { title: "공지사항", path: "" },
-  { title: "알림설정", path: "" },
-  { title: "고객센터", path: "" },
+  { title: "나눔 목록", path: "/mypage/share" },
+  { title: "찜 목록", path: "/mypage/heart" },
+  { title: "테마설정", path: "/mypage" },
+  { title: "공지사항", path: "/mypage" },
+  { title: "알림설정", path: "/mypage" },
+  { title: "고객센터", path: "/mypage" },
   { title: "개인정보 처리방침", path: "" },
-  { title: "로그아웃", path: "" },
+  { title: "로그아웃", path: "/login" },
 ];
 const SideNav = styled.div`
   width: 180px;
@@ -124,8 +124,8 @@ function MyPage() {
   const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
 
   useEffect(() => {
-    if (heartPage) setCurrentPage("heart");
-    else if (sharePage) setCurrentPage("share");
+    if (heartPage) setCurrentPage("/mypage/heart");
+    else if (sharePage) setCurrentPage("/mypage/share");
     else setCurrentPage("");
   }, [heartPage, sharePage]);
   return (
@@ -158,7 +158,7 @@ function MyPage() {
           <SideNav>
             <NavLiUl>
               {navItem.map((item, index) => (
-                <Link key={index} to={`/mypage/${item.path}`}>
+                <Link key={index} to={`${item.path}`}>
                   <NavLi
                     onClick={() => {
                       setCurrentPage(`${item.path}`);

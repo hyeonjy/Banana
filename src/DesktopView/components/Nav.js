@@ -12,7 +12,7 @@ const Container = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 70px;
-  z-index: 3;
+  z-index: 21;
   flex-direction: column;
 `;
 
@@ -69,7 +69,7 @@ const SubListBox = styled.div`
   box-sizing: border-box;
 `;
 
-const SubList = styled.div`
+const SubList = styled(Link)`
   width: 140px;
   font-size: 14px;
   flex-grow: 1;
@@ -102,7 +102,7 @@ const SubContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding-bottom: 25px;
-  z-index: 6;
+  z-index: 150;
 `;
 const Blur = styled.div`
   position: absolute;
@@ -116,20 +116,12 @@ const Blur = styled.div`
 `;
 
 function Nav() {
-  const [isActive, setIsActive] = useState(false); /**서브 메뉴 활성화 여부 */
-  const [select, setSelect] =
-    useState(null); /** 현재 선택한 메인 메뉴 아이디 s*/
-
-  const [showSubMenu, setShowSubMenu] = useState(false);
-  const [selectCate, setSelctCate] = useState(false);
-
-  const handleSubMenu = () => {
-    setShowSubMenu(!showSubMenu);
-  };
+  const [showSubMenu, setShowSubMenu] = useState(false); //서브 메뉴 활성화 여부
+  const [selectCate, setSelctCate] = useState(false); //현재 hover한 카테고리
   const handleSelctCate = (value) => {
     setSelctCate(value);
   };
-  /** 커서 메뉴(+서브메뉴) 벗어나면 close */
+  /** 커서가 메뉴(+서브메뉴) 벗어나면 close */
   const mainCate = useRef();
   const subCate = useRef();
   useEffect(() => {
@@ -148,19 +140,13 @@ function Nav() {
       window.removeEventListener("mouseover", CloseSubList);
     };
   }, []);
-
+  //////
   return (
     <>
-      <Container onMouseEnter={handleSubMenu} onMouseLeave={handleSubMenu}>
+      <Container>
         <MainContainer ref={mainCate}>
           <Box>
-            <MenuIcon
-              icon={faBars}
-              onClick={() => {
-                setIsActive(!isActive);
-                setSelect(null);
-              }}
-            />
+            <MenuIcon icon={faBars} />
           </Box>
 
           <ListBox as="ul">
@@ -168,8 +154,16 @@ function Nav() {
               <List
                 to={{ pathname: "/group", search: `?category=${item.id}` }}
                 key={index}
-                onMouseEnter={() => handleSelctCate(item.id)}
-                onMouseLeave={() => handleSelctCate("")}
+                onMouseEnter={() => {
+                  handleSelctCate(item.id);
+                  setShowSubMenu(true);
+                }}
+                onMouseLeave={() => {
+                  handleSelctCate("");
+                }}
+                onClick={() => {
+                  setShowSubMenu(false);
+                }}
                 border={selectCate === item.id ? 1 : 0}
               >
                 {item.main}
@@ -177,13 +171,26 @@ function Nav() {
             ))}
           </ListBox>
         </MainContainer>
+
+        {/* mouseEnter -> Submenu */}
         {showSubMenu && (
           <>
             <SubContainer ref={subCate}>
               {itemsGroup.map((mainCate, index) => (
                 <SubListBox key={index}>
                   {mainCate.sub.map((subCate, idx) => (
-                    <SubList key={idx}>{subCate}</SubList>
+                    <SubList
+                      to={{
+                        pathname: `/group/${mainCate.id}`,
+                        search: `?subitem=${subCate}`,
+                      }}
+                      key={idx}
+                      onClick={() => {
+                        setShowSubMenu(false);
+                      }}
+                    >
+                      {subCate}
+                    </SubList>
                   ))}
                 </SubListBox>
               ))}
