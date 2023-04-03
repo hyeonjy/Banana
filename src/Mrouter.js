@@ -6,6 +6,7 @@ import Mbasket from "./MobileView/routes/Mbasket";
 import Mshare from "./MobileView/routes/Mshare";
 import Mimages from "./MobileView/routes/Mimages";
 import Mlogin from "./MobileView/routes/Mlogin";
+import MUpload from "./MobileView/routes/MUpload";
 
 export function MobileRouter() {
   return (
@@ -37,6 +38,10 @@ export function MobileRouter() {
 
         <Route exact path="/mypage/share">
           <Mshare />
+        </Route>
+
+        <Route exact path="/upload">
+          <MUpload />
         </Route>
       </Switch>
     </BrowserRouter>

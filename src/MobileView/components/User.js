@@ -6,14 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Modal from "../../DesktopView/components/Modal";
 
-const Box = styled.div`
+// 유저 정보(이름, 프로필이미지, 등급) - 시작
+const UserBox = styled.div`
   height: 60px;
   display: flex;
-  padding: 10px 20px;
-`;
-
-// 유저 정보(이름, 프로필이미지, 등급) - 시작
-const UserBox = styled(Box)`
+  padding: 0 3%;
+  width: 94;
+  //padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
   /* padding-top: 50px; */
@@ -25,8 +24,8 @@ const UserInfo = styled.div`
 `;
 
 const UserImg = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border: 1px solid #e9ecef;
   border-radius: 50%;
   padding: 5px;
@@ -35,7 +34,7 @@ const UserImg = styled.img`
 `;
 
 const UserName = styled.h1`
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
 `;
 
@@ -43,18 +42,20 @@ const UserGrade = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 65%;
 `;
 
 const GradeImg = styled.img`
-  width: 30px;
-  height: 30px;
-  padding: 5px;
+  width: 25px;
+  //height: 25px;
+  //padding: 5px;
   color: #92d050;
+  flex-grow: 1;
 `;
 
 const GradeName = styled.h1`
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 8px;
+  font-weight: 600;
 `;
 
 function User(props) {
@@ -62,7 +63,6 @@ function User(props) {
     <>
       <UserBox>
         <UserInfo>
-          <h1>{props.url}</h1>
           <UserImg src={require(`../../Img/${props.img}`)} />
           <UserName>에브리띵</UserName>
         </UserInfo>
