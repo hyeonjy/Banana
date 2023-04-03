@@ -125,6 +125,7 @@ const ImgInput = styled.input.attrs({ required: true })`
 const PreviewBox = styled.div`
   display: flex;
   overflow-x: auto;
+
   &::-webkit-scrollbar {
     height: 8px; /* 스크롤바의 너비 */
   }
