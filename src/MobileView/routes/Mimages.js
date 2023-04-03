@@ -20,12 +20,15 @@ const StyledSlider = styled(Slider)`
       color: white;
     }
   }
+  height: 100%;
 `;
 
 const Container = styled.div`
   background-color: black;
   position: relative;
   overflow: hidden;
+
+  height: calc(var(--vh, 1vh) * 100);
 `;
 
 const XDiv = styled.div`
@@ -71,6 +74,15 @@ function Mimages() {
     slidesToScroll: 1,
     Infinite: true,
   };
+
+  function setScreenSize() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+
+  useEffect(() => {
+    setScreenSize();
+  }, []);
 
   return (
     <Container>

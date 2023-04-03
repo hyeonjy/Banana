@@ -140,7 +140,7 @@ function Header() {
     <Container>
       <Logo to="/">BANANA</Logo>
       <SearchBox>
-        <Search placeholder="어떤 물건을 찾으시나요?" />
+        <Search placeholder="어떤 옷을 찾으시나요?" />
         <SearchIcon icon={faMagnifyingGlass} />
       </SearchBox>
       <UserBox>

@@ -2,10 +2,12 @@ import styled, { keyframes } from "styled-components";
 import Nav from "../components/Nav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
-
+import { useHistory, useParams } from "react-router-dom";
 import Banner from "../components/Banner";
 import { ProductList } from "../ItemObject";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 
 export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
@@ -134,6 +136,38 @@ const MoreBtn = styled.div`
 /*상품 리스트 - 끝*/
 
 function Home() {
+  const history = useHistory();
+  const [newList, setNewList] = useState([...ProductList]);
+  const [hotList, setHotList] = useState([...ProductList]);
+
+  //최신상품과 인기상품 List 저장
+  useEffect(() => {
+    let length = ProductList.length > 25 ? 25 : ProductList.length;
+
+    /**New는 최신순으로 slice만 진행 */
+    setNewList(newList.slice(0, length));
+    /**hot은 heart 순으로 정렬 */
+    setHotList(
+      hotList
+        .sort(function (a, b) {
+          return Number(b.heart) - Number(a.heart);
+        })
+        .slice(0, length)
+    );
+  }, []);
+
+  const handleImageClick = (type, object) => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("type", type);
+    history.push({
+      pathname: "/more",
+      state: {
+        object,
+      },
+      search: "?" + searchParams.toString(),
+    });
+  };
+
   return (
     <>
       <Nav />
@@ -151,7 +185,7 @@ function Home() {
             <span>W</span>
           </ProductsTitle>
           <ProductsBox>
-            {ProductList.slice(0, 8).map((item, index) => (
+            {newList.slice(0, 8).map((item, index) => (
               <Product key={index}>
                 <Link
                   to={{
@@ -168,7 +202,9 @@ function Home() {
               </Product>
             ))}
           </ProductsBox>
-          <MoreBtn>더보기</MoreBtn>
+          <MoreBtn onClick={() => handleImageClick("new", newList)}>
+            더보기
+          </MoreBtn>
         </Products>
 
         {/* Hot 상품 리스트 */}
@@ -180,14 +216,26 @@ function Home() {
             Hot
           </ProductsTitle>
           <ProductsBox>
-            {ProductList.slice(0, 4).map((item, index) => (
+            {hotList.slice(0, 8).map((item, index) => (
               <Product key={index}>
-                <ProductImg src={item.imgURL} />
-                <ProductTitle>{item.title}</ProductTitle>
-                <ProductDetail>{item.detail}</ProductDetail>
+                <Link
+                  to={{
+                    pathname: `/post/${item.id}`,
+                    state: {
+                      item,
+                    },
+                  }}
+                >
+                  <ProductImg src={item.imgURL} />
+                  <ProductTitle>{item.title}</ProductTitle>
+                  <ProductDetail>{item.detail}</ProductDetail>
+                </Link>
               </Product>
             ))}
           </ProductsBox>
+          <MoreBtn onClick={() => handleImageClick("hot", hotList)}>
+            더보기
+          </MoreBtn>
         </Products>
       </Container>
     </>
