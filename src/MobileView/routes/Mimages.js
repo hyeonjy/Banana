@@ -20,6 +20,15 @@ const StyledSlider = styled(Slider)`
       color: white;
     }
   }
+  .slick-slide div {
+    height: 100%;
+  }
+  .slick-list {
+    height: 100%;
+  }
+  .slick-track {
+    height: 100%;
+  }
   height: 100%;
 `;
 
