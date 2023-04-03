@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { itemsGroup } from "../ItemGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { BackGround } from "./Gruop";
+import { faX } from "@fortawesome/free-solid-svg-icons";
+import area from "../components/Area";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -122,18 +124,24 @@ const ImgInput = styled.input.attrs({ required: true })`
 // 미리보기 이미지 전체 div
 const PreviewBox = styled.div`
   display: flex;
-  width: 850px; /**850 */
   overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    height: 8px; /* 스크롤바의 너비 */
+  }
+  &::-webkit-scrollbar-thumb {
+    height: 12px; /* 스크롤바의 길이 */
+    background: orange; /* 스크롤바의 색상 */
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgba(121, 121, 121, 0.3); /*스크롤바 뒷 배경 색상*/
+    border-radius: 12px;
+  }
 `;
 
 const ImgBox = styled.div`
   position: relative;
-  button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 5;
-  }
   span {
     position: absolute;
     top: 13px;
@@ -166,31 +174,22 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
+const Xbtn = styled(FontAwesomeIcon)`
+  font-size: 12px;
+  padding: 9px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  color: white;
+  background: black;
+`;
+
 function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
   const imgRef = useRef();
   const [object, setObject] = useState({}); /**제출시 등록되는 item-object */
-
-  const area = [
-    "전체",
-    "서울",
-    "부산",
-    "대구",
-    "인천",
-    "광주",
-    "대전",
-    "울산",
-    "경기",
-    "강원",
-    "충북",
-    "충남",
-    "전북",
-    "전남",
-    "경북",
-    "경남",
-    "제주",
-  ];
 
   // option 값이 바뀌면 실행되는 함수
   const optionChange = (e) => {
@@ -204,24 +203,19 @@ function Upload() {
 
   // 이미지 저장 함수
   const saveImgFile = (e) => {
-    const files = e.target.files;
+    const imageLists = e.target.files;
+    let imageUrlLists = [...imgFile];
 
-    let fileURLs = [];
-    let filesLength = files.length;
+    for (let i = 0; i < imageLists.length; i++) {
+      const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      imageUrlLists.push(currentImageUrl);
+    }
 
-    if (files.length > 5) {
+    if (imageUrlLists.length > 5) {
       alert("최대 5장까지만 업로드 합니다.");
-      filesLength = 5;
+      imageUrlLists = imageUrlLists.slice(0, 5);
     }
-
-    for (let i = 0; i < filesLength; i++) {
-      let reader = new FileReader();
-      reader.onload = () => {
-        fileURLs[i] = reader.result;
-        setImgFile([...fileURLs]);
-      };
-      reader.readAsDataURL(files[i]);
-    }
+    setImgFile(imageUrlLists);
   };
 
   // 이미지 삭제시 실행되는 함수
@@ -243,6 +237,23 @@ function Upload() {
       content: event.target.content.value,
     });
   };
+
+  // 이미지 썸네일 가로 스크롤
+  const previewBox = useRef();
+  useEffect(() => {
+    const el = previewBox.current;
+    const onWheel = (event) => {
+      if (el && event.deltaY !== 0) {
+        event.preventDefault();
+        el.scrollTo({
+          left: el.scrollLeft + event.deltaY,
+          behavior: "auto",
+        });
+      } else return;
+    };
+    el.addEventListener("wheel", onWheel);
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
 
   return (
     <div style={{ position: "relative" }}>
@@ -328,7 +339,7 @@ function Upload() {
           </Box>
 
           {/* 사진 미리보기 */}
-          <PreviewBox>
+          <PreviewBox ref={previewBox}>
             {imgFile.map((item, index) => {
               return (
                 <ImgBox key={index}>
@@ -337,14 +348,13 @@ function Upload() {
                     src={imgFile ? item : `../../Img/banana.png`}
                     alt="프로필 이미지"
                   />
-                  <button
+                  <Xbtn
                     onClick={(event) => {
                       event.preventDefault();
                       handleDelete(index);
                     }}
-                  >
-                    x
-                  </button>
+                    icon={faX}
+                  />
                 </ImgBox>
               );
             })}
