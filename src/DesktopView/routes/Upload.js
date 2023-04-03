@@ -4,6 +4,7 @@ import { itemsGroup } from "../ItemGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { BackGround } from "./Gruop";
+import { useEffect } from "react";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -244,6 +245,23 @@ function Upload() {
     });
   };
 
+  // 이미지 썸네일 가로 스크롤
+  const previewBox = useRef();
+  useEffect(() => {
+    const el = previewBox.current;
+    const onWheel = (event) => {
+      if (el && event.deltaY !== 0) {
+        event.preventDefault();
+        el.scrollTo({
+          left: el.scrollLeft + event.deltaY,
+          behavior: "smooth",
+        });
+      } else return;
+    };
+    el.addEventListener("wheel", onWheel);
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
     <div style={{ position: "relative" }}>
       {/* 노란색 그라데이션 배경 */}
@@ -328,7 +346,7 @@ function Upload() {
           </Box>
 
           {/* 사진 미리보기 */}
-          <PreviewBox>
+          <PreviewBox ref={previewBox}>
             {imgFile.map((item, index) => {
               return (
                 <ImgBox key={index}>
