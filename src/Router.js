@@ -10,6 +10,7 @@ import Gruop from "./DesktopView/routes/Gruop";
 import SubGroup from "./DesktopView/routes/SubGroup";
 import Login from "./DesktopView/components/Login";
 import Upload from "./DesktopView/routes/Upload";
+import More from "./DesktopView/routes/More";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -40,6 +41,9 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/upload" exact>
           <Upload />
+        </Route>
+        <Route path="/more" exact>
+          <More />
         </Route>
       </Switch>
       <Footer />
