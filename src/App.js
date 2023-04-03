@@ -17,7 +17,7 @@ table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 main, menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+time, mark, audio, video,input, textarea,select,option {
   margin: 0;
   padding: 0;
   border: 0;
@@ -58,7 +58,9 @@ a{
   text-decoration: none;
   color: inherit;
 }
-
+button{
+  font-family: Pretendard;
+}
 `;
 function App() {
   return (

@@ -17,6 +17,7 @@ import "swiper/css/pagination";
 import "swiper/swiper-bundle.css";
 import { Navigation, Pagination, Autoplay } from "swiper";
 import HeaderComponent from "../components/Header";
+import { Link } from "react-router-dom";
 
 const Container = styled.div``;
 
@@ -87,7 +88,7 @@ const CategoryWrap = styled.div`
   position: sticky;
   top: 55px;
 `;
-const WriteBtn = styled.div`
+const WriteBtn = styled(Link)`
   position: fixed;
   right: 22px;
   bottom: 80px;
@@ -162,7 +163,7 @@ function Mhome() {
       </CategoryWrap>
       <ShowItem main={currentCate.main} sub={currentSubCate} />
       <HomeMenu />
-      <WriteBtn>+ 글쓰기</WriteBtn>
+      <WriteBtn to="/upload">+ 글쓰기</WriteBtn>
       <Footer />
     </Container>
   );

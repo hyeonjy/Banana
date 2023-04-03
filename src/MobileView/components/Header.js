@@ -29,6 +29,8 @@ const Icons = styled.div`
 const SerchForm = styled.form`
   display: block;
   display: flex;
+  height: 25px;
+  line-height: 25px;
   margin-right: 10px;
   display: inline-block;
   position: relative;
@@ -37,9 +39,9 @@ const SerchForm = styled.form`
 `;
 const InputText = styled.input`
   display: inline-block;
-  height: 25px;
+  height: 28px;
   outline: none;
-
+  font-size: 14px;
   border-radius: 10px;
   width: ${(props) => (props.toggle ? "40vw" : "0vw")};
   border: 0px;
@@ -92,7 +94,7 @@ function HeaderComponent() {
          */}
         <Link to="/mypage/basket">
           <FontAwesomeIcon
-            style={{ display: "inline-block", verticalAlign: "middle" }}
+            style={{ display: "inline-block" }}
             icon={faHeart}
             color="red"
           />

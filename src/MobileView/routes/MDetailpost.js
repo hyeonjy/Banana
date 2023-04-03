@@ -15,7 +15,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/swiper-bundle.css";
-import { Navigation, Pagination, Autoplay } from "swiper";
+import { Navigation, Pagination } from "swiper";
 import { useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import User from "../components/User";
@@ -34,16 +34,17 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
-  height: 60px;
   display: flex;
   padding: 10px 20px;
   border-bottom: 1px solid #e9ecef;
 `;
 
-// 이전 버튼
-const PrevBox = styled.div`
-  padding: 12px 20px;
-  border-bottom: 1px solid #e9ecef;
+// Header
+const Header = styled.div`
+  width: 90%;
+  height: 25px;
+  padding: 15px 5%;
+  background-color: yellow;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,49 +52,53 @@ const PrevBox = styled.div`
   color: #37352f;
 `;
 
-const PrevSpan = styled.span`
+const HeaderTitle = styled.span`
   font-size: 15px;
+  font-weight: 600;
   margin-left: 5px;
 `;
 
-const PrevIcon = styled(FontAwesomeIcon)``;
+const PrevIcon = styled(FontAwesomeIcon)`
+  font-size: 20px;
+`;
 
 // 게시글(제목, 서브제목, 이미지 내용)
 const Post = styled(Box)`
   flex-direction: column;
-  justify-content: space-evenly;
   border-bottom: none;
 `;
 
 const PostTitle = styled.h1`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
+  line-height: 30px;
+  margin-bottom: 3px;
 `;
 
 const PostSubtitle = styled.span`
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(0, 0, 0, 0.3);
 `;
 
 const PostImg = styled.img`
   width: 100%;
-  height: 250px;
+  height: 350px;
   object-fit: cover;
 `;
 
 const PostContent = styled.div`
   padding: 20px;
   padding-top: 0px;
-  font-size: 16px;
+  font-size: 14.5px;
   line-height: 25px;
 `;
 
 // 게시글(좋아요, 조회수)
 const PostMore = styled.div`
-  padding: 15px 20px;
+  padding: 15px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #e9ecef;
+  //border-bottom: 1px solid #e9ecef;
   color: rgba(0, 0, 0, 0.5);
   svg {
     transition: all 0.3s;
@@ -114,7 +119,7 @@ const heartAnimation = keyframes`
 `;
 
 const HeartSvg = styled.svg`
-  margin-right: 5px;
+  margin-right: 7px;
   ${(props) =>
     props.heart &&
     css`
@@ -123,7 +128,7 @@ const HeartSvg = styled.svg`
 `;
 
 const Morehits = styled.span`
-  font-size: 14px;
+  font-size: 13px;
 `;
 
 // 채팅하기 버튼
@@ -138,6 +143,8 @@ const ChatBtn = styled.div`
   padding: 15px;
   letter-spacing: 0.5px;
   color: white;
+  font-weight: 700;
+  font-size: 14.5px;
 `;
 
 function MDetailpost(props) {
@@ -171,19 +178,19 @@ function MDetailpost(props) {
   return (
     <>
       <Container activeGrade={activeGrade}>
-        {/* 이전 버튼 */}
-        <PrevBox>
+        {/* Header */}
+        <Header>
           <PrevIcon
             onClick={() => {
               history.goBack();
             }}
             icon={faChevronLeft}
           />
-          <PrevSpan>바나나룸</PrevSpan>
+          <HeaderTitle>BANANA</HeaderTitle>
           <Link to="/">
             <PrevIcon icon={faHouse} />
           </Link>
-        </PrevBox>
+        </Header>
 
         {/* 유저 정보 */}
         {/* <User img="banana.png" grade="bananaIcon.png" /> */}
@@ -226,8 +233,8 @@ function MDetailpost(props) {
         <PostMore>
           <HeartSvg
             heart={heart}
-            width="25"
-            height="25"
+            width="30"
+            height="30"
             viewBox="12 10 30 40"
             fill={heart ? "tomato" : "none"}
             stroke="rgba(0, 0, 0, 0.5)"
