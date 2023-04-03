@@ -85,6 +85,8 @@ const EachImgDiv = styled.div`
   flex-shrink: 0;
   margin-right: 13px;
   position: relative;
+  border-radius: 7px;
+  height: 60px;
 `;
 const EachImg = styled.img`
   width: 100%;
@@ -105,7 +107,21 @@ const XIcon = styled(FontAwesomeIcon)`
   height: 11px;
   z-index: 3px;
 `;
-
+const Represent = styled.div`
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  background-color: orange;
+  color: white;
+  opacity: 0.7;
+  font-size: 10px;
+  text-align: center;
+  font-weight: 800;
+  border-radius: 0 0 7px 7px;
+`;
 function ImgUpload({ showImages, setShowImages }) {
   //이미지 업로드 fn
   const handleAddImages = (event) => {
@@ -159,6 +175,7 @@ function ImgUpload({ showImages, setShowImages }) {
                   src={image}
                   alt={`${image}-${id}`}
                 />
+                {id === 0 && <Represent>대표사진</Represent>}
                 <XIcon icon={faX} onClick={() => handleDeleteImage(id)}></XIcon>
               </EachImgDiv>
             ))}
