@@ -147,7 +147,7 @@ function Header() {
         <UserDropdown isuser="true">
           <UserIcon icon={faUser} />
           <DropdownMenu>
-            <Link to="/mypage/share">
+            <Link to={{ pathname: "/mypage/share", search: `?page=${1}` }}>
               <span>마이페이지</span>
             </Link>
 
@@ -157,7 +157,7 @@ function Header() {
             <span>채팅하기</span>
           </DropdownMenu>
         </UserDropdown>
-        <ShopIconLink to="/mypage/heart">
+        <ShopIconLink to={{ pathname: "/mypage/heart", search: `?page=${1}` }}>
           <ShoppingIcon icon={faCartShopping} />
         </ShopIconLink>
       </UserBox>

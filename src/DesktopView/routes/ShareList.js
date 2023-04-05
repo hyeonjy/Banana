@@ -1,12 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { ProductList } from "../ItemObject";
+import { useState } from "react";
+import { useEffect } from "react";
+import Paging from "../components/Paging";
 
 export const PageContainer = styled.div`
   background-color: #f5f5f594;
   height: fit-content;
   min-height: 480px;
   flex-grow: 1;
+  padding-bottom: 40px;
 `;
 export const ItemWrap = styled.div`
   height: 100%;
@@ -69,25 +73,51 @@ export const NavTitle = styled.h4`
   }
 `;
 
+function settingPagination() {}
+
 function ShareList() {
+  //const history = useHistory();
+
+  //페이지네이션
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const pageValue = searchParams.get("page");
+  const [count, setCount] = useState(ProductList.length); // 전체 아이템 개수
+  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
+  const [postPerPage] = useState(8); // 한 페이지 아이템 수
+
   return (
     <PageContainer>
       <NavTitle>나눔 목록 ({ProductList.length})</NavTitle>
-      <ItemWrap>
-        {ProductList ? (
-          ProductList.map((item, index) => (
-            <ItemDiv key={index} to={`/post/${item.id}`}>
-              <ItemImg src={item.imgURL} />
-              <ItemDetailDiv>
-                <ItemTitle>{item.title}</ItemTitle>
-                <ItemDetail>{item.detail}</ItemDetail>
-              </ItemDetailDiv>
-            </ItemDiv>
-          ))
-        ) : (
-          <NoItemPage>나눔 상품이 없습니다</NoItemPage>
-        )}
-      </ItemWrap>
+      <div style={{ minHeight: "400px" }}>
+        <ItemWrap>
+          {ProductList ? (
+            ProductList.slice(
+              postPerPage * (currentPage - 1),
+              postPerPage * (currentPage - 1) + postPerPage
+            ).map((item, index) => (
+              <ItemDiv key={index} to={`/post/${item.id}`}>
+                <ItemImg src={item.imgURL} />
+                <ItemDetailDiv>
+                  <ItemTitle>{item.title}</ItemTitle>
+                  <ItemDetail>{item.detail}</ItemDetail>
+                </ItemDetailDiv>
+              </ItemDiv>
+            ))
+          ) : (
+            <NoItemPage>나눔 상품이 없습니다</NoItemPage>
+          )}
+        </ItemWrap>
+      </div>
+
+      <Paging
+        page={currentPage}
+        count={count}
+        //setPage={setPage}
+        setCurrentPage={setCurrentPage}
+        postPerPage={postPerPage}
+      />
     </PageContainer>
   );
 }

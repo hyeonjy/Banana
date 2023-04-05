@@ -10,7 +10,7 @@ import Modal from "../components/Modal";
 import { useEffect } from "react";
 
 const Container = styled.div`
-  padding-top: 90px;
+  padding-top: 70px;
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
@@ -22,7 +22,7 @@ const Container = styled.div`
 export const ProfileHeader = styled.div`
   width: 90%;
   height: 100px;
-  padding: 1.5% 5%;
+  padding: 1.5% 3% 1.5% 7%;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #bbbbbb6b;
@@ -158,7 +158,10 @@ function MyPage() {
           <SideNav>
             <NavLiUl>
               {navItem.map((item, index) => (
-                <Link key={index} to={`${item.path}`}>
+                <Link
+                  key={index}
+                  to={{ pathname: `${item.path}`, search: `?page=${1}` }}
+                >
                   <NavLi
                     onClick={() => {
                       setCurrentPage(`${item.path}`);

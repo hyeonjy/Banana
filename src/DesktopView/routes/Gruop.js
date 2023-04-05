@@ -1,14 +1,30 @@
-import { useLocation, useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Nav from "../components/Nav";
+
+import { Container } from "./Home";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
 import { itemsGroup } from "../ItemGroup";
 import { ProductList } from "../ItemObject";
-import { Container } from "./Home";
+import Paging from "../components/Paging";
 
-export const CateContainer = styled(Container)`
+export const WrapDiv = styled(Container)`
+  justify-content: space-evenly;
+  display: flex;
+  width: 1300px;
+  padding: 0;
+  margin: 140px auto;
+  z-index: 1;
+  position: relative;
+  background-color: white;
+  border-radius: 21px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 25px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 25px 60px -30px;
+`;
+
+export const CateContainer = styled.div`
   width: 950px;
   //margin: 0 auto;
   padding-top: 0;
@@ -76,10 +92,10 @@ export const QueryLi = styled.li`
 
 //--------Item List-------//
 export const ItemDiv = styled.div`
-  margin-top: 20px;
+  margin: 20px 0;
   display: flex;
   flex-wrap: wrap;
-  min-height: 60vh;
+  //min-height: 60vh;
   padding-left: 10px;
 `;
 export const Product = styled(Link)`
@@ -122,39 +138,37 @@ export const BackGround = styled.div`
   //background-color: beige;
   height: 549px;
   background: linear-gradient(360deg, rgba(255, 255, 255, 1) 0%, #ffffba 100%);
-
   transform: translate(0, -39%);
 `;
 //----------------end-------------------//
+
 export const queryArray = ["최신등록순", "조회순", "관심순"];
 function Group() {
   //url - 현재 카테고리 정보
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("category"); // id( = main category)
+  const pageValue = searchParams.get("page");
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
   const cateItem = ProductList.filter((item) => item.main === Group.main);
+
+  //페이지네이션
+  const [count, setCount] = useState(cateItem.length); // 전체 아이템 개수
+  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
+  const [postPerPage] = useState(12); // 한 페이지 아이템 수
+
+  //강제 렌더링
+  useEffect(() => {
+    setCurrentPage(Number(pageValue));
+    setCount(cateItem.length);
+  }, [categoryValue]);
+
   return (
     <div style={{ position: "relative" }}>
       <BackGround />
-      <div
-        style={{
-          justifyContent: "space-evenly",
-          display: "flex",
-          width: "1300px",
-          //margin: "0 auto",
-          margin: " 157px auto",
-          zIndex: "1",
-          position: "relative",
-          backgroundColor: "white",
-          borderRadius: "21px",
-          //box-shadow: "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset"
-          boxShadow:
-            "rgba(50, 50, 93, 0.25) 0px 25px 100px -20px, rgba(0, 0, 0, 0.3) 0px 25px 60px -30px",
-        }}
-      >
+      <WrapDiv>
         <SideNav />
         <CateContainer>
           {/* 카테고리 Link */}
@@ -165,7 +179,7 @@ function Group() {
                 <Categoryli
                   to={{
                     pathname: `/group/${categoryValue}`,
-                    search: `?subitem=${sub}`,
+                    search: `?subitem=${sub}&page=${1}`,
                   }}
                   key={index}
                 >
@@ -189,6 +203,7 @@ function Group() {
                     {Group.main} - 전체({cateItem.length})
                   </span>
                 </div>
+                {/*Query*/}
                 <QueryUl>
                   {queryArray.map((query, index) => (
                     <QueryLi key={index}>{query}</QueryLi>
@@ -197,29 +212,40 @@ function Group() {
               </div>
 
               <ItemDiv>
-                {cateItem.map((item, index) => (
-                  <Product
-                    key={index}
-                    to={{
-                      pathname: `/post/${item.id}`,
-                      state: {
-                        item,
-                      },
-                    }}
-                  >
-                    <ProductImg src={item.imgURL[0]} />
-                    <ProductTitle>{item.title}</ProductTitle>
-                    <ProductDetail>{item.detail}</ProductDetail>
-                  </Product>
-                ))}
+                {cateItem
+                  .slice(
+                    postPerPage * (currentPage - 1),
+                    postPerPage * (currentPage - 1) + postPerPage
+                  )
+                  .map((item, index) => (
+                    <Product
+                      key={index}
+                      to={{
+                        pathname: `/post/${item.id}`,
+                        state: {
+                          item,
+                        },
+                      }}
+                    >
+                      <ProductImg src={item.imgURL[0]} />
+                      <ProductTitle>{item.title}</ProductTitle>
+                      <ProductDetail>{item.detail}</ProductDetail>
+                    </Product>
+                  ))}
               </ItemDiv>
+              <Paging
+                page={currentPage}
+                count={count}
+                //setPage={setPage}
+                setCurrentPage={setCurrentPage}
+                postPerPage={postPerPage}
+              />
             </>
           ) : (
             <NoItem />
           )}
-          {/*Query*/}
         </CateContainer>
-      </div>
+      </WrapDiv>
     </div>
   );
 }
