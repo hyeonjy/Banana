@@ -5,8 +5,8 @@ import User from "../components/User";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatList from "../components/ChatList";
-import { Link } from "react-router-dom";
-import { UserObj } from "../../UserObj";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { UserObj, LoginId } from "../../UserObj";
 
 const Container = styled.div``;
 const Header = styled.header`
@@ -37,6 +37,20 @@ const ChatsList = styled.div`
 `;
 
 function Chats() {
+  const FilterUserObj = UserObj.find((item) => item.id === LoginId);
+  const history = useHistory();
+
+  //채팅목록 클릭 이벤트
+  const handleChatClick = (props) => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", props.id);
+    searchParams.append("itemId", props.itemId);
+    history.push({
+      pathname: "/chat",
+      search: "?" + searchParams.toString(),
+    });
+  };
+
   return (
     <Container>
       <Header>
@@ -44,11 +58,11 @@ function Chats() {
         <HeaderIcon icon={faComment} />
       </Header>
       <ChatsList>
-        {UserObj.chats.map((user, index) => {
+        {FilterUserObj.chats.map((user, index) => {
           return (
-            <Link to={`/chat/${user.id}`} key={index}>
+            <div onClick={() => handleChatClick(user)} key={index}>
               <ChatList user={user} />
-            </Link>
+            </div>
           );
         })}
       </ChatsList>

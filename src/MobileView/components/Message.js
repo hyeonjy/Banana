@@ -82,34 +82,19 @@ const TimeSpan = styled.span`
 
 function Message({ itemObj, isUser }) {
   return (
-    <>
-      {isUser ? (
-        <Container isUser={isUser}>
-          <ContentBox isUser={isUser}>
-            <div>
-              <Author isUser={isUser}>{itemObj.id}</Author>
-              <BubbleBox>
-                <span>{itemObj.content}</span>
-              </BubbleBox>
-            </div>
-            <TimeSpan isUser={isUser}>{itemObj.time}</TimeSpan>
-          </ContentBox>
-        </Container>
-      ) : (
-        <Container isUser={isUser}>
-          <OtherImg src={require(`../../Img/${itemObj.src}`)} />
-          <ContentBox isUser={isUser}>
-            <div>
-              <Author isUser={isUser}>{itemObj.id}</Author>
-              <BubbleBox>
-                <span>{itemObj.content}</span>
-              </BubbleBox>
-            </div>
-            <TimeSpan isUser={isUser}>{itemObj.time}</TimeSpan>
-          </ContentBox>
-        </Container>
-      )}
-    </>
+    <Container isUser={isUser}>
+      {!isUser && <OtherImg src={require(`../../Img/${itemObj.src}`)} />}
+
+      <ContentBox isUser={isUser}>
+        <div>
+          <Author isUser={isUser}>{itemObj.id}</Author>
+          <BubbleBox>
+            <span>{itemObj.content}</span>
+          </BubbleBox>
+        </div>
+        <TimeSpan isUser={isUser}>{itemObj.time}</TimeSpan>
+      </ContentBox>
+    </Container>
   );
 }
 

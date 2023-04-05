@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import Message from "./Message";
 import { UserObj } from "../../UserObj";
+import { LoginId } from "../../UserObj";
 
 const DateBox = styled.div`
   display: flex;
@@ -28,7 +29,13 @@ function Comment({ chatList }) {
         </h1>
       </DateBox>
       {chatList.commentList.map((itemObj, index) => {
-        return <Message itemObj={itemObj} isUser={itemObj.id === UserObj.id} />;
+        return (
+          <Message
+            itemObj={itemObj}
+            isUser={itemObj.id === LoginId}
+            key={index}
+          />
+        );
       })}
     </>
   );

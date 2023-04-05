@@ -1,5 +1,6 @@
 export const ItemObj = [
   {
+    userId: "구르미",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -11,6 +12,7 @@ export const ItemObj = [
     id: 11111,
   },
   {
+    userId: "구르미",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -22,6 +24,7 @@ export const ItemObj = [
     id: 11112,
   },
   {
+    userId: "구르미",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -33,6 +36,7 @@ export const ItemObj = [
     id: 11113,
   },
   {
+    userId: "구르미",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -44,6 +48,7 @@ export const ItemObj = [
     id: 11114,
   },
   {
+    userId: "옥탑방토끼",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -55,6 +60,7 @@ export const ItemObj = [
     id: 11115,
   },
   {
+    userId: "옥탑방토끼",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -66,6 +72,7 @@ export const ItemObj = [
     id: 11116,
   },
   {
+    userId: "옥탑방토끼",
     title: "아기 신발 무료나눔해요",
     content:
       "200 운동화 아이가 발이 쑥쑥 커서 맞지 않아 나눔합니다 상태 나쁘지 않습니다 ",
@@ -78,6 +85,7 @@ export const ItemObj = [
   },
 
   {
+    userId: "옥탑방토끼",
     title: "새 목걸이 가져가실 분",
     content: "선물 받았는데 취향에 맞지 않아 나눔해요",
     area: "인천시",
@@ -88,6 +96,7 @@ export const ItemObj = [
     id: 11118,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -98,6 +107,7 @@ export const ItemObj = [
     id: 11119,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -108,6 +118,7 @@ export const ItemObj = [
     id: 11120,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -118,6 +129,7 @@ export const ItemObj = [
     id: 11121,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -128,6 +140,7 @@ export const ItemObj = [
     id: 11122,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -138,6 +151,7 @@ export const ItemObj = [
     id: 11123,
   },
   {
+    userId: "바나나좋아",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -148,6 +162,7 @@ export const ItemObj = [
     id: 11124,
   },
   {
+    userId: "옥탑방토끼",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -158,6 +173,7 @@ export const ItemObj = [
     id: 11125,
   },
   {
+    userId: "옥탑방토끼",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -168,6 +184,7 @@ export const ItemObj = [
     id: 11126,
   },
   {
+    userId: "옥탑방토끼",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -178,6 +195,7 @@ export const ItemObj = [
     id: 11127,
   },
   {
+    userId: "옥탑방토끼",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -188,6 +206,7 @@ export const ItemObj = [
     id: 11128,
   },
   {
+    userId: "옥탑방토끼",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",
@@ -198,6 +217,7 @@ export const ItemObj = [
     id: 11129,
   },
   {
+    userId: "구르미",
     title: "블라우스 나눔합니다!!",
     content: "거의 새거입니다~  ",
     area: "부산시",

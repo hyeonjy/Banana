@@ -50,7 +50,7 @@ export function MobileRouter() {
           <Chats />
         </Route>
 
-        <Route exact path="/chat/:userId">
+        <Route exact path="/chat">
           <Chat />
         </Route>
       </Switch>
