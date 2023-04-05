@@ -152,7 +152,10 @@ function Nav() {
           <ListBox as="ul">
             {itemsGroup.map((item, index) => (
               <List
-                to={{ pathname: "/group", search: `?category=${item.id}` }}
+                to={{
+                  pathname: "/group",
+                  search: `?category=${item.id}&page=${1}`,
+                }}
                 key={index}
                 onMouseEnter={() => {
                   handleSelctCate(item.id);
@@ -182,7 +185,7 @@ function Nav() {
                     <SubList
                       to={{
                         pathname: `/group/${mainCate.id}`,
-                        search: `?subitem=${subCate}`,
+                        search: `?subitem=${subCate}&page=${1}`,
                       }}
                       key={idx}
                       onClick={() => {

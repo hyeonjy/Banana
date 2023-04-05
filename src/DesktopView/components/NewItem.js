@@ -83,6 +83,7 @@ const EachDetail = styled.span`
 //------------------------------//
 
 function NewItem() {
+  const NewtList = ProductList.slice(0, 8);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
@@ -101,11 +102,11 @@ function NewItem() {
               icon={faAngleLeft}
             />
             <NavSpan>
-              {currentPage}/{Math.ceil(ProductList.length / 4)}
+              {currentPage}/{Math.ceil(NewtList.length / 4)}
             </NavSpan>
             <FontAwesomeIcon
               onClick={() => {
-                if (currentPage < Math.ceil(ProductList.length / 4))
+                if (currentPage < Math.ceil(NewtList.length / 4))
                   setCurrentPage(currentPage + 1);
               }}
               className="next"
@@ -124,7 +125,7 @@ function NewItem() {
             onlyInViewport: true,
           }}
         >
-          {ProductList.map((item, index) => (
+          {NewtList.map((item, index) => (
             <SwiperSlide key={index}>
               <EachItem to={`/post/${item.id}`}>
                 <EachThum src={item.imgURL[0]} />

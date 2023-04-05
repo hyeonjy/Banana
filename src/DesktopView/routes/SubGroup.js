@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import Nav from "../components/Nav";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
 import { itemsGroup } from "../ItemGroup";
 import { ProductList } from "../ItemObject";
 import {
+  WrapDiv,
   BackGround,
   CateContainer,
   Categoryli,
@@ -24,6 +24,7 @@ import {
   QueryUl,
   TopCate,
 } from "./Gruop";
+import Paging from "../components/Paging";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -57,6 +58,7 @@ function SubGroup() {
 
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("subitem"); // id( = main category)
+  const pageValue = searchParams.get("page");
   const mainGroup = itemsGroup.find((item) => item.id === Number(main));
   const subItems = ProductList.filter(
     (item) => item.sub === categoryValue && item.main === mainGroup.main
@@ -65,30 +67,23 @@ function SubGroup() {
   const [currentIdx, setCurrentIdx] = useState(
     mainGroup.sub.indexOf(categoryValue)
   );
+
+  //페이지네이션
+  const [count, setCount] = useState(subItems.length); // 전체 아이템 개수
+  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
+  const [postPerPage] = useState(12); // 한 페이지 아이템 수
+
   //강제 렌더링
   useEffect(() => {
     setCurrentIdx(mainGroup.sub.indexOf(categoryValue));
+    setCurrentPage(Number(pageValue));
+    setCount(subItems.length);
   }, [categoryValue]);
 
   return (
     <div style={{ position: "relative" }}>
       <BackGround />
-      <div
-        style={{
-          //padding: "70px 20px",
-          display: "flex",
-          justifyContent: "space-evenly",
-          width: "1300px",
-          //margin: "0 auto",
-          margin: " 157px auto",
-          zIndex: "1",
-          position: "relative",
-          backgroundColor: "white",
-          borderRadius: "21px",
-          boxShadow:
-            "rgba(50, 50, 93, 0.25) 0px 25px 100px -20px, rgba(0, 0, 0, 0.3) 0px 25px 60px -30px",
-        }}
-      >
+      <WrapDiv>
         <SideNav />
         <SubCateContainer>
           {/* 카테고리 Link */}
@@ -98,7 +93,7 @@ function SubGroup() {
               as={Link}
               to={{
                 pathname: `/group`,
-                search: `?category=${main}`,
+                search: `?category=${main}&page=${1}`,
               }}
             >
               {mainGroup.main}
@@ -107,7 +102,10 @@ function SubGroup() {
             <CategoryUl>
               {mainGroup.sub.map((sub, index) => (
                 <SubCateLi
-                  to={{ pathname: `/group/${main}`, search: `?subitem=${sub}` }}
+                  to={{
+                    pathname: `/group/${main}`,
+                    search: `?subitem=${sub}&page=${1}`,
+                  }}
                   key={index}
                   iscategory={categoryValue === sub ? 1 : 0}
                   onClick={() => {
@@ -120,6 +118,7 @@ function SubGroup() {
               <CurrentIndex left={`${currentIdx}`} />
             </CategoryUl>
           </TopCate>
+
           {/*Query*/}
           {subItems.length > 0 ? (
             <>
@@ -130,12 +129,13 @@ function SubGroup() {
                   margin: "8px 5px 0 5px",
                 }}
               >
+                {/* 상단 카테고리 경로(ex:상의 > 티셔츠) */}
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <span style={{ fontSize: "17px", fontWeight: "600" }}>
                     <Link
                       to={{
                         pathname: `/group`,
-                        search: `?category=${main}`,
+                        search: `?category=${main}&page=${1}`,
                       }}
                     >
                       {mainGroup.main}
@@ -143,6 +143,7 @@ function SubGroup() {
                     &nbsp; &gt; &nbsp;{categoryValue} ({subItems.length})
                   </span>
                 </div>
+
                 <QueryUl>
                   {queryArray.map((query, index) => (
                     <QueryLi key={index}>{query}</QueryLi>
@@ -152,28 +153,41 @@ function SubGroup() {
 
               {/*Item List */}
               <ItemDiv>
-                {subItems.map((item, index) => (
-                  <Product
-                    key={index}
-                    to={{
-                      pathname: `/post/${item.id}`,
-                      state: {
-                        item,
-                      },
-                    }}
-                  >
-                    <ProductImg src={item.imgURL[0]} />
-                    <ProductTitle>{item.title}</ProductTitle>
-                    <ProductDetail>{item.detail}</ProductDetail>
-                  </Product>
-                ))}
+                {subItems
+                  .slice(
+                    postPerPage * (currentPage - 1),
+                    postPerPage * (currentPage - 1) + postPerPage
+                  )
+                  .map((item, index) => (
+                    <Product
+                      key={index}
+                      to={{
+                        pathname: `/post/${item.id}`,
+                        state: {
+                          item,
+                        },
+                      }}
+                    >
+                      <ProductImg src={item.imgURL[0]} />
+                      <ProductTitle>{item.title}</ProductTitle>
+                      <ProductDetail>{item.detail}</ProductDetail>
+                    </Product>
+                  ))}
               </ItemDiv>
+
+              {/*Pagination */}
+              <Paging
+                page={currentPage}
+                count={count}
+                setCurrentPage={setCurrentPage}
+                postPerPage={postPerPage}
+              />
             </>
           ) : (
             <NoItem />
           )}
         </SubCateContainer>
-      </div>
+      </WrapDiv>
     </div>
   );
 }

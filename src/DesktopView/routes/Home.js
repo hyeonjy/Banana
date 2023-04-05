@@ -42,13 +42,13 @@ const Products = styled.div`
 const ProductsTitle = styled.h1`
   width: 95%;
 
-  font-size: 35px;
+  font-size: 22px;
 
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 30px;
   margin-left: 20px;
   text-align: first;
-  color: #ffe466;
+  /* color: #ffe466;
   text-shadow: 0 1px 0 rgb(255 148 63), 0 2px 0 rgb(255 148 63),
     0 3px 0 rgb(255 148 63), 0 4px 0 rgb(255 148 63), 0 5px 0 rgb(255 148 63),
     0 6px 0 transparent, 0 7px 0 transparent, 0 8px 0 transparent,
@@ -63,7 +63,7 @@ const ProductsTitle = styled.h1`
     &:nth-of-type(3) {
       animation-delay: 0.4s;
     }
-  }
+  } */
 `;
 
 const ProductsTitleIcon = styled(FontAwesomeIcon)`
@@ -180,9 +180,7 @@ function Home() {
         <Products>
           <ProductsTitle>
             {/**  <ProductsTitleIcon icon={faN} color={"orange"} /> */}
-            <span>N</span>
-            <span>E</span>
-            <span>W</span>
+            NEW! 나눔 물품
           </ProductsTitle>
           <ProductsBox>
             {newList.slice(0, 8).map((item, index) => (
@@ -213,7 +211,7 @@ function Home() {
           <ProductsTitle>
             {/**  <ProductsTitleIcon icon={faFire} color={"red"} />
              */}
-            Hot
+            HOT! 주목받는 물품
           </ProductsTitle>
           <ProductsBox>
             {hotList.slice(0, 8).map((item, index) => (

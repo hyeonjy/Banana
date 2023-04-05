@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { itemsGroup } from "../ItemGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,7 +81,12 @@ function SideNav() {
             <DownIcon icon={faCaretDown} />
           </MainManu>
           <SubUl open={activeIndex === index ? 1 : 0}>
-            <SubLi to={{ pathname: "/group", search: `?category=${index}` }}>
+            <SubLi
+              to={{
+                pathname: "/group",
+                search: `?category=${index}&page=${1}`,
+              }}
+            >
               전체
             </SubLi>
             {menu.sub.map((sub, index) => (
@@ -89,7 +94,7 @@ function SideNav() {
                 key={index}
                 to={{
                   pathname: `/group/${activeIndex}`,
-                  search: `?subitem=${sub}`,
+                  search: `?subitem=${sub}&page=${1}`,
                 }}
                 onClick={() => setActiveIndex(null)}
               >
