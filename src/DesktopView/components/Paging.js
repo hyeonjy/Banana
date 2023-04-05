@@ -13,15 +13,12 @@ import { useEffect } from "react";
 const PageNationItem = styled(Pagination)``;
 const PaginationDiv = styled.div`
   display: flex;
-
   justify-content: center;
   .pagination {
     display: flex;
     align-items: center;
     width: fit-content;
-
     justify-content: center;
-
     li {
       height: 28px;
       line-height: 28px;
