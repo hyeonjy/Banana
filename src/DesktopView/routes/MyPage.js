@@ -118,8 +118,8 @@ const NavLi = styled.li`
 `;
 
 function MyPage() {
-  const [currentPage, setCurrentPage] = useState(""); // sideNav 현재 페이지에 따라 Active
   const [activeGrade, setActiveGrade] = useState(false); // Modal
+  const [currentPage, setCurrentPage] = useState(""); // sideNav 현재 페이지에 따라 Active
   const heartPage = useRouteMatch("/mypage/heart"); //현재 찜 페이지인지 여부 (t/f)
   const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
 

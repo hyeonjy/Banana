@@ -72,7 +72,7 @@ const Paging = ({ page, count, setCurrentPage, postPerPage }) => {
         activePage={page}
         itemsCountPerPage={postPerPage}
         totalItemsCount={count}
-        pageRangeDisplayed={10}
+        pageRangeDisplayed={5}
         prevPageText={<ArrowIcon icon={faAngleLeft} />}
         nextPageText={<ArrowIcon icon={faAngleRight} />}
         firstPageText={<ArrowIcon icon={faAngleDoubleLeft} />}

@@ -3,10 +3,8 @@ import { ProductList } from "../ItemObject";
 import { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 
-const Container = styled.div`
-  padding-top: 120px;
-  padding-left: 30px;
-  padding-right: 30px;
+export const Container = styled.div`
+  padding: 120px 30px 60px;
   max-width: 1250px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -55,7 +53,7 @@ const MoreTitle = styled.h1`
   }
 `;
 
-const ProductsBox = styled.div`
+export const ProductsBox = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: -10px;
@@ -63,21 +61,21 @@ const ProductsBox = styled.div`
   box-sizing: border-box;
 `;
 
-const Product = styled.div`
+export const Product = styled.div`
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 35px;
   box-sizing: inherit;
 `;
 
-const ProductImg = styled.img`
+export const ProductImg = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
 `;
 
-const ProductTitle = styled.h1`
+export const ProductTitle = styled.h1`
   font-size: 16px;
   margin: 10px 0 5px 2px;
   line-height: 20px;
@@ -89,7 +87,7 @@ const ProductTitle = styled.h1`
   word-break: break-all;
 `;
 
-const ProductDetail = styled.span`
+export const ProductDetail = styled.span`
   font-size: 13px;
   margin-left: 2px;
   color: #232323ab;
@@ -109,7 +107,7 @@ const More = (props) => {
           : "실시간 베스트 상품!"}
       </MoreTitle>
       <ProductsBox as="ul">
-        {searchItem.map((item, index) => (
+        {searchItem.slice(0, 15).map((item, index) => (
           <Product key={index} as="li">
             <Link
               to={{
