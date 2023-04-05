@@ -5,8 +5,9 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "../../App.css";
+import { useForm } from "react-hook-form";
 
 export const Container = styled.div`
   width: 100%;
@@ -30,7 +31,7 @@ const Logo = styled(Link)`
   font-family: yg-jalnan;
 `;
 
-const SearchBox = styled.div`
+const SearchBox = styled.form`
   max-width: 450px;
   width: 50%;
   height: 70px;
@@ -49,7 +50,11 @@ const Search = styled.input.attrs({ type: "text" })`
     outline: none;
   }
 `;
-
+const SearchInput = styled.button`
+  width: fit-content;
+  border: 0;
+  background: transparent;
+`;
 const SearchIcon = styled(FontAwesomeIcon)`
   font-size: 25px;
   margin-left: 10px;
@@ -135,13 +140,28 @@ const UserBox = styled.div`
 `;
 
 function Header() {
-  //if (window.location.pathname.slice(0, 4) === "/img") return null;
+  const { register, handleSubmit, setValue } = useForm();
+  const history = useHistory();
+  //form 유효할 때 실행
+  const onValid = (data) => {
+    setValue("searchContent", "");
+    history.push({
+      pathname: "/search",
+      search: `?content=${data.searchContent}&page=${1}`,
+    });
+  };
+
   return (
     <Container>
       <Logo to="/">BANANA</Logo>
-      <SearchBox>
-        <Search placeholder="어떤 옷을 찾으시나요?" />
-        <SearchIcon icon={faMagnifyingGlass} />
+      <SearchBox onSubmit={handleSubmit(onValid)}>
+        <Search
+          placeholder="어떤 옷을 찾으시나요?"
+          {...register("searchContent", { required: "검색어를 입력해주세요" })}
+        />
+        <SearchInput type="submit">
+          <SearchIcon icon={faMagnifyingGlass} />
+        </SearchInput>
       </SearchBox>
       <UserBox>
         <UserDropdown isuser="true">

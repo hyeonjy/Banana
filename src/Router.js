@@ -11,6 +11,7 @@ import SubGroup from "./DesktopView/routes/SubGroup";
 import Login from "./DesktopView/components/Login";
 import Upload from "./DesktopView/routes/Upload";
 import More from "./DesktopView/routes/More";
+import Search from "./DesktopView/routes/Search";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -44,6 +45,9 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/more" exact>
           <More />
+        </Route>
+        <Route path="/search">
+          <Search />
         </Route>
       </Switch>
       <Footer />

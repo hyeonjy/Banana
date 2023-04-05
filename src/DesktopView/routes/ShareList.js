@@ -114,7 +114,6 @@ function ShareList() {
       <Paging
         page={currentPage}
         count={count}
-        //setPage={setPage}
         setCurrentPage={setCurrentPage}
         postPerPage={postPerPage}
       />
