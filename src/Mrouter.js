@@ -7,6 +7,8 @@ import Mshare from "./MobileView/routes/Mshare";
 import Mimages from "./MobileView/routes/Mimages";
 import Mlogin from "./MobileView/routes/Mlogin";
 import MUpload from "./MobileView/routes/MUpload";
+import Chats from "./MobileView/routes/Chats";
+import Chat from "./MobileView/routes/Chat";
 
 export function MobileRouter() {
   return (
@@ -42,6 +44,14 @@ export function MobileRouter() {
 
         <Route exact path="/upload">
           <MUpload />
+        </Route>
+
+        <Route exact path="/chats">
+          <Chats />
+        </Route>
+
+        <Route exact path="/chat/:userId">
+          <Chat />
         </Route>
       </Switch>
     </BrowserRouter>
