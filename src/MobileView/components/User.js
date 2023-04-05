@@ -64,7 +64,7 @@ function User(props) {
       <UserBox>
         <UserInfo>
           <UserImg src={require(`../../Img/${props.img}`)} />
-          <UserName>에브리띵</UserName>
+          <UserName>{props.userId}</UserName>
         </UserInfo>
         <UserGrade
           onClick={() => {

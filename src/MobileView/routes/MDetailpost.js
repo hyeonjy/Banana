@@ -20,6 +20,7 @@ import { useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import User from "../components/User";
 import Modal from "../../DesktopView/components/Modal";
+import { LoginId, UserObj } from "../../UserObj";
 
 const Container = styled.div`
   background-color: white;
@@ -158,6 +159,9 @@ function MDetailpost(props) {
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
   const filterItemObj = ItemObj.find((item) => item.id === Number(clothesid));
+  const FilterUserObj = UserObj.find(
+    (item) => item.id === filterItemObj.userId
+  );
 
   //img 클릭 시 Fullscreen
   function handleImageClick(props) {
@@ -173,6 +177,17 @@ function MDetailpost(props) {
   // swiper onSlideChange 시 - 현재 img index 저장
   const handleSlideChange = (currentIndex) => {
     setIndex(currentIndex.activeIndex);
+  };
+
+  //채팅목록 클릭 이벤트
+  const handleChatClick = (userId, clothesId) => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", userId);
+    searchParams.append("itemId", clothesId);
+    history.push({
+      pathname: "/chat",
+      search: "?" + searchParams.toString(),
+    });
   };
 
   return (
@@ -191,15 +206,13 @@ function MDetailpost(props) {
             <PrevIcon icon={faHouse} />
           </Link>
         </Header>
-
         {/* 유저 정보 */}
-        {/* <User img="banana.png" grade="bananaIcon.png" /> */}
         <User
-          img="bananaface.png"
-          grade="bananaIcon.png"
+          userId={FilterUserObj.id}
+          img={FilterUserObj.src}
+          grade={FilterUserObj.grade}
           setActiveGrade={setActiveGrade}
         />
-
         {/* 게시글 이미지  */}
         {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
         <Swiper
@@ -225,10 +238,8 @@ function MDetailpost(props) {
             {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAge}
           </PostSubtitle>
         </Post>
-
         {/* 게시글 내용 */}
         <PostContent>{filterItemObj.content}</PostContent>
-
         {/* 게시글 하트, 조회수 */}
         <PostMore>
           <HeartSvg
@@ -245,9 +256,14 @@ function MDetailpost(props) {
           </HeartSvg>
           <Morehits>조회수 {hits}</Morehits>
         </PostMore>
-
         {/* 채팅하기 버튼 */}
-        <ChatBtn>채팅하기</ChatBtn>
+        {FilterUserObj.id === LoginId ? (
+          <ChatBtn>삭제하기</ChatBtn>
+        ) : (
+          <ChatBtn onClick={() => handleChatClick(FilterUserObj.id, clothesid)}>
+            채팅하기
+          </ChatBtn>
+        )}
       </Container>
       {activeGrade && (
         <Modal setActiveGrade={setActiveGrade} isMobile={"true"} />
