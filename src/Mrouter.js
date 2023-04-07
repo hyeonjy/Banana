@@ -9,10 +9,14 @@ import Mlogin from "./MobileView/routes/Mlogin";
 import MUpload from "./MobileView/routes/MUpload";
 import Chats from "./MobileView/routes/Chats";
 import Chat from "./MobileView/routes/Chat";
+import Msearch from "./MobileView/routes/Msearch";
+import ScrollToTop from "./ScrollToTop";
+import Region from "./MobileView/routes/Region";
 
 export function MobileRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Switch>
         <Route path="/" exact>
           <Mhome />
@@ -52,6 +56,13 @@ export function MobileRouter() {
 
         <Route exact path="/chat">
           <Chat />
+        </Route>
+
+        <Route exact path="/search">
+          <Msearch />
+        </Route>
+        <Route exact path="/region">
+          <Region />
         </Route>
       </Switch>
     </BrowserRouter>

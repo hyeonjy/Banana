@@ -16,16 +16,18 @@ import { useEffect } from "react";
 const UploadContainer = styled.div`
   font-size: 14px;
 `;
-const BackIcon = styled(FontAwesomeIcon)`
+export const BackIcon = styled(FontAwesomeIcon)`
   width: 20px;
-  height: 25px;
+  height: 23px;
   color: black;
 `;
-const Header = styled.header`
-  height: 25px;
-  line-height: 25px;
-  padding: 15px 4%;
+export const Header = styled.header`
+  height: 35px;
+  line-height: 35px;
+  padding: 12.5px 4%;
+  width: 92%;
   text-align: center;
+  background: white;
   position: relative;
   span {
     display: inline-block;

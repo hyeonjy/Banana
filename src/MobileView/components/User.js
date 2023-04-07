@@ -8,10 +8,10 @@ import Modal from "../../DesktopView/components/Modal";
 
 // 유저 정보(이름, 프로필이미지, 등급) - 시작
 const UserBox = styled.div`
-  height: 60px;
+  height: 55px;
   display: flex;
   padding: 0 3%;
-  width: 94;
+  width: 94%;
   //padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
@@ -29,12 +29,12 @@ const UserImg = styled.img`
   border: 1px solid #e9ecef;
   border-radius: 50%;
   padding: 5px;
-  margin-right: 10px;
+  margin-right: 5px;
   object-fit: cover;
 `;
 
 const UserName = styled.h1`
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 `;
 
@@ -64,7 +64,7 @@ function User(props) {
       <UserBox>
         <UserInfo>
           <UserImg src={require(`../../Img/${props.img}`)} />
-          <UserName>{props.userId}</UserName>
+          <UserName>사용자 1</UserName>
         </UserInfo>
         <UserGrade
           onClick={() => {

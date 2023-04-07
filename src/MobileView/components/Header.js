@@ -2,9 +2,10 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
-const Header = styled.header`
+export const Header = styled.header`
   position: fixed;
   display: flex;
   justify-content: space-between;
@@ -67,22 +68,38 @@ const InputBtn = styled.input`
 
 function HeaderComponent() {
   const [searchBtnClick, setSearchBtnClick] = useState(false);
-
+  const { register, handleSubmit, setValue } = useForm();
+  const history = useHistory();
+  //form 유효할 때 실행
+  const onValid = (data) => {
+    setValue("searchContent", "");
+    history.push({
+      pathname: `/search`,
+      search: `?content=${data.searchContent}`,
+    });
+  };
   return (
     <Header>
       <Logo to="/">BANANA</Logo>
       <Icons>
-        <SerchForm action="" autocomplete="on" toggle={searchBtnClick}>
+        <SerchForm
+          onSubmit={handleSubmit(onValid)}
+          action=""
+          autocomplete="on"
+          toggle={searchBtnClick}
+        >
           <InputText
             id="search"
             name="search"
             type="text"
             placeholder="검색어를 입력하세요"
             toggle={searchBtnClick}
+            {...register("searchContent", {
+              required: "검색어를 입력해주세요",
+            })}
           />
           <InputBtn
             onClick={(e) => {
-              e.preventDefault();
               setSearchBtnClick((prev) => !prev);
             }}
             id="search_submit"
