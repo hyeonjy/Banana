@@ -1,5 +1,4 @@
 export const LoginId = "바나나좋아";
-export const Loginsrc = "bananaface.png";
 
 export const UserObj = [
   {
@@ -188,5 +187,11 @@ export const UserObj = [
         ],
       },
     ],
+  },
+  {
+    id: "딸기가좋아",
+    src: "profile.jpg",
+    grade: "bananaIcon.png",
+    chats: [],
   },
 ];

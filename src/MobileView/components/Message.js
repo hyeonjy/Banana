@@ -65,7 +65,20 @@ const BubbleBox = styled.div`
   border-radius: 15px;
   margin-right: 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  line-height: 20px;
+  max-width: 240px;
+
+  h1 {
+    display: inline-block;
+    max-width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.2;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
 `;
 
 const TimeSpan = styled.span`
@@ -89,7 +102,7 @@ function Message({ itemObj, isUser }) {
         <div>
           <Author isUser={isUser}>{itemObj.id}</Author>
           <BubbleBox>
-            <span>{itemObj.content}</span>
+            <h1>{itemObj.content}</h1>
           </BubbleBox>
         </div>
         <TimeSpan isUser={isUser}>{itemObj.time}</TimeSpan>

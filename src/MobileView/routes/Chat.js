@@ -1,5 +1,5 @@
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { LoginId, Loginsrc, UserObj } from "../../UserObj";
+import { LoginId, UserObj } from "../../UserObj";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -119,16 +119,28 @@ function Chat(props) {
   const searchParams = new URLSearchParams(location.search);
   const userIdValue = searchParams.get("userId");
   const itemIdValue = searchParams.get("itemId");
-  const FilterUserObj = UserObj.find((item) => item.id === LoginId);
   const filterItemObj = ItemObj.find((item) => item.id === Number(itemIdValue));
-  const ChatObj = FilterUserObj.chats.find(
-    (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
+
+  // 유저 Obj 가져오기
+  const FilterUserObj = UserObj.find((item) => item.id === LoginId);
+  const FilterOtherUserObj = UserObj.find((item) => item.id === userIdValue);
+
+  // 채팅 obj 가져오기
+  const [ChatObj, setChatObj] = useState(
+    FilterUserObj.chats.find(
+      (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
+    )
+  );
+  const OtherChatObj = FilterOtherUserObj.chats.find(
+    (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
   );
 
-  // 스크롤 맨 아래로 내리기
+  // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
   const scrollRef = useRef();
   useEffect(() => {
-    scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    if (ChatObj !== undefined) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [message]);
 
   const onChange = (event) => {
@@ -142,6 +154,7 @@ function Chat(props) {
 
   const onSubmit = (event) => {
     event.preventDefault();
+    // 메시지 보낸 날짜(연도,월,일과 time) 저장
     const date = new Date();
     const year = String(date.getFullYear());
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -150,22 +163,105 @@ function Chat(props) {
     const hour = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
     const time = `${hour}:${min}`;
-    const FilterChatObj = ChatObj.chat.find((item) => item.date === "20221210");
-    FilterChatObj.commentList.push({
-      id: LoginId,
-      src: Loginsrc,
-      content: message,
-      time: time,
-    });
-    console.log(messageDate);
-    console.log(time);
-    console.log(message);
-    console.log(FilterChatObj);
+    // 채팅을 주고 받은 적이 없는 경우,
+    if (ChatObj === undefined) {
+      FilterUserObj.chats.push({
+        id: filterItemObj.userId,
+        src: FilterOtherUserObj.src,
+        itemId: Number(itemIdValue),
+        chat: [
+          {
+            date: messageDate,
+            commentList: [
+              {
+                id: LoginId,
+                src: FilterUserObj.src,
+                content: message,
+                time: time,
+              },
+            ],
+          },
+        ],
+      });
+      FilterOtherUserObj.chats.push({
+        id: LoginId,
+        src: UserObj.find((item) => item.id === userIdValue).src,
+        itemId: Number(itemIdValue),
+        chat: [
+          {
+            date: messageDate,
+            commentList: [
+              {
+                id: LoginId,
+                src: FilterUserObj.src,
+                content: message,
+                time: time,
+              },
+            ],
+          },
+        ],
+      });
+      setChatObj(
+        FilterUserObj.chats.find(
+          (item) =>
+            item.id === userIdValue && item.itemId === Number(itemIdValue)
+        )
+      );
+    }
+    // 채팅을 주고 받은 적이 있는 경우,
+    else {
+      const FilterChatObj = ChatObj.chat.find(
+        (item) => item.date === messageDate
+      );
+      const FilterOtherChatObj = OtherChatObj.chat.find(
+        (item) => item.date === messageDate
+      );
+      // 오늘 날짜에 주고 받은 채팅이 있는 경우
+      if (FilterChatObj !== undefined) {
+        FilterChatObj.commentList.push({
+          id: LoginId,
+          src: FilterUserObj.src,
+          content: message,
+          time: time,
+        });
+        FilterOtherChatObj.commentList.push({
+          id: LoginId,
+          src: FilterUserObj.src,
+          content: message,
+          time: time,
+        });
+      }
+      // 오늘 날짜에 주고 받은 채팅이 없는 경우
+      else {
+        ChatObj.chat.push({
+          date: messageDate,
+          commentList: [
+            {
+              id: LoginId,
+              src: FilterUserObj.src,
+              content: message,
+              time: time,
+            },
+          ],
+        });
+        OtherChatObj.chat.push({
+          date: messageDate,
+          commentList: [
+            {
+              id: LoginId,
+              src: FilterUserObj.src,
+              content: message,
+              time: time,
+            },
+          ],
+        });
+      }
+    }
     setMessage("");
   };
-
   return (
     <Container>
+      {/* 상대방 ID 헤더 */}
       <Header>
         <HeaderIcon
           onClick={() => {
@@ -177,6 +273,7 @@ function Chat(props) {
         <HeaderIcon icon={faBars} />
       </Header>
 
+      {/* 채팅 나눔 물품 */}
       <ItemBox>
         <img src={require(`../../Img/${filterItemObj.img[0]}.jpg`)} />
         <ItemContent>
@@ -187,16 +284,19 @@ function Chat(props) {
         </ItemContent>
       </ItemBox>
 
-      {ChatObj !== undefined && (
-        <>
-          <CommentBox>
+      {/* 채팅 내용 */}
+      <CommentBox>
+        {ChatObj !== undefined && (
+          <>
             {ChatObj.chat.map((item, index) => {
               return <Comment chatList={item} key={index} />;
             })}
-          </CommentBox>
-          <div ref={scrollRef}></div>
-        </>
-      )}
+            <div ref={scrollRef}></div>
+          </>
+        )}
+      </CommentBox>
+
+      {/* 메시지 입력창*/}
       <MessageForm onSubmit={onSubmit}>
         <div>
           <MessageIcon icon={faPlus} />
