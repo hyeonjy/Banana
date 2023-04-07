@@ -106,9 +106,9 @@ const MessageInput = styled.input`
   height: 35px;
   border-radius: 20px;
   padding: 5px 10px;
-  /* &:focus {
+  &:focus {
     outline: none;
-  } */
+  }
 `;
 
 function Chat(props) {
@@ -143,7 +143,6 @@ function Chat(props) {
     if (focusState) {
       window.scrollTo(0, scrollRef.current.scrollHeight);
     }
-    console.log("아!!");
     if (scrollRef.current) {
       window.scrollTo(0, scrollRef.current.scrollHeight);
     }
