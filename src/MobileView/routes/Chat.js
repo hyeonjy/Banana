@@ -140,7 +140,7 @@ function Chat(props) {
   const scrollRef = useRef();
   useEffect(() => {
     if (scrollRef.current) {
-      window.scrollTo(0, window.innerHeight);
+      window.scrollTo(0, scrollRef.current.scrollHeight);
     }
   }, [message]);
 
