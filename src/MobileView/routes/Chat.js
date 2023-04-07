@@ -12,7 +12,7 @@ import { useState } from "react";
 import Comment from "../components/Comment";
 import { useEffect } from "react";
 import { useCallback } from "react";
-import { set } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { ItemObj } from "../ItemObj";
 import { useRef } from "react";
 
@@ -106,9 +106,9 @@ const MessageInput = styled.input`
   height: 35px;
   border-radius: 20px;
   padding: 5px 10px;
-  &:focus {
+  /* &:focus {
     outline: none;
-  }
+  } */
 `;
 
 function Chat(props) {
@@ -138,11 +138,16 @@ function Chat(props) {
 
   // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
   const scrollRef = useRef();
+  const [focusState, setFocusState] = useState(false);
   useEffect(() => {
+    if (focusState) {
+      window.scrollTo(0, scrollRef.current.scrollHeight);
+    }
+    console.log("아!!");
     if (scrollRef.current) {
       window.scrollTo(0, scrollRef.current.scrollHeight);
     }
-  }, [message]);
+  }, [message, focusState]);
 
   const onChange = (event) => {
     const {
@@ -309,6 +314,15 @@ function Chat(props) {
           value={message}
           onChange={onChange}
           required
+          autoComplete="off"
+          onFocus={() => {
+            setTimeout(() => {
+              setFocusState(true);
+            }, 100);
+          }}
+          onBlur={() => {
+            setFocusState(false);
+          }}
         />
         <button type="submit">
           <MessageIcon icon={faPaperPlane} />
