@@ -315,6 +315,7 @@ function Chat(props) {
           required
           autoComplete="off"
           onFocus={() => {
+            //가상키보드 나타나는 속도 delay 문제
             setTimeout(() => {
               setFocusState(true);
             }, 100);
