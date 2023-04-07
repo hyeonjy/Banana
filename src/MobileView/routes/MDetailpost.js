@@ -148,6 +148,16 @@ const ChatBtn = styled.div`
   font-size: 14.5px;
 `;
 
+const StateSelect = styled.select`
+  background-color: white;
+  border: 1px solid #808080a6;
+  padding: 5px;
+  width: 90px;
+
+  border-radius: 5px;
+  font-size: 13px;
+`;
+
 function MDetailpost(props) {
   const [hits, setHits] = useState(123); /**조회수 */
   const [heart, setHeart] = useState(false); /**좋아요 */
@@ -246,14 +256,14 @@ function MDetailpost(props) {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <PostTitle>{filterItemObj.title}</PostTitle>
             {isWriter && (
-              <select
+              <StateSelect
                 value={SelectedState}
                 onChange={(e) => handleChangeSelect(e)}
               >
                 <option value="wait">대기중</option>
                 <option value="reservate">예약중</option>
                 <option value="complete">나눔완료</option>
-              </select>
+              </StateSelect>
             )}
           </div>
 
