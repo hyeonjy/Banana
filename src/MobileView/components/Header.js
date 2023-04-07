@@ -94,6 +94,7 @@ function HeaderComponent() {
             type="text"
             placeholder="검색어를 입력하세요"
             toggle={searchBtnClick}
+            autoComplete="off"
             {...register("searchContent", {
               required: "검색어를 입력해주세요",
             })}

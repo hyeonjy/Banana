@@ -81,6 +81,7 @@ function Msearch() {
               required: "검색어를 입력해주세요",
             })}
             defaultValue={searchValue}
+            autoComplete="off"
           />
           <XIcon
             onClick={() => {
