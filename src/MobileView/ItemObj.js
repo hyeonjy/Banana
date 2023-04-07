@@ -10,6 +10,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11111,
+    state: "wait",
   },
   {
     userId: "구르미",
@@ -22,6 +23,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11112,
+    state: "wait",
   },
   {
     userId: "구르미",
@@ -34,6 +36,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11113,
+    state: "wait",
   },
   {
     userId: "구르미",
@@ -46,6 +49,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11114,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -58,6 +62,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11115,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -70,6 +75,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11116,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -82,6 +88,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11117,
+    state: "wait",
   },
 
   {
@@ -94,6 +101,7 @@ export const ItemObj = [
     main: "상의",
     sub: "티셔츠",
     id: 11118,
+    state: "wait",
   },
   {
     userId: "바나나좋아",
@@ -105,6 +113,7 @@ export const ItemObj = [
     main: "상의",
     sub: "블라우스",
     id: 11119,
+    state: "complete",
   },
   {
     userId: "바나나좋아",
@@ -116,6 +125,7 @@ export const ItemObj = [
     main: "상의",
     sub: "블라우스",
     id: 11120,
+    state: "wait",
   },
   {
     userId: "바나나좋아",
@@ -127,6 +137,7 @@ export const ItemObj = [
     main: "상의",
     sub: "블라우스",
     id: 11121,
+    state: "wait",
   },
   {
     userId: "바나나좋아",
@@ -138,6 +149,7 @@ export const ItemObj = [
     main: "상의",
     sub: "블라우스",
     id: 11122,
+    state: "wait",
   },
   {
     userId: "바나나좋아",
@@ -149,6 +161,7 @@ export const ItemObj = [
     main: "상의",
     sub: "블라우스",
     id: 11123,
+    state: "wait",
   },
   {
     userId: "바나나좋아",
@@ -160,6 +173,7 @@ export const ItemObj = [
     main: "하의",
     sub: "청바지",
     id: 11124,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -171,6 +185,7 @@ export const ItemObj = [
     main: "하의",
     sub: "청바지",
     id: 11125,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -182,6 +197,7 @@ export const ItemObj = [
     main: "하의",
     sub: "청바지",
     id: 11126,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -193,6 +209,7 @@ export const ItemObj = [
     main: "하의",
     sub: "청바지",
     id: 11127,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -204,6 +221,7 @@ export const ItemObj = [
     main: "하의",
     sub: "기타",
     id: 11128,
+    state: "wait",
   },
   {
     userId: "옥탑방토끼",
@@ -215,6 +233,7 @@ export const ItemObj = [
     main: "신발",
     sub: "운동화",
     id: 11129,
+    state: "wait",
   },
   {
     userId: "구르미",
@@ -226,5 +245,6 @@ export const ItemObj = [
     main: "악세서리",
     sub: "목걸이",
     id: 11130,
+    state: "wait",
   },
 ];

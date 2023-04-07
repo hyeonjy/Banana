@@ -159,9 +159,19 @@ function MDetailpost(props) {
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
   const filterItemObj = ItemObj.find((item) => item.id === Number(clothesid));
+  // 작성자 user obj
   const FilterUserObj = UserObj.find(
-    (item) => item.id === filterItemObj.userId
+    (user) => user.id === filterItemObj.userId
   );
+  // 본인 글인지 확인
+  const isWriter = FilterUserObj.id === LoginId;
+
+  //나눔 상태 변경
+  const [SelectedState, setSelected] = useState(filterItemObj.state);
+  const handleChangeSelect = (e) => {
+    setSelected(e.target.value);
+    filterItemObj.state = SelectedState; //DB의 state 값 update
+  };
 
   //img 클릭 시 Fullscreen
   function handleImageClick(props) {
@@ -233,7 +243,20 @@ function MDetailpost(props) {
         </Swiper>
         {/* 게시글 제목 - 카테고리|지역|시간 */}
         <Post>
-          <PostTitle>{filterItemObj.title}</PostTitle>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <PostTitle>{filterItemObj.title}</PostTitle>
+            {isWriter && (
+              <select
+                value={SelectedState}
+                onChange={(e) => handleChangeSelect(e)}
+              >
+                <option value="wait">대기중</option>
+                <option value="reservate">예약중</option>
+                <option value="complete">나눔완료</option>
+              </select>
+            )}
+          </div>
+
           <PostSubtitle>
             {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAge}
           </PostSubtitle>
@@ -257,7 +280,7 @@ function MDetailpost(props) {
           <Morehits>조회수 {hits}</Morehits>
         </PostMore>
         {/* 채팅하기 버튼 */}
-        {FilterUserObj.id === LoginId ? (
+        {isWriter ? (
           <ChatBtn>삭제하기</ChatBtn>
         ) : (
           <ChatBtn onClick={() => handleChatClick(FilterUserObj.id, clothesid)}>
