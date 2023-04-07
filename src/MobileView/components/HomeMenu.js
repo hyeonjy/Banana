@@ -24,7 +24,7 @@ const MenuDiv = styled.div`
 const MenuList = [
   { name: "HOME", url: "/" },
   { name: "채팅하기", url: "/chats" },
-  { name: "지역별", url: "/" },
+  { name: "지역별", url: "/region?region=전체보기" },
   { name: "마이페이지", url: "/mypage" },
 ];
 

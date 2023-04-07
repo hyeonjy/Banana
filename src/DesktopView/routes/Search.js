@@ -71,7 +71,7 @@ function Search() {
       <SearchHeader>
         <span>
           <FontAwesomeIcon icon={faMagnifyingGlass} />
-          <span class="border">"{searchValue}"</span>에 대한 검색결과 - (
+          <span className="border">"{searchValue}"</span>에 대한 검색결과 - (
           {searchItem.length})
         </span>
       </SearchHeader>

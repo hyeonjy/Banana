@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import { Link, Switch, useHistory, useLocation } from "react-router-dom";
+import styled, { css } from "styled-components";
 import { ItemObj } from "../ItemObj";
+import { useState } from "react";
+import { useEffect } from "react";
 const ItemDiv = styled.div`
   width: 100%;
   height: auto;
   font-family: "Pretendard";
-  min-height: calc(100vh - 360px - 160px); ;
+  min-height: calc(100vh - 360px - 160px);
+  padding-top: ${(props) => (props.pad ? "60px" : "0px")};
+  padding-bottom: ${(props) => (props.padBottom ? "60px" : "0px")};
 `;
 const ItemTitle = styled.span``;
 const ItemContent = styled.span``;
@@ -61,18 +65,85 @@ const EmptyPage = styled.div`
   align-items: center;
   font-weight: 500;
 `;
+const QueryDiv = styled.div`
+  width: 90%;
+  gap: 7px;
+  display: flex;
+  margin: 0px auto 3px 15px;
+  position: sticky;
+  top: 60px;
+  background: white;
+  padding: 7px 0;
+`;
+const QueryLi = styled.div`
+  font-size: 14px;
+  text-align: center;
+  border-radius: 15px;
+  border: 1px solid gray;
+  padding: 9px 11px;
+  ${(props) =>
+    props.isActive &&
+    css`
+      background: orange;
+      color: white;
+      border: orange;
+      font-weight: 700;
+    `}
+`;
+const queryItem = ["최신등록순", "조회순", "관심순"];
 
-function ShowItem({ main, sub }) {
-  const filterItemObj = ItemObj.filter(
-    (item) => item.main === main && item.sub === sub
-  );
+// pad : paddingTop(최상단 header 유무)/ padBottom : 하단 메뉴 유무
+// query : query block 존재 여부
+
+export function ShowItemFn({
+  item,
+  pad = false,
+  padBottom = false,
+  query = false,
+}) {
+  const history = useHistory();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchValue = searchParams.get("query");
+
+  const [currentQuery, setCurrentQuery] = useState();
+  useEffect(() => {
+    if (searchValue) {
+      setCurrentQuery(Number(searchValue));
+    }
+  }, [searchValue]);
+
+  const querySelect = (index) => {
+    setCurrentQuery(index);
+    //기존 url query string에 query항목 추가
+    searchParams.set("query", index);
+    history.push({
+      pathname: `/search`,
+      search: `?${searchParams}`,
+    });
+  };
 
   return (
-    <>
-      {filterItemObj.length > 0 ? (
-        <ItemDiv>
-          {filterItemObj.map((item, index) => (
-            <Link to={`/clothes/${item.id}`} key={item.id}>
+    <div>
+      {item.length > 0 ? (
+        <ItemDiv pad={pad} padBottom={padBottom}>
+          {query && (
+            <QueryDiv>
+              {queryItem.map((item, index) => (
+                <QueryLi
+                  onClick={() => {
+                    querySelect(index);
+                  }}
+                  isActive={currentQuery === index ? true : false}
+                  key={index}
+                >
+                  {item}
+                </QueryLi>
+              ))}
+            </QueryDiv>
+          )}
+          {item.map((item, index) => (
+            <Link to={`/clothes/${item.id}`} key={index}>
               <Item>
                 <ItemText>
                   <ItemTitle>{item.title}</ItemTitle>
@@ -88,7 +159,14 @@ function ShowItem({ main, sub }) {
       ) : (
         <EmptyPage>나눔이 없습니다</EmptyPage>
       )}
-    </>
+    </div>
   );
+}
+
+function ShowItem({ main, sub }) {
+  const filterItemObj = ItemObj.filter(
+    (item) => item.main === main && item.sub === sub
+  );
+  return <ShowItemFn item={filterItemObj} />;
 }
 export default ShowItem;
