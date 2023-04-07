@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import HomeMenu from "../components/HomeMenu";
 import { useState } from "react";
 import User from "../components/User";
-import { faComment } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faMessage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatList from "../components/ChatList";
 import { Link, useHistory, useParams } from "react-router-dom";
@@ -34,6 +34,7 @@ const HeaderIcon = styled(FontAwesomeIcon)`
 
 const ChatsList = styled.div`
   margin-top: 55px;
+  /* background-color: orange; */
 `;
 
 function Chats() {
@@ -58,13 +59,31 @@ function Chats() {
         <HeaderIcon icon={faComment} />
       </Header>
       <ChatsList>
-        {FilterUserObj.chats.map((user, index) => {
-          return (
-            <div onClick={() => handleChatClick(user)} key={index}>
-              <ChatList user={user} />
-            </div>
-          );
-        })}
+        {FilterUserObj.chats.length === 0 ? (
+          <div
+            style={{
+              display: "flex",
+              height: "100vh",
+              alignItems: "Center",
+              justifyContent: "center",
+              marginTop: "-55px",
+              color: "gray",
+              fontSize: "23px",
+            }}
+          >
+            채팅목록이 없습니다.
+          </div>
+        ) : (
+          <>
+            {FilterUserObj.chats.map((user, index) => {
+              return (
+                <div onClick={() => handleChatClick(user)} key={index}>
+                  <ChatList user={user} />
+                </div>
+              );
+            })}
+          </>
+        )}
       </ChatsList>
       <HomeMenu />
     </Container>
