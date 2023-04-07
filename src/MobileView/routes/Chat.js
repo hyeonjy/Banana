@@ -77,6 +77,7 @@ const ItemContent = styled.div`
 const CommentBox = styled.div`
   margin-top: 150px;
   margin-bottom: 80px;
+  overflow-y: scroll;
 `;
 
 const MessageForm = styled.form`
@@ -138,8 +139,8 @@ function Chat(props) {
   // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
   const scrollRef = useRef();
   useEffect(() => {
-    if (ChatObj !== undefined) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    if (scrollRef.current) {
+      window.scrollTo({ top: window.innerHeight, left: 0, behavior: "smooth" });
     }
   }, [message]);
 
@@ -285,14 +286,14 @@ function Chat(props) {
       </ItemBox>
 
       {/* 채팅 내용 */}
-      <CommentBox>
+      <CommentBox ref={scrollRef}>
         {ChatObj !== undefined && (
-          <>
+          <div>
             {ChatObj.chat.map((item, index) => {
               return <Comment chatList={item} key={index} />;
             })}
-            <div ref={scrollRef}></div>
-          </>
+            {/* <div ref={scrollRef}></div> */}
+          </div>
         )}
       </CommentBox>
 
