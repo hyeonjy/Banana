@@ -7,7 +7,7 @@ import { ItemObj } from "../ItemObj";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { set } from "react-hook-form";
-import area from "../../DesktopView/components/Area";
+import area from "../../Area";
 import HomeMenu from "../components/HomeMenu";
 import { useEffect } from "react";
 
@@ -37,12 +37,12 @@ const RegionList = styled.div`
         list-style: none;
         flex-grow: 1;
         padding-right: 10px;
-
+        display: flex;
+        align-items: center;
         &:hover {
           background-color: whitesmoke;
         }
         span {
-          line-height: 38px;
           font-size: 15px;
         }
         &:active span {

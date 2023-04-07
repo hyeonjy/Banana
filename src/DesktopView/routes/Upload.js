@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { BackGround } from "./Gruop";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import area from "../components/Area";
+import area from "../../Area";
 
 const Container = styled.div`
   margin: 157px auto;
