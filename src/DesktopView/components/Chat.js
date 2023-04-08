@@ -30,43 +30,19 @@ const DHeaderIcon = styled(chats.HeaderIcon)``;
 
 const DChatsList = styled(chats.ChatsList)``;
 
-const Header = styled.div`
-  height: 25px;
-  display: flex;
-  position: fixed;
-  top: 0;
-  justify-content: space-between;
-  background-color: white;
-  padding: 15px 4%;
-  z-index: 999;
-  width: 92%;
-  border: 1px solid #e9ecef;
-
-  h1 {
-    font-size: 20px;
-    color: rgb(255, 232, 78);
-    font-weight: 800;
-    font-family: yg-jalnan;
-  }
-`;
-
-const HeaderIcon = styled(FontAwesomeIcon)`
-  font-size: 20px;
-`;
+// const DItemBox = styled(chats.ItemBox)`
+//   position: relative;
+//   width: fit-content;
+//   margin-top: 70px;
+//   z-index: 1;
+// `;
 
 const ItemBox = styled.div`
-  width: fit-content;
-  /* position: fixed; */
-  /* top: 70px; */
+  margin-top: 50px;
   background-color: white;
-  margin-top: 70px;
-  /* background-color: orange; */
-  display: flex;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
   padding: 15px 4%;
-  /* z-index: 999; */
-  /* width: 92%; */
   img {
     width: 50px;
     height: 50px;
@@ -131,10 +107,9 @@ function Chat(props) {
 
   // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
   const searchParams = new URLSearchParams(location.search);
-  const [userIdValue, setUserIdValue] = useState(searchParams.get("userId"));
-  const [itemIdValue, setItemIdValue] = useState(searchParams.get("itemId"));
-  // const userIdValue = searchParams.get("userId");
-  // const itemIdValue = searchParams.get("itemId");
+  const userIdValue = searchParams.get("userId");
+  const itemIdValue = searchParams.get("itemId");
+
   const filterItemObj = ItemObj.find(
     (item) => item.itemId === Number(itemIdValue)
   );
@@ -151,7 +126,6 @@ function Chat(props) {
   );
 
   useEffect(() => {
-    console.log("in");
     setChatObj(
       FilterUserObj.chats.find(
         (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
@@ -159,8 +133,6 @@ function Chat(props) {
     );
   }, [userIdValue, itemIdValue]);
 
-  console.log(userIdValue);
-  console.log(itemIdValue);
   console.log("filterUser: ", FilterUserObj);
   // setTimeout(console.log("chatobj: ", ChatObj), 3000);
   // setTimeout(() => console.log("chat", ChatObj), 3000);
