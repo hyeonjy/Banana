@@ -129,9 +129,9 @@ function Post() {
               }}
             >
               {/* PostImg */}
-              {item.img.map((src, index) => (
+              {item.img.map((item, index) => (
                 <ImgSlide key={index} onClick={handleImageClick}>
-                  <PostImg src={require(`../../Img/${item[0]}.jpg`)} />
+                  <PostImg src={require(`../../Img/${item}.jpg`)} />
                 </ImgSlide>
               ))}
               {/* CustomNav */}

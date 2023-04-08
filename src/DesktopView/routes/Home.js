@@ -151,7 +151,7 @@ function Home() {
     setHotList(
       hotList
         .sort(function (a, b) {
-          return Number(b.heart) - Number(a.heart);
+          return Number(b.meta.heart) - Number(a.meta.heart);
         })
         .slice(0, length)
     );
@@ -221,15 +221,17 @@ function Home() {
               <Product key={index}>
                 <Link
                   to={{
-                    pathname: `/post/${item.id}`,
+                    pathname: `/post/${item.itemId}`,
                     state: {
                       item,
                     },
                   }}
                 >
-                  <ProductImg src={item.imgURL} />
+                  <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
                   <ProductTitle>{item.title}</ProductTitle>
-                  <ProductDetail>{item.detail}</ProductDetail>
+                  <ProductDetail>
+                    {item.area} | {item.timeAgo}
+                  </ProductDetail>
                 </Link>
               </Product>
             ))}

@@ -110,15 +110,17 @@ const More = (props) => {
           <Product key={index} as="li">
             <Link
               to={{
-                pathname: `/post/${item.id}`,
+                pathname: `/post/${item.itemId}`,
                 state: {
                   item,
                 },
               }}
             >
-              <ProductImg src={item.imgURL[0]} />
+              <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
               <ProductTitle>{item.title}</ProductTitle>
-              <ProductDetail>{item.detail}</ProductDetail>
+              <ProductDetail>
+                {item.area} | {item.timeAgo}
+              </ProductDetail>
             </Link>
           </Product>
         ))}
