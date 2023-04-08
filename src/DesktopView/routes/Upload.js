@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import { itemsGroup } from "../ItemGroup";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { BackGround } from "./Gruop";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import area from "../../Area";
+import { itemsGroup } from "../../Data/ItemGroup";
+import area from "../../Data/Area";
 
 const Container = styled.div`
   margin: 157px auto;

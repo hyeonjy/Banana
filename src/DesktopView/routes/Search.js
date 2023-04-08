@@ -10,12 +10,12 @@ import {
   ProductTitle,
   ProductsBox,
 } from "./More";
-import { ProductList } from "../ItemObject";
 import { QueryDiv, QueryLi, QueryUl, queryArray } from "./Gruop";
 import NoItem from "../components/NoItem";
 import { useState } from "react";
 import Paging from "../components/Paging";
 import { useEffect } from "react";
+import { ItemObj } from "../../Data/ItemObj";
 
 const SearchContainer = styled(Container)`
   min-height: 750px;
@@ -51,7 +51,7 @@ function Search() {
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content"); // id( = main category)
   const pageValue = searchParams.get("page"); // id( = main category)
-  const searchItem = ProductList.filter(
+  const searchItem = ItemObj.filter(
     (item) =>
       item.title.includes(searchValue) || item.content.includes(searchValue)
   );
@@ -96,15 +96,17 @@ function Search() {
                 <Product key={index} as="li">
                   <Link
                     to={{
-                      pathname: `/post/${item.id}`,
+                      pathname: `/post/${item.itemId}`,
                       state: {
                         item,
                       },
                     }}
                   >
-                    <ProductImg src={item.imgURL[0]} />
+                    <ProductImg src={require(`../../Img/${item[0]}.jpg`)} />
                     <ProductTitle>{item.title}</ProductTitle>
-                    <ProductDetail>{item.detail}</ProductDetail>
+                    <ProductDetail>
+                      {item.area} |{item.timeAgo}
+                    </ProductDetail>
                   </Link>
                 </Product>
               ))}

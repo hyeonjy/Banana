@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { itemsGroup } from "../ItemGroup";
+import { itemsGroup } from "../../Data/ItemGroup";
 
 const Container = styled.div`
   width: 100%;

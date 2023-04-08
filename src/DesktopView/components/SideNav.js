@@ -1,9 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { itemsGroup } from "../ItemGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { itemsGroup } from "../../Data/ItemGroup";
 
 const SideNavContainer = styled.div`
   width: 160px;

@@ -6,10 +6,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import { ProductList } from "../ItemObject";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./ImgFullPage.css";
+import { ItemObj } from "../../Data/ItemObj";
 const ImgContainer = styled.div`
   position: absolute;
   z-index: 500;
@@ -66,8 +66,8 @@ const ImgFullPage = () => {
   //query string - (EX:img?object=0) - 이미지 query
   const searchParams = new URLSearchParams(location.search);
   const objectValue = searchParams.get("object"); // id(=object) 값 가져오기
-  const searchItem = ProductList.find(
-    (item) => item.id === Number(objectValue)
+  const searchItem = ItemObj.find(
+    (item) => item.itemId === Number(objectValue)
   );
   // post page에서 클릭한 Img 그대로 DP
   const index = Number(searchParams.get("index"));
@@ -91,9 +91,9 @@ const ImgFullPage = () => {
           // },
         }}
       >
-        {searchItem.imgURL.map((item, index) => (
+        {searchItem.img.map((item, index) => (
           <ImgSlide key={index}>
-            <EachImg key={index} src={item} />
+            <EachImg key={index} src={require(`../../Img/${item[0]}.jpg`)} />
           </ImgSlide>
         ))}
         <GoBackBtn
