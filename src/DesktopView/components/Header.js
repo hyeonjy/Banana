@@ -174,7 +174,9 @@ function Header() {
             <Link to="/upload">
               <span>글쓰기</span>
             </Link>
-            <span>채팅하기</span>
+            <Link to="/chat">
+              <span>채팅하기</span>
+            </Link>
           </DropdownMenu>
         </UserDropdown>
         <ShopIconLink to={{ pathname: "/mypage/heart", search: `?page=${1}` }}>
