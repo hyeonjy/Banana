@@ -150,9 +150,7 @@ function Group() {
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("category"); // id( = main category)
   const pageValue = searchParams.get("page");
-  const Group = itemsGroup.find(
-    (item) => item.itemId === Number(categoryValue)
-  );
+  const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
   const cateItem = ItemObj.filter((item) => item.main === Group.main);

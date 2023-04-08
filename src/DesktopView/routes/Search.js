@@ -102,7 +102,7 @@ function Search() {
                       },
                     }}
                   >
-                    <ProductImg src={require(`../../Img/${item[0]}.jpg`)} />
+                    <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
                     <ProductTitle>{item.title}</ProductTitle>
                     <ProductDetail>
                       {item.area} |{item.timeAgo}

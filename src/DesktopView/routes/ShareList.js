@@ -98,7 +98,7 @@ function ShareList() {
               postPerPage * (currentPage - 1) + postPerPage
             ).map((item, index) => (
               <ItemDiv key={index} to={`/post/${item.itemId}`}>
-                <ItemImg src={require(`../../Img/${item[0]}.jpg`)} />
+                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
                 <ItemDetailDiv>
                   <ItemTitle>{item.title}</ItemTitle>
                   <ItemDetail>

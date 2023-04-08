@@ -59,7 +59,7 @@ function SubGroup() {
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("subitem"); // id( = main category)
   const pageValue = searchParams.get("page");
-  const mainGroup = itemsGroup.find((item) => item.itemId === Number(main));
+  const mainGroup = itemsGroup.find((item) => item.id === Number(main));
   const subItems = ItemObj.filter(
     (item) => item.sub === categoryValue && item.main === mainGroup.main
   );

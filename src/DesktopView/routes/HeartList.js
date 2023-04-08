@@ -21,7 +21,7 @@ function HeartList() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pageValue = searchParams.get("page");
-  const [count, setCount] = useState(ItemObj.length); // 전체 아이템 개수
+  const [count, setCount] = useState(ItemObj.slice(0, 3).length); // 전체 아이템 개수
   const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
   const [postPerPage] = useState(8); // 한 페이지 아이템 수
   return (

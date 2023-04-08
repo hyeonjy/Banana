@@ -93,7 +93,7 @@ const ImgFullPage = () => {
       >
         {searchItem.img.map((item, index) => (
           <ImgSlide key={index}>
-            <EachImg key={index} src={require(`../../Img/${item[0]}.jpg`)} />
+            <EachImg key={index} src={require(`../../Img/${item}.jpg`)} />
           </ImgSlide>
         ))}
         <GoBackBtn
