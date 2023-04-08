@@ -6,7 +6,7 @@ import { faComment, faMessage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatList from "../components/ChatList";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { UserObj, LoginId } from "../../UserObj";
+import { LoginId, UserObj } from "../../Data/UserObj";
 
 const Container = styled.div``;
 const Header = styled.header`

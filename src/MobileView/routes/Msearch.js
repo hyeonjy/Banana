@@ -1,5 +1,5 @@
 import { useHistory, useLocation } from "react-router-dom";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
 
 import styled from "styled-components";
 import { faChevronLeft, faX } from "@fortawesome/free-solid-svg-icons";

@@ -3,11 +3,13 @@ import { BackIcon, Header } from "./MUpload";
 import { faCaretDown, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useLocation } from "react-router-dom";
 import { ShowItemFn } from "../components/ShowItem";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
+
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { set } from "react-hook-form";
-import area from "../../Area";
+import area from "../../Data/Area";
+
 import HomeMenu from "../components/HomeMenu";
 import { useEffect } from "react";
 

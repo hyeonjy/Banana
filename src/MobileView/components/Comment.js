@@ -3,8 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 import Message from "./Message";
-import { UserObj } from "../../UserObj";
-import { LoginId } from "../../UserObj";
+import { LoginId } from "../../Data/UserObj";
 
 const DateBox = styled.div`
   display: flex;

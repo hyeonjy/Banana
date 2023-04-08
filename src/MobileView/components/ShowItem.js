@@ -1,6 +1,6 @@
 import { Link, Switch, useHistory, useLocation } from "react-router-dom";
 import styled, { css } from "styled-components";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
 import { useState } from "react";
 import { useEffect } from "react";
 const ItemDiv = styled.div`

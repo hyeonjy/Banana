@@ -1,6 +1,6 @@
 import { Link, useHistory, useParams } from "react-router-dom";
 import styled, { css, keyframes } from "styled-components";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
 import banana from "../../Img/banana.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +20,7 @@ import { useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import User from "../components/User";
 import Modal from "../../DesktopView/components/Modal";
-import { LoginId, UserObj } from "../../UserObj";
+import { LoginId, UserObj } from "../../Data/UserObj";
 
 const Container = styled.div`
   background-color: white;
@@ -168,7 +168,9 @@ function MDetailpost(props) {
   const [activeGrade, setActiveGrade] = useState(false);
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
-  const filterItemObj = ItemObj.find((item) => item.id === Number(clothesid));
+  const filterItemObj = ItemObj.find(
+    (item) => item.itemId === Number(clothesid)
+  );
   // 작성자 user obj
   const FilterUserObj = UserObj.find(
     (user) => user.id === filterItemObj.userId
@@ -268,7 +270,7 @@ function MDetailpost(props) {
           </div>
 
           <PostSubtitle>
-            {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAge}
+            {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAgo}
           </PostSubtitle>
         </Post>
         {/* 게시글 내용 */}
@@ -287,7 +289,7 @@ function MDetailpost(props) {
           >
             <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
           </HeartSvg>
-          <Morehits>조회수 {hits}</Morehits>
+          <Morehits>조회수 {filterItemObj.meta.view}</Morehits>
         </PostMore>
         {/* 채팅하기 버튼 */}
         {isWriter ? (
