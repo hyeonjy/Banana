@@ -149,8 +149,8 @@ const PostRightContents = ({ item, setActiveGrade }) => {
         >
           <PostTitle>{item.title}</PostTitle>
           <PostDetail>
-            {item.detail}
-            <PostView>조회수 {item.view}</PostView>
+            {item.area} | {item.timeAgo}
+            <PostView>조회수 {item.meta.view}</PostView>
           </PostDetail>
         </div>
         <div

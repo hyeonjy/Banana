@@ -5,8 +5,6 @@ import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
-import { itemsGroup } from "../ItemGroup";
-import { ProductList } from "../ItemObject";
 import {
   WrapDiv,
   BackGround,
@@ -25,6 +23,8 @@ import {
   TopCate,
 } from "./Gruop";
 import Paging from "../components/Paging";
+import { itemsGroup } from "../../Data/ItemGroup";
+import { ItemObj } from "../../Data/ItemObj";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -59,8 +59,8 @@ function SubGroup() {
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("subitem"); // id( = main category)
   const pageValue = searchParams.get("page");
-  const mainGroup = itemsGroup.find((item) => item.id === Number(main));
-  const subItems = ProductList.filter(
+  const mainGroup = itemsGroup.find((item) => item.itemId === Number(main));
+  const subItems = ItemObj.filter(
     (item) => item.sub === categoryValue && item.main === mainGroup.main
   );
 
@@ -162,15 +162,19 @@ function SubGroup() {
                     <Product
                       key={index}
                       to={{
-                        pathname: `/post/${item.id}`,
+                        pathname: `/post/${item.itemId}`,
                         state: {
                           item,
                         },
                       }}
                     >
-                      <ProductImg src={item.imgURL[0]} />
+                      <ProductImg
+                        src={require(`../../Img/${item.img[0]}.jpg`)}
+                      />
                       <ProductTitle>{item.title}</ProductTitle>
-                      <ProductDetail>{item.detail}</ProductDetail>
+                      <ProductDetail>
+                        {item.area}|{item.timeAgo}
+                      </ProductDetail>
                     </Product>
                   ))}
               </ItemDiv>

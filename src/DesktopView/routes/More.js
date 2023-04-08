@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { ProductList } from "../ItemObject";
-import { useEffect, useState } from "react";
+
 import { Link, useHistory, useLocation } from "react-router-dom";
 
 export const Container = styled.div`

@@ -6,9 +6,10 @@ import styled from "styled-components";
 import { Container } from "./Home";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
-import { itemsGroup } from "../ItemGroup";
-import { ProductList } from "../ItemObject";
+
 import Paging from "../components/Paging";
+import { itemsGroup } from "../../Data/ItemGroup";
+import { ItemObj } from "../../Data/ItemObj";
 
 export const WrapDiv = styled(Container)`
   justify-content: space-evenly;
@@ -149,10 +150,12 @@ function Group() {
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("category"); // id( = main category)
   const pageValue = searchParams.get("page");
-  const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
+  const Group = itemsGroup.find(
+    (item) => item.itemId === Number(categoryValue)
+  );
 
   //현재 cate에 해당하는 item
-  const cateItem = ProductList.filter((item) => item.main === Group.main);
+  const cateItem = ItemObj.filter((item) => item.main === Group.main);
 
   //페이지네이션
   const [count, setCount] = useState(cateItem.length); // 전체 아이템 개수
@@ -221,15 +224,19 @@ function Group() {
                     <Product
                       key={index}
                       to={{
-                        pathname: `/post/${item.id}`,
+                        pathname: `/post/${item.itemId}`,
                         state: {
                           item,
                         },
                       }}
                     >
-                      <ProductImg src={item.imgURL[0]} />
+                      <ProductImg
+                        src={require(`../../Img/${item.img[0]}.jpg`)}
+                      />
                       <ProductTitle>{item.title}</ProductTitle>
-                      <ProductDetail>{item.detail}</ProductDetail>
+                      <ProductDetail>
+                        {item.area}|{item.timeAgo}
+                      </ProductDetail>
                     </Product>
                   ))}
               </ItemDiv>

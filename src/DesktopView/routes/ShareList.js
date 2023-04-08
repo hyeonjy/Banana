@@ -1,9 +1,9 @@
 import { Link, useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { ProductList } from "../ItemObject";
 import { useState } from "react";
 import { useEffect } from "react";
 import Paging from "../components/Paging";
+import { ItemObj } from "../../Data/ItemObj";
 
 export const PageContainer = styled.div`
   background-color: #f5f5f594;
@@ -83,25 +83,27 @@ function ShareList() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pageValue = searchParams.get("page");
-  const [count, setCount] = useState(ProductList.length); // 전체 아이템 개수
+  const [count, setCount] = useState(ItemObj.length); // 전체 아이템 개수
   const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
   const [postPerPage] = useState(8); // 한 페이지 아이템 수
 
   return (
     <PageContainer>
-      <NavTitle>나눔 목록 ({ProductList.length})</NavTitle>
+      <NavTitle>나눔 목록 ({ItemObj.length})</NavTitle>
       <div style={{ minHeight: "400px" }}>
         <ItemWrap>
-          {ProductList ? (
-            ProductList.slice(
+          {ItemObj ? (
+            ItemObj.slice(
               postPerPage * (currentPage - 1),
               postPerPage * (currentPage - 1) + postPerPage
             ).map((item, index) => (
-              <ItemDiv key={index} to={`/post/${item.id}`}>
-                <ItemImg src={item.imgURL} />
+              <ItemDiv key={index} to={`/post/${item.itemId}`}>
+                <ItemImg src={require(`../../Img/${item[0]}.jpg`)} />
                 <ItemDetailDiv>
                   <ItemTitle>{item.title}</ItemTitle>
-                  <ItemDetail>{item.detail}</ItemDetail>
+                  <ItemDetail>
+                    {item.area}|{item.timeAgo}
+                  </ItemDetail>
                 </ItemDetailDiv>
               </ItemDiv>
             ))

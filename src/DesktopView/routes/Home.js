@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useParams } from "react-router-dom";
 import Banner from "../components/Banner";
-import { ProductList } from "../ItemObject";
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import { ItemObj } from "../../Data/ItemObj";
 
 export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
@@ -137,12 +138,12 @@ const MoreBtn = styled.div`
 
 function Home() {
   const history = useHistory();
-  const [newList, setNewList] = useState([...ProductList]);
-  const [hotList, setHotList] = useState([...ProductList]);
+  const [newList, setNewList] = useState([...ItemObj]);
+  const [hotList, setHotList] = useState([...ItemObj]);
 
   //최신상품과 인기상품 List 저장
   useEffect(() => {
-    let length = ProductList.length > 25 ? 25 : ProductList.length;
+    let length = ItemObj.length > 25 ? 25 : ItemObj.length;
 
     /**New는 최신순으로 slice만 진행 */
     setNewList(newList.slice(0, length));
@@ -187,15 +188,17 @@ function Home() {
               <Product key={index}>
                 <Link
                   to={{
-                    pathname: `/post/${item.id}`,
+                    pathname: `/post/${item.itemId}`,
                     state: {
                       item,
                     },
                   }}
                 >
-                  <ProductImg src={item.imgURL[0]} />
+                  <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
                   <ProductTitle>{item.title}</ProductTitle>
-                  <ProductDetail>{item.detail}</ProductDetail>
+                  <ProductDetail>
+                    {item.area} | {item.timeAgo}
+                  </ProductDetail>
                 </Link>
               </Product>
             ))}

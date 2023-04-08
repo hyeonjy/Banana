@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { ProductList } from "../ItemObject";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
@@ -10,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ItemObj } from "../../Data/ItemObj";
 
 const NewContainer = styled.div`
   width: 96%;
@@ -83,7 +83,7 @@ const EachDetail = styled.span`
 //------------------------------//
 
 function NewItem() {
-  const NewtList = ProductList.slice(0, 8);
+  const NewtList = ItemObj.slice(0, 8);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
@@ -127,10 +127,12 @@ function NewItem() {
         >
           {NewtList.map((item, index) => (
             <SwiperSlide key={index}>
-              <EachItem to={`/post/${item.id}`}>
-                <EachThum src={item.imgURL[0]} />
+              <EachItem to={`/post/${item.itemId}`}>
+                <EachThum src={require(`../../Img/${item.img[0]}.jpg`)} />
                 <EachTitle>{item.title}</EachTitle>
-                <EachDetail>{item.detail}</EachDetail>
+                <EachDetail>
+                  {item.area} | {item.timeAgo}
+                </EachDetail>
               </EachItem>
             </SwiperSlide>
           ))}

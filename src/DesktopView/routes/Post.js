@@ -17,8 +17,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Post.css";
-import { ProductList } from "../ItemObject";
+
 import PostRightContents from "../components/PostDatil";
+import { ItemObj } from "../../Data/ItemObj";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -73,14 +74,14 @@ const PostImg = styled.img`
 function Post() {
   const history = useHistory(); // img Full screen 이동
   const { postId } = useParams();
-  const item = ProductList.find((item) => item.id === Number(postId)); // Post info query
+  const item = ItemObj.find((item) => item.itemId === Number(postId)); // Post info query
   const [imgCurrentIdx, setImgCurrentIdx] = useState(0); // 현재 img 페이지 index
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
 
   //img 클릭 시 Fullscreen
   function handleImageClick() {
     const searchParams = new URLSearchParams();
-    searchParams.append("object", item.id);
+    searchParams.append("object", item.itemId);
     searchParams.append("index", imgCurrentIdx);
     history.push({
       pathname: "/img",
@@ -94,7 +95,7 @@ function Post() {
   };
 
   //img 1개 -> Navigation hidden
-  const shouldHideNavigation = item.imgURL.length <= 1;
+  const shouldHideNavigation = item.img.length <= 1;
 
   return (
     <>
@@ -128,9 +129,9 @@ function Post() {
               }}
             >
               {/* PostImg */}
-              {item.imgURL.map((src, index) => (
+              {item.img.map((src, index) => (
                 <ImgSlide key={index} onClick={handleImageClick}>
-                  <PostImg src={src} />
+                  <PostImg src={require(`../../Img/${item[0]}.jpg`)} />
                 </ImgSlide>
               ))}
               {/* CustomNav */}
