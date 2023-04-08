@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import { Container } from "./Home";
 
 function Chat() {
   return (
-    <Container>
+    <div>
       <h1>chat</h1>
-    </Container>
+    </div>
   );
 }
 

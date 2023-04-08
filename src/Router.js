@@ -12,7 +12,7 @@ import Login from "./DesktopView/components/Login";
 import Upload from "./DesktopView/routes/Upload";
 import More from "./DesktopView/routes/More";
 import Search from "./DesktopView/routes/Search";
-import Chat from "./DesktopView/routes/Chat";
+import Chats from "./DesktopView/routes/Chats";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -52,7 +52,7 @@ export function DeskTopRouter() {
         </Route>
 
         <Route path="/chat">
-          <Chat />
+          <Chats />
         </Route>
       </Switch>
       <Footer />
