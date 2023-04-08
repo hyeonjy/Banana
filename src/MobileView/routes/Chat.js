@@ -1,5 +1,5 @@
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { LoginId, UserObj } from "../../UserObj";
+import { LoginId, UserObj } from "../../Data/UserObj";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,7 +13,7 @@ import Comment from "../components/Comment";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { set, useForm } from "react-hook-form";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
 import { useRef } from "react";
 
 const Container = styled.div``;
@@ -120,7 +120,9 @@ function Chat(props) {
   const searchParams = new URLSearchParams(location.search);
   const userIdValue = searchParams.get("userId");
   const itemIdValue = searchParams.get("itemId");
-  const filterItemObj = ItemObj.find((item) => item.id === Number(itemIdValue));
+  const filterItemObj = ItemObj.find(
+    (item) => item.itemId === Number(itemIdValue)
+  );
 
   // 유저 Obj 가져오기
   const FilterUserObj = UserObj.find((item) => item.id === LoginId);

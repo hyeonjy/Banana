@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { ItemObj } from "../ItemObj";
+import { ItemObj } from "../../Data/ItemObj";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -74,7 +74,9 @@ function Mimages() {
   // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
   const searchParams = new URLSearchParams(location.search);
   const objectValue = searchParams.get("object");
-  const filterItemObj = ItemObj.find((item) => item.id === Number(objectValue));
+  const filterItemObj = ItemObj.find(
+    (item) => item.itemId === Number(objectValue)
+  );
   const index = Number(searchParams.get("index"));
 
   const settings = {

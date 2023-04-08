@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { UserObj } from "../../UserObj";
+import { UserObj } from "../../Data/UserObj";
 
 const Container = styled.div`
   display: flex;

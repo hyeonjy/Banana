@@ -8,8 +8,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import area from "../../Area";
-import { itemsGroup } from "../../DesktopView/ItemGroup";
+import area from "../../Data/Area";
+
+import { itemsGroup } from "../../Data/ItemGroup";
+
 import { useState } from "react";
 import ImgUpload from "../components/ImgUpload";
 import { useEffect } from "react";
