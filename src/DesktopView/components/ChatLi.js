@@ -9,16 +9,38 @@ const ChatListContainer = styled.div`
   width: fit-content;
   background-color: white;
   position: relative;
-  border: 1px solid whitesmoke;
+  border-left: 1px solid whitesmoke;
+  border-right: 1px solid whitesmoke;
 `;
 
 const DHeader = styled(chats.Header)`
   position: absolute;
+  z-index: 0;
 `;
-const DHeaderTitle = styled(chats.HeaderTitle)``;
+
+const DHeaderTitle = styled(chats.HeaderTitle)`
+  font-size: 13px;
+  color: black;
+  font-family: "pretendard";
+  font-weight: 700;
+`;
+const DUserImg = styled.img`
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid #80808061;
+`;
+const DUser = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
 const DChatsList = styled(chats.ChatsList)``;
-const DHeaderIcon = styled(chats.HeaderIcon)``;
+const DHeaderIcon = styled(chats.HeaderIcon)`
+  font-size: 20px;
+  color: orange;
+`;
 function ChatLi() {
   const FilterUserObj = UserObj.find((item) => item.id === LoginId);
   const history = useHistory();
@@ -37,7 +59,11 @@ function ChatLi() {
   return (
     <ChatListContainer>
       <DHeader>
-        <DHeaderTitle>Chat</DHeaderTitle>
+        <DUser>
+          <DUserImg src={require(`../../Img/${FilterUserObj.src}`)} />
+          <DHeaderTitle>{FilterUserObj.id}</DHeaderTitle>
+        </DUser>
+
         <DHeaderIcon icon={faComment} />
       </DHeader>
       <DChatsList>
