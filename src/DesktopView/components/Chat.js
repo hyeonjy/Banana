@@ -11,12 +11,24 @@ import {
 import { useState } from "react";
 import Comment from "../components/Comment";
 import { useEffect } from "react";
-import { useCallback } from "react";
-import { set, useForm } from "react-hook-form";
 import { ItemObj } from "../../Data/ItemObj";
 import { useRef } from "react";
+import * as chats from "../../MobileView/routes/Chats";
 
-const Container = styled.div``;
+const Container = styled.div`
+  width: fit-content;
+  background-color: white;
+  position: relative;
+  border: 1px solid whitesmoke;
+`;
+
+const DHeader = styled(chats.Header)`
+  position: absolute;
+`;
+
+const DHeaderIcon = styled(chats.HeaderIcon)``;
+
+const DChatsList = styled(chats.ChatsList)``;
 
 const Header = styled.div`
   height: 25px;
@@ -43,17 +55,18 @@ const HeaderIcon = styled(FontAwesomeIcon)`
 `;
 
 const ItemBox = styled.div`
-  position: fixed;
-  top: 56.6px;
+  width: fit-content;
+  /* position: fixed; */
+  /* top: 70px; */
   background-color: white;
-  /* margin-top: 56.6px; */
+  margin-top: 70px;
   /* background-color: orange; */
   display: flex;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
   padding: 15px 4%;
-  z-index: 999;
-  width: 92%;
+  /* z-index: 999; */
+  /* width: 92%; */
   img {
     width: 50px;
     height: 50px;
@@ -75,8 +88,8 @@ const ItemContent = styled.div`
 `;
 
 const CommentBox = styled.div`
-  margin-top: 150px;
-  margin-bottom: 80px;
+  margin-top: 50px;
+  /* margin-bottom: 80px; */
   overflow-y: scroll;
 `;
 
@@ -87,11 +100,11 @@ const MessageForm = styled.form`
   background-color: rgb(242, 242, 245);
   align-items: center;
   justify-content: space-between;
-  position: fixed;
-  bottom: 0;
+  /* position: fixed; */
+  /* bottom: 0; */
   padding: 5px 4%;
-  z-index: 999;
-  width: 92%;
+  /* z-index: 999; */
+  /* width: 92%; */
   button {
     border: none;
     padding: 0;
@@ -118,8 +131,10 @@ function Chat(props) {
 
   // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
   const searchParams = new URLSearchParams(location.search);
-  const userIdValue = searchParams.get("userId");
-  const itemIdValue = searchParams.get("itemId");
+  const [userIdValue, setUserIdValue] = useState(searchParams.get("userId"));
+  const [itemIdValue, setItemIdValue] = useState(searchParams.get("itemId"));
+  // const userIdValue = searchParams.get("userId");
+  // const itemIdValue = searchParams.get("itemId");
   const filterItemObj = ItemObj.find(
     (item) => item.itemId === Number(itemIdValue)
   );
@@ -134,6 +149,21 @@ function Chat(props) {
       (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
     )
   );
+
+  useEffect(() => {
+    console.log("in");
+    setChatObj(
+      FilterUserObj.chats.find(
+        (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
+      )
+    );
+  }, [userIdValue, itemIdValue]);
+
+  console.log(userIdValue);
+  console.log(itemIdValue);
+  console.log("filterUser: ", FilterUserObj);
+  // setTimeout(console.log("chatobj: ", ChatObj), 3000);
+  // setTimeout(() => console.log("chat", ChatObj), 3000);
   const OtherChatObj = FilterOtherUserObj?.chats.find(
     (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
   );
@@ -273,16 +303,16 @@ function Chat(props) {
         <h1>선택한 목록이 없습니다.</h1>
       ) : (
         <>
-          <Header>
-            <HeaderIcon
+          <DHeader>
+            <DHeaderIcon
               onClick={() => {
                 history.goBack();
               }}
               icon={faChevronLeft}
             />
             <h1>{userIdValue}</h1>
-            <HeaderIcon icon={faBars} />
-          </Header>
+            <DHeaderIcon icon={faBars} />
+          </DHeader>
           {/* 채팅 나눔 물품 */}
           <ItemBox>
             <img src={require(`../../Img/${filterItemObj.img[0]}.jpg`)} />
