@@ -1,5 +1,12 @@
+import styled from "styled-components";
+import { Container } from "./Home";
+
 function Chat() {
-  return <h1>Chat</h1>;
+  return (
+    <Container>
+      <h1>chat</h1>
+    </Container>
+  );
 }
 
 export default Chat;
