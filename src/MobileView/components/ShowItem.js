@@ -143,13 +143,13 @@ export function ShowItemFn({
             </QueryDiv>
           )}
           {item.map((item, index) => (
-            <Link to={`/clothes/${item.id}`} key={index}>
+            <Link to={`/clothes/${item.itemId}`} key={index}>
               <Item>
                 <ItemText>
                   <ItemTitle>{item.title}</ItemTitle>
                   <ItemContent>{item.content}</ItemContent>
                   <ItemArea>{item.area}</ItemArea>
-                  <ItemTimeAgo>{item.timeAge}</ItemTimeAgo>
+                  <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
                 </ItemText>
                 <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
               </Item>
