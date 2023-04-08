@@ -1,43 +1,25 @@
-import styled, { css } from "styled-components";
-import HomeMenu from "../components/HomeMenu";
-import { useState } from "react";
-import User from "../components/User";
-import { faComment, faMessage } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ChatList from "../components/ChatList";
-import { Link, useHistory, useParams } from "react-router-dom";
+import styled from "styled-components";
+import Chats from "../../MobileView/routes/Chats";
 import { LoginId, UserObj } from "../../Data/UserObj";
-
-const Container = styled.div``;
-export const Header = styled.header`
-  height: 25px;
-  display: flex;
-  position: fixed;
-  top: 0;
-  justify-content: space-between;
+import { useHistory } from "react-router-dom";
+import * as chats from "../../MobileView/routes/Chats";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
+import ChatList from "../../MobileView/components/ChatList";
+const ChatListContainer = styled.div`
+  width: fit-content;
   background-color: white;
-  padding: 15px 4%;
-  z-index: 999;
-  width: 92%;
-  border: 1px solid #e9ecef;
-`;
-export const HeaderTitle = styled.h1`
-  font-size: 20px;
-  color: rgb(255, 232, 78);
-  font-weight: 800;
-  font-family: yg-jalnan;
+  position: relative;
+  border: 1px solid whitesmoke;
 `;
 
-export const HeaderIcon = styled(FontAwesomeIcon)`
-  font-size: 25px;
+const DHeader = styled(chats.Header)`
+  position: absolute;
 `;
+const DHeaderTitle = styled(chats.HeaderTitle)``;
 
-export const ChatsList = styled.div`
-  margin-top: 55px;
-  /* background-color: orange; */
-`;
-
-function Chats() {
+const DChatsList = styled(chats.ChatsList)``;
+const DHeaderIcon = styled(chats.HeaderIcon)``;
+function ChatLi() {
   const FilterUserObj = UserObj.find((item) => item.id === LoginId);
   const history = useHistory();
 
@@ -53,12 +35,12 @@ function Chats() {
   };
 
   return (
-    <Container>
-      <Header>
-        <HeaderTitle>Chat</HeaderTitle>
-        <HeaderIcon icon={faComment} />
-      </Header>
-      <ChatsList>
+    <ChatListContainer>
+      <DHeader>
+        <DHeaderTitle>Chat</DHeaderTitle>
+        <DHeaderIcon icon={faComment} />
+      </DHeader>
+      <DChatsList>
         {FilterUserObj.chats.length === 0 ? (
           <div
             style={{
@@ -84,10 +66,9 @@ function Chats() {
             })}
           </>
         )}
-      </ChatsList>
-      <HomeMenu />
-    </Container>
+      </DChatsList>
+    </ChatListContainer>
   );
 }
 
-export default Chats;
+export default ChatLi;
