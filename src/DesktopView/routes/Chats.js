@@ -7,9 +7,10 @@ import { useEffect, useState } from "react";
 const ChatContainer = styled(Container)`
   padding-top: 70px;
   width: 1000px;
-  margin: 0 auto;
+  margin: 50px auto;
   display: flex;
   justify-content: center;
+  height: 600px;
 `;
 const ChatDiv = styled.div`
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;

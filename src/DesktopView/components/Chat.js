@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { ItemObj } from "../../Data/ItemObj";
 import { useRef } from "react";
 import * as chats from "../../MobileView/routes/Chats";
-
+import banana from "../../Img/banana.png";
 const Container = styled.div`
   width: fit-content;
   background-color: white;
@@ -43,6 +43,7 @@ const ItemBox = styled.div`
   align-items: center;
   border-bottom: 1px solid #e9ecef;
   padding: 15px 4%;
+  display: flex;
   img {
     width: 50px;
     height: 50px;
@@ -97,6 +98,24 @@ const MessageInput = styled.input`
   padding: 5px 10px;
   &:focus {
     outline: none;
+  }
+`;
+
+export const NoSelectChatLi = styled.div`
+  width: 397.5px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+  gap: 10px;
+  img {
+    width: 85px;
+    height: 150px;
+  }
+  h1 {
+    font-weight: 600;
   }
 `;
 
@@ -264,11 +283,15 @@ function Chat({ FilterUserObj, setAdd }) {
     }
     setMessage("");
   };
+
   return (
     <Container>
       {/* 상대방 ID 헤더 */}
       {filterItemObj === undefined ? (
-        <h1>선택한 목록이 없습니다.</h1>
+        <NoSelectChatLi>
+          <img src={banana} />
+          <h1>선택한 채팅 목록이 없습니다.</h1>
+        </NoSelectChatLi>
       ) : (
         <>
           <DHeader>

@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import * as chats from "../../MobileView/routes/Chats";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import ChatList from "../../MobileView/components/ChatList";
+import { NoSelectChatLi } from "./Chat";
 
 const ChatListContainer = styled.div`
   width: fit-content;
@@ -35,7 +36,10 @@ const DUser = styled.div`
   gap: 8px;
 `;
 
-const DChatsList = styled(chats.ChatsList)``;
+const DChatsList = styled(chats.ChatsList)`
+  width: 300px;
+  height: calc(100% - 55px);
+`;
 const DHeaderIcon = styled(chats.HeaderIcon)`
   font-size: 20px;
   color: orange;
@@ -53,7 +57,9 @@ function ChatLi({ FilterUserObj }) {
       search: "?" + searchParams.toString(),
     });
   };
-
+  const NoChatDiv = styled(NoSelectChatLi)`
+    width: 300px;
+  `;
   return (
     <ChatListContainer>
       <DHeader>
@@ -65,20 +71,12 @@ function ChatLi({ FilterUserObj }) {
         <DHeaderIcon icon={faComment} />
       </DHeader>
       <DChatsList>
-        {FilterUserObj.chats.length === 0 ? (
-          <div
-            style={{
-              display: "flex",
-              height: "100vh",
-              alignItems: "Center",
-              justifyContent: "center",
-              marginTop: "-55px",
-              color: "gray",
-              fontSize: "23px",
-            }}
-          >
-            채팅목록이 없습니다.
-          </div>
+        {/**FilterUserObj.chats.length === 0 */}
+        {true ? (
+          <NoChatDiv>
+            {" "}
+            <h1>채팅목록이 없습니다.</h1>
+          </NoChatDiv>
         ) : (
           <>
             {FilterUserObj.chats.map((chats, index) => {
