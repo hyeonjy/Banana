@@ -175,13 +175,7 @@ function Chat({ FilterUserObj, setAdd }) {
       // messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [message, focusState]);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [scrollRef.current]);
+  }, [message, focusState, scrollRef.current]);
 
   const onChange = (event) => {
     const {
