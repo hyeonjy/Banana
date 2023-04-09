@@ -177,6 +177,12 @@ function Chat({ FilterUserObj, setAdd }) {
     }
   }, [message, focusState]);
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [scrollRef.current]);
+
   const onChange = (event) => {
     const {
       target: { name, value },
