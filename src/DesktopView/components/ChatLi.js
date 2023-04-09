@@ -4,6 +4,7 @@ import * as chats from "../../MobileView/routes/Chats";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import ChatList from "../../MobileView/components/ChatList";
 import { NoSelectChatLi } from "./Chat";
+import { useState } from "react";
 
 const ChatListContainer = styled.div`
   width: fit-content;
@@ -47,8 +48,10 @@ const DHeaderIcon = styled(chats.HeaderIcon)`
 function ChatLi({ FilterUserObj }) {
   const history = useHistory();
 
+  const [selectChat, setSelectChat] = useState("");
   //채팅목록 클릭 이벤트
   const handleChatClick = (props) => {
+    setSelectChat(props);
     const searchParams = new URLSearchParams();
     searchParams.append("userId", props.id);
     searchParams.append("itemId", props.itemId);
@@ -60,6 +63,7 @@ function ChatLi({ FilterUserObj }) {
   const NoChatDiv = styled(NoSelectChatLi)`
     width: 300px;
   `;
+
   return (
     <ChatListContainer>
       <DHeader>
@@ -82,7 +86,11 @@ function ChatLi({ FilterUserObj }) {
             {FilterUserObj.chats.map((chats, index) => {
               return (
                 <div onClick={() => handleChatClick(chats)} key={index}>
-                  <ChatList chats={chats} index={index} />
+                  <ChatList
+                    chats={chats}
+                    index={index}
+                    isActive={selectChat === chats}
+                  />
                 </div>
               );
             })}

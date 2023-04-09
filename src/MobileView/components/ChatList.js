@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { LoginId, UserObj } from "../../Data/UserObj";
 
 export const Container = styled.div`
+  background-color: ${(props) => (props.isActive ? "#cbcbcb47" : "white")};
   padding: 15px 20px;
   display: flex;
   align-items: center;
@@ -11,7 +12,7 @@ export const Container = styled.div`
     width: 50px;
     border-radius: 15px;
     margin-right: 15px;
-    border: 1px solid #e9ecef;
+    background-color: white;
   }
   border-bottom: 1px solid #e9ecef;
 `;
@@ -23,7 +24,7 @@ export const ChatContent = styled.div`
     margin-bottom: 8px;
   }
   span {
-    color: rgba(0, 0, 0, 0.3);
+    color: rgb(0 0 0 / 59%);
     font-size: 13px;
 
     display: block;
@@ -34,11 +35,11 @@ export const ChatContent = styled.div`
   }
 `;
 
-function ChatList({ chats }) {
+function ChatList({ chats, isActive }) {
   const commentLength =
     chats.chat[chats.chat.length - 1].commentList.length - 1;
   return (
-    <Container>
+    <Container isActive={isActive}>
       <img src={require(`../../Img/${chats.src}`)} />
       <ChatContent>
         <h1>{chats.id}</h1>

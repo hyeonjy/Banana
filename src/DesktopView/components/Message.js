@@ -48,7 +48,8 @@ const ContentBox = styled.div`
 
 const Author = styled.h1`
   margin-bottom: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
+  font-size: 14px;
   ${(props) => {
     if (props.isUser) {
       return css`
@@ -59,14 +60,16 @@ const Author = styled.h1`
 `;
 
 const BubbleBox = styled.div`
-  background-color: #f2f2f5;
+  background-color: ${(props) =>
+    props.isUser ? "rgba(255, 200, 98, 0.93)" : " #f2f2f5"};
+  color: ${(props) => (props.isUser ? "white" : " black")};
+
   padding: 13px;
-  font-size: 15px;
+  font-size: 13px;
   border-radius: 15px;
   margin-right: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   max-width: 240px;
-
+  font-weight: ${(props) => (props.isUser ? "600" : " 500")};
   h1 {
     display: inline-block;
     max-width: 230px;
@@ -83,7 +86,7 @@ const BubbleBox = styled.div`
 
 const TimeSpan = styled.span`
   opacity: 0.8;
-  font-size: 14px;
+  font-size: 12px;
   ${(props) => {
     if (props.isUser) {
       return css`
@@ -101,7 +104,7 @@ function Message({ itemObj, isUser }) {
       <ContentBox isUser={isUser}>
         <div>
           <Author isUser={isUser}>{itemObj.id}</Author>
-          <BubbleBox>
+          <BubbleBox isUser={isUser}>
             <h1>{itemObj.content}</h1>
           </BubbleBox>
         </div>

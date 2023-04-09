@@ -26,6 +26,10 @@ const Container = styled.div`
 const DHeader = styled(chats.Header)`
   position: absolute;
   z-index: 1;
+  justify-content: center;
+  h1 {
+    font-weight: 600;
+  }
 `;
 
 const DHeaderIcon = styled(chats.HeaderIcon)``;
@@ -71,6 +75,17 @@ const CommentBox = styled.div`
   /* margin-bottom: 80px; */
   overflow-y: scroll;
   height: calc(100% - 190px);
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgb(146, 164, 178); /* 스크롤바의 색상 */
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgba(121, 121, 121, 0.3); /*스크롤바 뒷 배경 색상*/
+    border-radius: 12px;
+  }
 `;
 
 const MessageForm = styled.form`
@@ -304,14 +319,7 @@ function Chat({ FilterUserObj, setAdd }) {
       ) : (
         <>
           <DHeader>
-            <DHeaderIcon
-              onClick={() => {
-                history.goBack();
-              }}
-              icon={faChevronLeft}
-            />
             <h1>{userIdValue}</h1>
-            <DHeaderIcon icon={faBars} />
           </DHeader>
           {/* 채팅 나눔 물품 */}
           <ItemBox>

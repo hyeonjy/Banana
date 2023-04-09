@@ -40,9 +40,10 @@ export const ChatsList = styled.div`
 function Chats() {
   const FilterUserObj = UserObj.find((item) => item.id === LoginId);
   const history = useHistory();
-
+  const [selectChat, setSelectChat] = useState("");
   //채팅목록 클릭 이벤트
   const handleChatClick = (props) => {
+    setSelectChat(props);
     const searchParams = new URLSearchParams();
     searchParams.append("userId", props.id);
     searchParams.append("itemId", props.itemId);
@@ -78,7 +79,7 @@ function Chats() {
             {FilterUserObj.chats.map((chats, index) => {
               return (
                 <div onClick={() => handleChatClick(chats)} key={index}>
-                  <ChatList chats={chats} />
+                  <ChatList chats={chats} isActive={selectChat === chats} />
                 </div>
               );
             })}
