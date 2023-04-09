@@ -61,15 +61,15 @@ const Author = styled.h1`
 
 const BubbleBox = styled.div`
   background-color: ${(props) =>
-    props.isUser ? "rgba(255, 200, 98, 0.93)" : " #f2f2f5"};
-  color: ${(props) => (props.isUser ? "white" : " black")};
+    props.isUser ? "rgb(255 241 0 / 93%)" : " #f2f2f5"};
 
+  color: black;
   padding: 13px;
   font-size: 13px;
   border-radius: 15px;
   margin-right: 5px;
   max-width: 240px;
-  font-weight: ${(props) => (props.isUser ? "600" : " 500")};
+  font-weight: 500;
   h1 {
     display: inline-block;
     max-width: 230px;
