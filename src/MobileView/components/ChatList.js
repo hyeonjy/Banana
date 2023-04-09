@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
+import { LoginId, UserObj } from "../../Data/UserObj";
 
-const Container = styled.div`
+export const Container = styled.div`
   padding: 15px 20px;
   display: flex;
   align-items: center;
@@ -15,7 +16,7 @@ const Container = styled.div`
   border-bottom: 1px solid #e9ecef;
 `;
 
-const ChatContent = styled.div`
+export const ChatContent = styled.div`
   h1 {
     font-weight: 600;
     font-size: 15px;
@@ -33,24 +34,16 @@ const ChatContent = styled.div`
   }
 `;
 
-function ChatList(props) {
-  const [chatLength, setChatLength] = useState(0);
-  const [commentLength, setCommentLength] = useState(0);
-
-  useEffect(() => {
-    setChatLength(props.user.chat.length - 1);
-    setCommentLength(
-      props.user.chat[props.user.chat.length - 1].commentList.length - 1
-    );
-  }, []);
-
+function ChatList({ chats }) {
+  const commentLength =
+    chats.chat[chats.chat.length - 1].commentList.length - 1;
   return (
     <Container>
-      <img src={require(`../../Img/${props.user.src}`)} />
+      <img src={require(`../../Img/${chats.src}`)} />
       <ChatContent>
-        <h1>{props.user.id}</h1>
+        <h1>{chats.id}</h1>
         <span>
-          {props.user.chat[chatLength].commentList[commentLength].content}
+          {chats.chat[chats.chat.length - 1].commentList[commentLength].content}
         </span>
       </ChatContent>
     </Container>
