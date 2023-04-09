@@ -164,10 +164,16 @@ function Chat({ FilterUserObj, setAdd }) {
 
   useEffect(() => {
     if (focusState) {
-      window.scrollTo(0, scrollRef.current.scrollHeight);
+      // window.scrollTo(0, scrollRef.current.scrollHeight);
+      // scrollRef.current.scrollIntoView({ behavior: "smooth" });
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
     if (scrollRef.current) {
-      window.scrollTo(0, scrollRef.current.scrollHeight);
+      // window.scrollTo(0, scrollRef.current.scrollHeight);
+      // CommentBox.scrollTop = scrollRef.current.scrollHeight;
+      // scrollRef.current.scrollIntoView({ behavior: "smooth" });
+      // messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [message, focusState]);
 
