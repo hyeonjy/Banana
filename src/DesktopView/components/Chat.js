@@ -175,7 +175,7 @@ function Chat({ FilterUserObj, setAdd }) {
       // messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [message, focusState]);
+  }, [message, focusState, scrollRef.current]);
 
   const onChange = (event) => {
     const {
