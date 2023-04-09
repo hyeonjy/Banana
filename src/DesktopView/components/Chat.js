@@ -176,21 +176,20 @@ function Chat({ FilterUserObj, setAdd }) {
   // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
   const scrollRef = useRef();
   const [focusState, setFocusState] = useState(false);
+  const scrollHeightFn = () => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  };
 
   useEffect(() => {
     if (focusState) {
-      // window.scrollTo(0, scrollRef.current.scrollHeight);
-      // scrollRef.current.scrollIntoView({ behavior: "smooth" });
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
     if (scrollRef.current) {
-      // window.scrollTo(0, scrollRef.current.scrollHeight);
-      // CommentBox.scrollTop = scrollRef.current.scrollHeight;
-      // scrollRef.current.scrollIntoView({ behavior: "smooth" });
-      // messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      setTimeout(() => {
+        scrollHeightFn();
+      }, 10);
     }
-  }, [message, focusState, scrollRef.current]);
+  }, [message, focusState, scrollRef.current, userIdValue]);
 
   const onChange = (event) => {
     const {
@@ -355,12 +354,7 @@ function Chat({ FilterUserObj, setAdd }) {
               onChange={onChange}
               required
               autoComplete="off"
-              onFocus={() => {
-                //가상키보드 나타나는 속도 delay 문제
-                setTimeout(() => {
-                  setFocusState(true);
-                }, 100);
-              }}
+              onFocus={() => {}}
               onBlur={() => {
                 setFocusState(false);
               }}

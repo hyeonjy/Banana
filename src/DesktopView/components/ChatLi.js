@@ -45,6 +45,10 @@ const DHeaderIcon = styled(chats.HeaderIcon)`
   font-size: 20px;
   color: orange;
 `;
+const NoChatDiv = styled(NoSelectChatLi)`
+  width: 300px;
+`;
+
 function ChatLi({ FilterUserObj }) {
   const history = useHistory();
 
@@ -60,9 +64,6 @@ function ChatLi({ FilterUserObj }) {
       search: "?" + searchParams.toString(),
     });
   };
-  const NoChatDiv = styled(NoSelectChatLi)`
-    width: 300px;
-  `;
 
   return (
     <ChatListContainer>
@@ -78,7 +79,6 @@ function ChatLi({ FilterUserObj }) {
         {/**FilterUserObj.chats.length === 0 */}
         {FilterUserObj.chats.length === 0 ? (
           <NoChatDiv>
-            {" "}
             <h1>채팅목록이 없습니다.</h1>
           </NoChatDiv>
         ) : (
