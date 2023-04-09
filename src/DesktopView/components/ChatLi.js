@@ -72,7 +72,7 @@ function ChatLi({ FilterUserObj }) {
       </DHeader>
       <DChatsList>
         {/**FilterUserObj.chats.length === 0 */}
-        {true ? (
+        {FilterUserObj.chats.length === 0 ? (
           <NoChatDiv>
             {" "}
             <h1>채팅목록이 없습니다.</h1>

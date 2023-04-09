@@ -20,10 +20,12 @@ const Container = styled.div`
   background-color: white;
   position: relative;
   border: 1px solid whitesmoke;
+  height: 100%;
 `;
 
 const DHeader = styled(chats.Header)`
   position: absolute;
+  z-index: 1;
 `;
 
 const DHeaderIcon = styled(chats.HeaderIcon)``;
@@ -65,9 +67,10 @@ const ItemContent = styled.div`
 `;
 
 const CommentBox = styled.div`
-  margin-top: 50px;
+  /* margin-top: 50px; */
   /* margin-bottom: 80px; */
   overflow-y: scroll;
+  height: calc(100% - 190px);
 `;
 
 const MessageForm = styled.form`
