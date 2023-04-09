@@ -5,6 +5,21 @@ export const UserObj = [
     id: "바나나좋아",
     src: "bananaface.png",
     grade: "bananaIcon.png",
+    itemIdList: [11119, 11120, 11121, 11122, 11123, 11124],
+    reviews: [
+      {
+        id: "구르미",
+        src: "profile.jpg",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "옥탑방토끼",
+        src: "bananaface.png",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+    ],
     chats: [
       {
         id: "옥탑방토끼",
@@ -95,6 +110,8 @@ export const UserObj = [
     id: "옥탑방토끼",
     src: "bananaface.png",
     grade: "bananaIcon.png",
+    itemIdList: [11115, 11116, 11117, 11118, 11125, 11126, 11127, 11128, 11129],
+    reviews: [],
     chats: [
       {
         id: "바나나좋아",
@@ -150,6 +167,8 @@ export const UserObj = [
     id: "구르미",
     src: "profile.jpg",
     grade: "bananaIcon.png",
+    itemIdList: [11111, 11112, 11113, 11114, 11130],
+    reviews: [],
     chats: [
       {
         id: "바나나좋아",
@@ -192,6 +211,8 @@ export const UserObj = [
     id: "딸기가좋아",
     src: "profile.jpg",
     grade: "bananaIcon.png",
+    itemIdList: [],
+    reviews: [],
     chats: [],
   },
 ];
