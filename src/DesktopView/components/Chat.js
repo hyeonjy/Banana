@@ -100,7 +100,7 @@ const MessageInput = styled.input`
   }
 `;
 
-function Chat(props) {
+function Chat({ FilterUserObj, setAdd }) {
   const location = useLocation();
   const history = useHistory();
   const [message, setMessage] = useState("");
@@ -114,8 +114,7 @@ function Chat(props) {
     (item) => item.itemId === Number(itemIdValue)
   );
 
-  // 유저 Obj 가져오기
-  const FilterUserObj = UserObj.find((item) => item.id === LoginId);
+  // 상대방 user Obj 가져오기
   const FilterOtherUserObj = UserObj.find((item) => item.id === userIdValue);
 
   // 채팅 obj 가져오기
@@ -133,9 +132,6 @@ function Chat(props) {
     );
   }, [userIdValue, itemIdValue]);
 
-  console.log("filterUser: ", FilterUserObj);
-  // setTimeout(console.log("chatobj: ", ChatObj), 3000);
-  // setTimeout(() => console.log("chat", ChatObj), 3000);
   const OtherChatObj = FilterOtherUserObj?.chats.find(
     (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
   );
@@ -143,6 +139,7 @@ function Chat(props) {
   // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
   const scrollRef = useRef();
   const [focusState, setFocusState] = useState(false);
+
   useEffect(() => {
     if (focusState) {
       window.scrollTo(0, scrollRef.current.scrollHeight);
@@ -161,6 +158,8 @@ function Chat(props) {
     }
   };
 
+  //채팅리스트 마지막 메세지 바꾸기
+
   const onSubmit = (event) => {
     event.preventDefault();
     // 메시지 보낸 날짜(연도,월,일과 time) 저장
@@ -172,6 +171,7 @@ function Chat(props) {
     const hour = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
     const time = `${hour}:${min}`;
+    setAdd((prev) => prev + 1);
     // 채팅을 주고 받은 적이 없는 경우,
     if (ChatObj === undefined) {
       FilterUserObj.chats.push({
@@ -227,18 +227,14 @@ function Chat(props) {
       );
       // 오늘 날짜에 주고 받은 채팅이 있는 경우
       if (FilterChatObj !== undefined) {
-        FilterChatObj.commentList.push({
+        const chatobjt = {
           id: LoginId,
           src: FilterUserObj.src,
           content: message,
           time: time,
-        });
-        FilterOtherChatObj.commentList.push({
-          id: LoginId,
-          src: FilterUserObj.src,
-          content: message,
-          time: time,
-        });
+        };
+        FilterChatObj.commentList.push(chatobjt);
+        FilterOtherChatObj.commentList.push(chatobjt);
       }
       // 오늘 날짜에 주고 받은 채팅이 없는 경우
       else {

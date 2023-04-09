@@ -1,10 +1,9 @@
 import styled from "styled-components";
-import Chats from "../../MobileView/routes/Chats";
-import { LoginId, UserObj } from "../../Data/UserObj";
 import { useHistory } from "react-router-dom";
 import * as chats from "../../MobileView/routes/Chats";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import ChatList from "../../MobileView/components/ChatList";
+
 const ChatListContainer = styled.div`
   width: fit-content;
   background-color: white;
@@ -41,8 +40,7 @@ const DHeaderIcon = styled(chats.HeaderIcon)`
   font-size: 20px;
   color: orange;
 `;
-function ChatLi() {
-  const FilterUserObj = UserObj.find((item) => item.id === LoginId);
+function ChatLi({ FilterUserObj }) {
   const history = useHistory();
 
   //채팅목록 클릭 이벤트
@@ -83,10 +81,10 @@ function ChatLi() {
           </div>
         ) : (
           <>
-            {FilterUserObj.chats.map((user, index) => {
+            {FilterUserObj.chats.map((chats, index) => {
               return (
-                <div onClick={() => handleChatClick(user)} key={index}>
-                  <ChatList user={user} />
+                <div onClick={() => handleChatClick(chats)} key={index}>
+                  <ChatList chats={chats} index={index} />
                 </div>
               );
             })}

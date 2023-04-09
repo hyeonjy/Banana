@@ -75,10 +75,10 @@ function Chats() {
           </div>
         ) : (
           <>
-            {FilterUserObj.chats.map((user, index) => {
+            {FilterUserObj.chats.map((chats, index) => {
               return (
-                <div onClick={() => handleChatClick(user)} key={index}>
-                  <ChatList user={user} />
+                <div onClick={() => handleChatClick(chats)} key={index}>
+                  <ChatList chats={chats} />
                 </div>
               );
             })}
