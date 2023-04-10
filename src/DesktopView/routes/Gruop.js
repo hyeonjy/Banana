@@ -113,15 +113,34 @@ export const ProductImg = styled.img`
   object-fit: cover;
   margin-bottom: 10px;
 `;
+export const ProductHeader = styled.div`
+  display: flex;
+  margin-bottom: 5px;
+  align-items: center;
+  gap: 5px;
+`;
 export const ProductTitle = styled.h1`
   font-weight: 600;
   font-size: 16px;
-
+  width: 70%;
   overflow: hidden; // 을 사용해 영역을 감출 것
   text-overflow: ellipsis; // 로 ... 을 만들기
   white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
   word-break: break-all;
-  margin-bottom: 5px;
+`;
+export const ProductState = styled.div`
+  width: 25%;
+  padding: 2px 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  color: white;
+  background-color: ${(props) =>
+    props.status === "reservate" ? "orange" : "gray"};
+
+  border-radius: 15px;
+  font-size: 10px;
 `;
 export const ProductDetail = styled.span`
   font-size: 13px;
@@ -231,9 +250,20 @@ function Group() {
                       <ProductImg
                         src={require(`../../Img/${item.img[0]}.jpg`)}
                       />
-                      <ProductTitle>{item.title}</ProductTitle>
+                      <ProductHeader>
+                        <ProductTitle>{item.title}</ProductTitle>
+                        {item.state === "reservate" && (
+                          <ProductState status="reservate">예약중</ProductState>
+                        )}
+                        {item.state === "complete" && (
+                          <ProductState status="complete">
+                            나눔완료
+                          </ProductState>
+                        )}
+                      </ProductHeader>
+
                       <ProductDetail>
-                        {item.area}|{item.timeAgo}
+                        {item.area} | {item.timeAgo}
                       </ProductDetail>
                     </Product>
                   ))}

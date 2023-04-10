@@ -81,7 +81,7 @@ const ProductsBox = styled.div`
   padding-left: 5%;
 `;
 
-const Product = styled.div`
+export const Product = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -93,26 +93,26 @@ const Product = styled.div`
   margin-bottom: 30px;
 `;
 
-const ProductImg = styled.img`
+export const ProductImg = styled.img`
   height: 200px;
   width: 100%;
   object-fit: cover;
   border-radius: 8px;
 `;
 
-const ProductTitle = styled.h1`
+export const ProductTitle = styled.h1`
   font-size: 16px;
   margin: 10px 0 5px 2px;
   line-height: 20px;
   font-weight: 600;
-  width: 210px;
+  width: 100%;
   overflow: hidden; // 을 사용해 영역을 감출 것
   text-overflow: ellipsis; // 로 ... 을 만들기
   white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
   word-break: break-all;
 `;
 
-const ProductDetail = styled.span`
+export const ProductDetail = styled.span`
   font-size: 13px;
   margin-left: 2px;
   color: #232323ab;

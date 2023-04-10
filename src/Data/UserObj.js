@@ -14,6 +14,48 @@ export const UserObj = [
           "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
       },
       {
+        id: "구르미",
+        src: "profile.jpg",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "구르미",
+        src: "profile.jpg",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "구르미",
+        src: "profile.jpg",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "구르미",
+        src: "profile.jpg",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "옥탑방토끼",
+        src: "bananaface.png",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "옥탑방토끼",
+        src: "bananaface.png",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
+        id: "옥탑방토끼",
+        src: "bananaface.png",
+        content:
+          "나눔 받을 때 굉장히 친절하시고 잘 쓰라고 훈훈한 말 해주셨어요",
+      },
+      {
         id: "옥탑방토끼",
         src: "bananaface.png",
         content:

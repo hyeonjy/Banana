@@ -6,6 +6,7 @@ import {
   faBars,
   faChevronLeft,
   faPaperPlane,
+  faPen,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -31,6 +32,19 @@ const DHeader = styled(chats.Header)`
     font-weight: 600;
   }
 `;
+const WriteReview = styled.div`
+  position: absolute;
+  right: 20px;
+  border: 1px solid gray;
+  padding: 9px 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  border-radius: 10px;
+  span {
+    font-size: 12px;
+  }
+`;
 
 const DHeaderIcon = styled(chats.HeaderIcon)``;
 
@@ -43,7 +57,7 @@ const DChatsList = styled(chats.ChatsList)``;
 //   z-index: 1;
 // `;
 
-const ItemBox = styled.div`
+export const ItemBox = styled.div`
   margin-top: 50px;
   background-color: white;
   align-items: center;
@@ -58,11 +72,15 @@ const ItemBox = styled.div`
     object-fit: cover;
   }
 `;
-const ItemContent = styled.div`
+export const ItemContent = styled.div`
+  width: 180px;
   h1 {
     font-size: 15px;
     margin-bottom: 3px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   span {
     font-size: 13px;
@@ -329,6 +347,17 @@ function Chat({ FilterUserObj, setAdd }) {
                 {filterItemObj.main} {">"} {filterItemObj.sub}
               </span>
             </ItemContent>
+            <WriteReview
+              onClick={() => {
+                history.push({
+                  pathname: "/write",
+                  state: { item: filterItemObj },
+                });
+              }}
+            >
+              <FontAwesomeIcon style={{ fontSize: "12px" }} icon={faPen} />
+              <span>후기쓰기</span>
+            </WriteReview>
           </ItemBox>
           {/* 채팅 내용 */}
           <CommentBox ref={scrollRef}>
