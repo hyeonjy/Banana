@@ -33,6 +33,7 @@ const DHeader = styled(chats.Header)`
   }
 `;
 const WriteReview = styled.div`
+  cursor: pointer;
   position: absolute;
   right: 20px;
   border: 1px solid gray;

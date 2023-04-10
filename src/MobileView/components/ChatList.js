@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { LoginId, UserObj } from "../../Data/UserObj";
 
 export const Container = styled.div`
+  cursor: pointer;
   background-color: ${(props) => (props.isActive ? "#cbcbcb47" : "white")};
   padding: 15px 20px;
   display: flex;
