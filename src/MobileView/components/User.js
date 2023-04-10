@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import banana from "../../Img/banana.png";
 import { Link, useHistory } from "react-router-dom";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -17,6 +17,8 @@ const UserBox = styled.div`
   align-items: center;
   /* padding-top: 50px; */
   border-bottom: 1px solid #e9ecef;
+  border-top: ${(props) => (props.profile ? "1px solid #e9ecef" : null)};
+  margin-top: ${(props) => (props.profile ? "61px" : "0")};
 `;
 
 const UserInfo = styled.div`
@@ -71,10 +73,9 @@ function User(props) {
       search: "?" + searchParams.toString(),
     });
   };
-
   return (
     <>
-      <UserBox onClick={handleChatClick}>
+      <UserBox onClick={handleChatClick} profile={props.profile}>
         <UserInfo>
           <UserImg src={require(`../../Img/${props.img}`)} />
           <UserName>{props.userId}</UserName>

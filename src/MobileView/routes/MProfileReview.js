@@ -79,7 +79,7 @@ function MProfileReview() {
   return (
     <>
       <Container activeGrade={activeGrade}>
-        {/* <Header style={{ position: "fixed", top: "0" }}>
+        <Header style={{ position: "fixed", top: "0" }}>
           <BackIcon
             onClick={() => {
               history.goBack();
@@ -87,12 +87,13 @@ function MProfileReview() {
             icon={faChevronLeft}
           />
           <span>프로필</span>
-        </Header> */}
+        </Header>
         <User
           img={FilterUserObj.src}
           grade={FilterUserObj.grade}
           userId={FilterUserObj.id}
           setActiveGrade={setActiveGrade}
+          profile="true"
         />
 
         <ItemBox>
