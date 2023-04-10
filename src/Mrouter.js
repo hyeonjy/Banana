@@ -12,6 +12,8 @@ import Chat from "./MobileView/routes/Chat";
 import Msearch from "./MobileView/routes/Msearch";
 import ScrollToTop from "./ScrollToTop";
 import Region from "./MobileView/routes/Region";
+import MReview from "./MobileView/routes/MReview";
+import MProfileReview from "./MobileView/routes/MProfileReview";
 
 export function MobileRouter() {
   return (
@@ -42,7 +44,7 @@ export function MobileRouter() {
           <Mbasket />
         </Route>
 
-        <Route exact path="/mypage/share">
+        <Route exact path="/share">
           <Mshare />
         </Route>
 
@@ -63,6 +65,14 @@ export function MobileRouter() {
         </Route>
         <Route exact path="/region">
           <Region />
+        </Route>
+
+        <Route exact path="/review">
+          <MReview />
+        </Route>
+
+        <Route exact path="/profile">
+          <MProfileReview />
         </Route>
       </Switch>
     </BrowserRouter>

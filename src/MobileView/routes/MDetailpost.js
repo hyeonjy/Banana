@@ -148,7 +148,7 @@ const ChatBtn = styled.div`
   font-size: 14.5px;
 `;
 
-const StateSelect = styled.select`
+export const StateSelect = styled.select`
   background-color: white;
   border: 1px solid #808080a6;
   padding: 5px;

@@ -4,12 +4,13 @@ import {
   faCartShopping,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled, { css } from "styled-components";
 import HomeMenu from "../components/HomeMenu";
 import User from "../components/User";
 import { useState } from "react";
 import Modal from "../../DesktopView/components/Modal";
+import { LoginId } from "../../Data/UserObj";
 
 const Container = styled.div`
   width: 100%;
@@ -26,7 +27,7 @@ const Container = styled.div`
 
 const MainWrap = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   height: 100px;
   border-bottom: 1px solid #e9ecef;
@@ -35,6 +36,7 @@ const MainWrap = styled.div`
 const MainDiv = styled.div`
   width: 100px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -77,7 +79,7 @@ const ListSpan = styled.span`
 `;
 
 const MainList = [
-  { name: "나눔목록", url: "/mypage/share", icon: <MainIcon icon={faStore} /> },
+  { name: "나눔목록", url: "/share", icon: <MainIcon icon={faStore} /> },
   {
     name: "찜목록",
     url: "/mypage/basket",
@@ -93,17 +95,36 @@ const MainList = [
 const SubList = [
   { name: "테마설정(리스트)", url: "/mypage" },
   { name: "공지사항", url: "/mypage" },
-  { name: "알림설정", url: "/mypage" },
   { name: "고객센터", url: "/mypage" },
   { name: "개인정보 처리방침", url: "/mypage" },
   { name: "잠금화면설정", url: "/mypage" },
-  { name: "알람", url: "/mypage" },
+  { name: "알림설정", url: "/mypage" },
   { name: "설정 및 개인정보", url: "/mypage" },
   { name: "버전정보", url: "/mypage" },
 ];
 
 function Mmypage() {
   const [activeGrade, setActiveGrade] = useState(false);
+  const history = useHistory();
+
+  const handleReviewClick = () => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", LoginId);
+    history.push({
+      pathname: "/review",
+      search: "?" + searchParams.toString(),
+    });
+  };
+
+  //채팅목록 클릭 이벤트
+  const handleShareClick = () => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", LoginId);
+    history.push({
+      pathname: "/share",
+      search: "?" + searchParams.toString(),
+    });
+  };
 
   return (
     <>
@@ -111,19 +132,31 @@ function Mmypage() {
         <User
           img="bananaface.png"
           grade="bananaIcon.png"
+          userId={LoginId}
           setActiveGrade={setActiveGrade}
         />
         <MainWrap>
-          {MainList.map((li, index) => (
-            <MainDiv key={index}>
-              <Link to={li.url}>
-                <MainCircle>{li.icon}</MainCircle>
-                <MainSpan>{li.name}</MainSpan>
-              </Link>
-            </MainDiv>
-          ))}
+          <MainDiv onClick={handleShareClick}>
+            <MainCircle>
+              <MainIcon icon={faStore} />
+            </MainCircle>
+            <MainSpan>나눔목록</MainSpan>
+          </MainDiv>
+          <MainDiv>
+            <MainCircle>
+              <MainIcon icon={faCartShopping} />,
+            </MainCircle>
+            <MainSpan>찜목록</MainSpan>
+          </MainDiv>
+          <MainDiv>
+            <MainCircle>
+              <MainIcon icon={faStore} />
+            </MainCircle>
+            <MainSpan>로그아웃</MainSpan>
+          </MainDiv>
         </MainWrap>
         <SubListDiv>
+          <ListSpan onClick={handleReviewClick}>나눔후기</ListSpan>
           {SubList.map((li, index) => (
             <Link to={li.url} key={index}>
               <ListSpan key={li.name}>{li.name}</ListSpan>

@@ -16,6 +16,7 @@ const UserBox = styled.div`
   justify-content: space-between;
   align-items: center;
   /* padding-top: 50px; */
+  border-bottom: 1px solid #e9ecef;
 `;
 
 const UserInfo = styled.div`
@@ -59,9 +60,21 @@ const GradeName = styled.h1`
 `;
 
 function User(props) {
+  const history = useHistory();
+
+  //채팅목록 클릭 이벤트
+  const handleChatClick = () => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", props.userId);
+    history.push({
+      pathname: "/profile",
+      search: "?" + searchParams.toString(),
+    });
+  };
+
   return (
     <>
-      <UserBox>
+      <UserBox onClick={handleChatClick}>
         <UserInfo>
           <UserImg src={require(`../../Img/${props.img}`)} />
           <UserName>{props.userId}</UserName>
