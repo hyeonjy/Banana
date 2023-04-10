@@ -100,6 +100,7 @@ export function ShowItemFn({
   pad = false,
   padBottom = false,
   query = false,
+  profile = false,
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -142,19 +143,39 @@ export function ShowItemFn({
               ))}
             </QueryDiv>
           )}
-          {item.map((item, index) => (
-            <Link to={`/clothes/${item.itemId}`} key={index}>
-              <Item>
-                <ItemText>
-                  <ItemTitle>{item.title}</ItemTitle>
-                  <ItemContent>{item.content}</ItemContent>
-                  <ItemArea>{item.area}</ItemArea>
-                  <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
-                </ItemText>
-                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-              </Item>
-            </Link>
-          ))}
+          {profile ? (
+            <>
+              {item.slice(0, 2).map((item, index) => (
+                <Link to={`/clothes/${item.itemId}`} key={index}>
+                  <Item style={{ paddingLeft: "15px", paddingRight: "15PX" }}>
+                    <ItemText>
+                      <ItemTitle>{item.title}</ItemTitle>
+                      <ItemContent>{item.content}</ItemContent>
+                      <ItemArea>{item.area}</ItemArea>
+                      <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
+                    </ItemText>
+                    <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
+                  </Item>
+                </Link>
+              ))}
+            </>
+          ) : (
+            <>
+              {item.map((item, index) => (
+                <Link to={`/clothes/${item.itemId}`} key={index}>
+                  <Item>
+                    <ItemText>
+                      <ItemTitle>{item.title}</ItemTitle>
+                      <ItemContent>{item.content}</ItemContent>
+                      <ItemArea>{item.area}</ItemArea>
+                      <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
+                    </ItemText>
+                    <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
+                  </Item>
+                </Link>
+              ))}
+            </>
+          )}
         </ItemDiv>
       ) : (
         <EmptyPage>나눔이 없습니다</EmptyPage>
