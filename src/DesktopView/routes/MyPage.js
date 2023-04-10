@@ -8,6 +8,8 @@ import ShareList from "./ShareList";
 import { useState } from "react";
 import Modal from "../components/Modal";
 import { useEffect } from "react";
+import Review from "./Review";
+import { LoginId, UserObj } from "../../Data/UserObj";
 
 const Container = styled.div`
   padding-top: 70px;
@@ -32,7 +34,9 @@ export const ProfileImg = styled.div`
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-image: url(${profile});
+
+  background-image: ${(props) => (props.img ? `url(${props.img})` : "")};
+  background-color: whitesmoke;
   background-size: contain;
   margin-right: 15px;
 `;
@@ -90,9 +94,9 @@ const ContentDiv = styled.div`
 const navItem = [
   { title: "나눔 목록", path: "/mypage/share" },
   { title: "찜 목록", path: "/mypage/heart" },
+  { title: "나눔 후기", path: "/mypage/review" },
   { title: "테마설정", path: "/mypage" },
   { title: "공지사항", path: "/mypage" },
-  { title: "알림설정", path: "/mypage" },
   { title: "고객센터", path: "/mypage" },
   { title: "개인정보 처리방침", path: "" },
   { title: "로그아웃", path: "/login" },
@@ -118,22 +122,25 @@ const NavLi = styled.li`
 `;
 
 function MyPage() {
+  const currentUserObj = UserObj.find((user) => user.id === LoginId);
   const [activeGrade, setActiveGrade] = useState(false); // Modal
   const [currentPage, setCurrentPage] = useState(""); // sideNav 현재 페이지에 따라 Active
   const heartPage = useRouteMatch("/mypage/heart"); //현재 찜 페이지인지 여부 (t/f)
   const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
+  const reviewPage = useRouteMatch("/mypage/review"); // .. 리뷰 페이지
 
   useEffect(() => {
     if (heartPage) setCurrentPage("/mypage/heart");
     else if (sharePage) setCurrentPage("/mypage/share");
+    else if (reviewPage) setCurrentPage("/mypage/review");
     else setCurrentPage("");
-  }, [heartPage, sharePage]);
+  }, [heartPage, sharePage, reviewPage]);
   return (
     <>
       <Container activeGrade={activeGrade}>
         <ProfileHeader>
-          <ProfileImg />
-          <ProfileName>바나나 님</ProfileName>
+          <ProfileImg img={require(`../../Img/${currentUserObj.src}`)} />
+          <ProfileName>{currentUserObj.id} 님</ProfileName>
           <MembershipDiv>
             <MembershipTitle>
               <span style={{ verticalAlign: "middle" }}>
@@ -183,6 +190,9 @@ function MyPage() {
             </Route>
             <Route path="/mypage/share">
               <ShareList />
+            </Route>
+            <Route path="/mypage/review">
+              <Review />
             </Route>
           </Switch>
         </ContentDiv>

@@ -13,6 +13,8 @@ import Upload from "./DesktopView/routes/Upload";
 import More from "./DesktopView/routes/More";
 import Search from "./DesktopView/routes/Search";
 import Chats from "./DesktopView/routes/Chats";
+import UserInfo from "./DesktopView/routes/UserReview";
+import WriteReview from "./DesktopView/routes/WriteReview";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -28,6 +30,9 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/post/:postId">
           <Post />
+        </Route>
+        <Route path="/user">
+          <UserInfo />
         </Route>
         <Route path="/img">
           <ImgFullPage />
@@ -53,6 +58,9 @@ export function DeskTopRouter() {
 
         <Route path="/chat">
           <Chats />
+        </Route>
+        <Route path="/write">
+          <WriteReview />
         </Route>
       </Switch>
       <Footer />

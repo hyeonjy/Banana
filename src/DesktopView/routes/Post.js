@@ -20,6 +20,7 @@ import "./Post.css";
 
 import PostRightContents from "../components/PostDatil";
 import { ItemObj } from "../../Data/ItemObj";
+import { LoginId } from "../../Data/UserObj";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -97,6 +98,10 @@ function Post() {
   //img 1개 -> Navigation hidden
   const shouldHideNavigation = item.img.length <= 1;
 
+  // 수정 권한
+  // 본인 글인지 확인
+  const isWriter = item.userId === LoginId;
+
   return (
     <>
       <PageContainer activeGrade={activeGrade}>
@@ -142,7 +147,11 @@ function Post() {
           </div>
 
           {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
-          <PostRightContents setActiveGrade={setActiveGrade} item={item} />
+          <PostRightContents
+            setActiveGrade={setActiveGrade}
+            item={item}
+            isWriter={isWriter}
+          />
         </PostContainer>
         <NewItem />
       </PageContainer>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Paging from "../components/Paging";
 import { ItemObj } from "../../Data/ItemObj";
+import { LoginId } from "../../Data/UserObj";
 
 export const PageContainer = styled.div`
   background-color: #f5f5f594;
@@ -68,45 +69,43 @@ export const NavTitle = styled.h4`
   margin: 30px auto;
   font-weight: 600;
   font-size: 17px;
-  @media screen and (max-width: 830px) {
-    width: 70%;
-  }
 `;
 
 function settingPagination() {}
 
 function ShareList() {
-  //const history = useHistory();
+  const shareItems = ItemObj.filter((item) => item.userId === LoginId);
 
   //페이지네이션
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pageValue = searchParams.get("page");
-  const [count, setCount] = useState(ItemObj.length); // 전체 아이템 개수
+  const [count, setCount] = useState(shareItems.length); // 전체 아이템 개수
   const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
   const [postPerPage] = useState(8); // 한 페이지 아이템 수
 
   return (
     <PageContainer>
-      <NavTitle>나눔 목록 ({ItemObj.length})</NavTitle>
+      <NavTitle>나눔 목록 ({shareItems.length})</NavTitle>
       <div style={{ minHeight: "400px" }}>
         <ItemWrap>
-          {ItemObj ? (
-            ItemObj.slice(
-              postPerPage * (currentPage - 1),
-              postPerPage * (currentPage - 1) + postPerPage
-            ).map((item, index) => (
-              <ItemDiv key={index} to={`/post/${item.itemId}`}>
-                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-                <ItemDetailDiv>
-                  <ItemTitle>{item.title}</ItemTitle>
-                  <ItemDetail>
-                    {item.area}|{item.timeAgo}
-                  </ItemDetail>
-                </ItemDetailDiv>
-              </ItemDiv>
-            ))
+          {shareItems ? (
+            shareItems
+              .slice(
+                postPerPage * (currentPage - 1),
+                postPerPage * (currentPage - 1) + postPerPage
+              )
+              .map((item, index) => (
+                <ItemDiv key={index} to={`/post/${item.itemId}`}>
+                  <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
+                  <ItemDetailDiv>
+                    <ItemTitle>{item.title}</ItemTitle>
+                    <ItemDetail>
+                      {item.area} | {item.timeAgo}
+                    </ItemDetail>
+                  </ItemDetailDiv>
+                </ItemDiv>
+              ))
           ) : (
             <NoItemPage>나눔 상품이 없습니다</NoItemPage>
           )}

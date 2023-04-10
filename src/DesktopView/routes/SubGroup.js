@@ -21,6 +21,8 @@ import {
   QueryLi,
   QueryUl,
   TopCate,
+  ProductHeader,
+  ProductState,
 } from "./Gruop";
 import Paging from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
@@ -171,7 +173,17 @@ function SubGroup() {
                       <ProductImg
                         src={require(`../../Img/${item.img[0]}.jpg`)}
                       />
-                      <ProductTitle>{item.title}</ProductTitle>
+                      <ProductHeader>
+                        <ProductTitle>{item.title}</ProductTitle>
+                        {item.state === "reservate" && (
+                          <ProductState status="reservate">예약중</ProductState>
+                        )}
+                        {item.state === "complete" && (
+                          <ProductState status="complete">
+                            나눔완료
+                          </ProductState>
+                        )}
+                      </ProductHeader>
                       <ProductDetail>
                         {item.area}|{item.timeAgo}
                       </ProductDetail>
