@@ -16,6 +16,7 @@ import { ItemObj } from "../../Data/ItemObj";
 import { useRef } from "react";
 import * as chats from "../../MobileView/routes/Chats";
 import banana from "../../Img/banana.png";
+import { StateSelect } from "../../MobileView/routes/MDetailpost";
 const Container = styled.div`
   width: fit-content;
   background-color: white;
@@ -179,6 +180,8 @@ function Chat({ FilterUserObj, setAdd }) {
       (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
     )
   );
+  //나눔 거래 상태 변경
+  const [SelectedState, setSelected] = useState();
 
   useEffect(() => {
     setChatObj(
@@ -187,6 +190,9 @@ function Chat({ FilterUserObj, setAdd }) {
       )
     );
   }, [userIdValue, itemIdValue]);
+  useEffect(() => {
+    setSelected(FilterUserObj.state);
+  }, [ChatObj]);
 
   const OtherChatObj = FilterOtherUserObj?.chats.find(
     (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
@@ -326,6 +332,12 @@ function Chat({ FilterUserObj, setAdd }) {
     setMessage("");
   };
 
+  const handleChangeSelect = (e) => {
+    setSelected(e.target.value);
+    filterItemObj.state = SelectedState; //DB의 state 값 update
+    alert("상태가 변경되었습니다");
+  };
+
   return (
     <Container>
       {/* 상대방 ID 헤더 */}
@@ -348,17 +360,33 @@ function Chat({ FilterUserObj, setAdd }) {
                 {filterItemObj.main} {">"} {filterItemObj.sub}
               </span>
             </ItemContent>
-            <WriteReview
-              onClick={() => {
-                history.push({
-                  pathname: "/write",
-                  state: { item: filterItemObj },
-                });
-              }}
-            >
-              <FontAwesomeIcon style={{ fontSize: "12px" }} icon={faPen} />
-              <span>후기쓰기</span>
-            </WriteReview>
+
+            {(filterItemObj.state === "wait" ||
+              filterItemObj.state === "reservate") && (
+              <StateSelect
+                value={SelectedState}
+                onChange={(e) => handleChangeSelect(e)}
+              >
+                <option value="wait">대기중</option>
+                <option value="reservate">예약중</option>
+                <option value="complete">나눔완료</option>
+              </StateSelect>
+            )}
+
+            {filterItemObj.state === "complete" &&
+              filterItemObj.userId !== userIdValue && (
+                <WriteReview
+                  onClick={() => {
+                    history.push({
+                      pathname: "/write",
+                      state: { item: filterItemObj },
+                    });
+                  }}
+                >
+                  <FontAwesomeIcon style={{ fontSize: "12px" }} icon={faPen} />
+                  <span>후기쓰기</span>
+                </WriteReview>
+              )}
           </ItemBox>
           {/* 채팅 내용 */}
           <CommentBox ref={scrollRef}>
