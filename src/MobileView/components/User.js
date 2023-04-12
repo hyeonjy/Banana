@@ -18,7 +18,7 @@ const UserBox = styled.div`
   /* padding-top: 50px; */
   border-bottom: 1px solid #e9ecef;
   border-top: ${(props) => (props.profile ? "1px solid #e9ecef" : null)};
-  margin-top: ${(props) => (props.profile ? "61px" : "0")};
+  margin-top: ${(props) => (props.profile ? "56px" : "0")};
 `;
 
 const UserInfo = styled.div`
@@ -75,8 +75,8 @@ function User(props) {
   };
   return (
     <>
-      <UserBox onClick={handleChatClick} profile={props.profile}>
-        <UserInfo>
+      <UserBox profile={props.profile}>
+        <UserInfo onClick={handleChatClick}>
           <UserImg src={require(`../../Img/${props.img}`)} />
           <UserName>{props.userId}</UserName>
         </UserInfo>

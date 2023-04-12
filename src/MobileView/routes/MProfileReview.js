@@ -18,7 +18,6 @@ import ShowReview from "../components/ShowReview";
 import { BackIcon, Header } from "./MUpload";
 
 const Container = styled.div`
-  width: 100%;
   filter: ${(props) => (props.activeGrade ? "blur(2px)" : "unset")};
   ${(props) => {
     if (props.activeGrade) {
@@ -29,11 +28,19 @@ const Container = styled.div`
   }}
 `;
 
+const DHeader = styled(Header)`
+  top: ${(props) => (props.activeGrade ? "-56px" : "0")};
+  z-index: 2;
+`;
+
 const ShareBox = styled.div``;
 // const FilterItemObj = UserObj.filter((user) => user.id === LoginId);
 
 const ItemBox = styled.div`
-  margin-top: 20px;
+  margin-top: 25px;
+  &:last-child {
+    margin-bottom: 150px;
+  }
 `;
 const ItemHeader = styled.div`
   display: flex;
@@ -79,7 +86,7 @@ function MProfileReview() {
   return (
     <>
       <Container activeGrade={activeGrade}>
-        <Header style={{ position: "fixed", top: "0" }}>
+        <DHeader activeGrade={activeGrade} style={{ position: "fixed" }}>
           <BackIcon
             onClick={() => {
               history.goBack();
@@ -87,7 +94,7 @@ function MProfileReview() {
             icon={faChevronLeft}
           />
           <span>프로필</span>
-        </Header>
+        </DHeader>
         <User
           img={FilterUserObj.src}
           grade={FilterUserObj.grade}
@@ -101,15 +108,19 @@ function MProfileReview() {
             <h1>나눔물품</h1>
             <ItemIcon icon={faChevronRight} onClick={handleShareClick} />
           </ItemHeader>
-          <ShowItemFn item={filterItemObj} profile={true} />
+          <ShowItemFn
+            item={filterItemObj}
+            profile="true"
+            style={{ innerHeight: "200px" }}
+          />
         </ItemBox>
 
-        <ItemBox>
+        <ItemBox style={{ marginBottom: "100px" }}>
           <ItemHeader>
             <h1>나의나눔후기</h1>
             <ItemIcon icon={faChevronRight} onClick={handleReviewClick} />
           </ItemHeader>
-          <ShowReview user={FilterUserObj} pad={true} profile={true} />
+          <ShowReview user={FilterUserObj} pad={true} profile="true" />
         </ItemBox>
 
         <HomeMenu />

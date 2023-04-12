@@ -23,7 +23,7 @@ function MReview(props) {
   const searchParams = new URLSearchParams(location.search);
   const userIdValue = searchParams.get("userId");
   const filterUserObj = UserObj.find((user) => user.id === userIdValue);
-  console.log(userIdValue);
+
   return (
     <Container>
       {/* 나눔후기 목록 헤더 */}
