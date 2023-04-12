@@ -31,7 +31,7 @@ export const ItemObj = [
       view: "0",
       heart: "0",
     },
-    state: "wait",
+    state: "reservate",
   },
 
   {

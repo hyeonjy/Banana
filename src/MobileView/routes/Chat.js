@@ -319,19 +319,17 @@ function Chat(props) {
             {filterItemObj.main} {">"} {filterItemObj.sub}
           </span>
         </ItemContent>
+
         {filterItemObj.userId === LoginId ? (
           <>
-            {(filterItemObj.state === "wait" ||
-              filterItemObj.state === "reservate") && (
-              <StateSelect
-                value={SelectedState}
-                onChange={(e) => handleChangeSelect(e)}
-              >
-                <option value="wait">대기중</option>
-                <option value="reservate">예약중</option>
-                <option value="complete">나눔완료</option>
-              </StateSelect>
-            )}
+            <StateSelect
+              value={SelectedState}
+              onChange={(e) => handleChangeSelect(e)}
+            >
+              <option value="wait">대기중</option>
+              <option value="reservate">예약중</option>
+              <option value="complete">나눔완료</option>
+            </StateSelect>
           </>
         ) : (
           <>

@@ -15,8 +15,7 @@ const UserBox = styled.div`
   //padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
-  /* padding-top: 50px; */
-  border-bottom: 1px solid #e9ecef;
+  /* border-bottom: 1px solid #e9ecef; */
   border-top: ${(props) => (props.profile ? "1px solid #e9ecef" : null)};
   margin-top: ${(props) => (props.profile ? "56px" : "0")};
 `;

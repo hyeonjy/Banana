@@ -95,6 +95,22 @@ const QueryLi = styled.div`
       font-weight: 700;
     `}
 `;
+
+const ItemState = styled.div`
+  width: 25%;
+  padding: 2px 1px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  height: 20px;
+  color: white;
+  background: ${(props) => props.color || "black"};
+  border-radius: 15px;
+  font-size: 10px;
+`;
+
 const queryItem = ["최신등록순", "조회순", "관심순"];
 
 // pad : paddingTop(최상단 header 유무)/ padBottom : 하단 메뉴 유무
@@ -175,10 +191,39 @@ export function ShowItemFn({
                 <Link to={`/clothes/${item.itemId}`} key={index}>
                   <Item>
                     <ItemText>
+                      {/* <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginBottom: "8px",
+                        }}
+                      > */}
                       <ItemTitle>{item.title}</ItemTitle>
+                      {/* </div> */}
                       <ItemContent>{item.content}</ItemContent>
-                      <ItemArea>{item.area}</ItemArea>
-                      <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          <ItemArea>{item.area}</ItemArea>
+                          <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
+                        </div>
+                        {item.state === "complete" && (
+                          <ItemState color="gray">
+                            <span>거래완료</span>
+                          </ItemState>
+                        )}
+                        {item.state === "reservate" && (
+                          <ItemState color="orange">
+                            <span>예약중</span>
+                          </ItemState>
+                        )}
+                      </div>
                     </ItemText>
                     <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
                   </Item>

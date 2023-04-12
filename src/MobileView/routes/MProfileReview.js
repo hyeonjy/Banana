@@ -38,6 +38,7 @@ const ShareBox = styled.div``;
 
 const ItemBox = styled.div`
   margin-top: 25px;
+  height: 260px;
   &:last-child {
     margin-bottom: 150px;
   }
@@ -48,6 +49,7 @@ const ItemHeader = styled.div`
   font-size: 15px;
   padding: 10px 30px;
   margin-bottom: 5px;
+  /* border-bottom: 1px solid #e9ecef; */
   h1 {
     font-weight: 600;
   }
@@ -104,9 +106,9 @@ function MProfileReview() {
         />
 
         <ItemBox>
-          <ItemHeader>
+          <ItemHeader onClick={handleShareClick}>
             <h1>나눔물품</h1>
-            <ItemIcon icon={faChevronRight} onClick={handleShareClick} />
+            <ItemIcon icon={faChevronRight} />
           </ItemHeader>
           <ShowItemFn
             item={filterItemObj}
@@ -116,9 +118,9 @@ function MProfileReview() {
         </ItemBox>
 
         <ItemBox style={{ marginBottom: "100px" }}>
-          <ItemHeader>
+          <ItemHeader onClick={handleReviewClick}>
             <h1>나의나눔후기</h1>
-            <ItemIcon icon={faChevronRight} onClick={handleReviewClick} />
+            <ItemIcon icon={faChevronRight} />
           </ItemHeader>
           <ShowReview user={FilterUserObj} pad={true} profile="true" />
         </ItemBox>
