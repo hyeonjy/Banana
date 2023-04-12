@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BsFillShareFill } from "react-icons/bs";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 
@@ -152,7 +152,7 @@ const FlexColumn = styled.div`
 const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
   const history = useHistory();
   const [heart, setHeart] = useState(false); //하트 toggle
-
+  const { postId } = useParams();
   //나눔 상태 변경
   const [SelectedState, setSelected] = useState(item.state);
   const handleChangeSelect = (e) => {
@@ -163,6 +163,18 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
 
   //작성 유저 정보 찾기
   const postWriter = UserObj.find((user) => user.id === item.userId);
+
+  //채팅으로 이동
+  const handleChatClick = (postWriter, postId) => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("userId", postWriter.id);
+    searchParams.append("itemId", postId);
+    history.push({
+      pathname: "/chat",
+      search: "?" + searchParams.toString(),
+    });
+  };
+
   return (
     <PostRightDiv>
       <Header
@@ -232,7 +244,7 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
           ) : (
             <GoChatBtn
               onClick={() => {
-                history.push({ pathname: "/chat" });
+                handleChatClick(postWriter, postId);
               }}
             >
               채팅하기

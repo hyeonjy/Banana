@@ -1,14 +1,8 @@
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faChevronLeft,
-  faPaperPlane,
-  faPen,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Comment from "../components/Comment";
 import { useEffect } from "react";
@@ -18,7 +12,7 @@ import * as chats from "../../MobileView/routes/Chats";
 import banana from "../../Img/banana.png";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 const Container = styled.div`
-  width: fit-content;
+  width: 380.4px;
   background-color: white;
   position: relative;
   border: 1px solid whitesmoke;
@@ -47,17 +41,6 @@ const WriteReview = styled.div`
     font-size: 12px;
   }
 `;
-
-const DHeaderIcon = styled(chats.HeaderIcon)``;
-
-const DChatsList = styled(chats.ChatsList)``;
-
-// const DItemBox = styled(chats.ItemBox)`
-//   position: relative;
-//   width: fit-content;
-//   margin-top: 70px;
-//   z-index: 1;
-// `;
 
 export const ItemBox = styled.div`
   margin-top: 50px;
@@ -89,10 +72,13 @@ export const ItemContent = styled.div`
     color: rgba(0, 0, 0, 0.5);
   }
 `;
-
+const StateSelectInChat = styled(StateSelect)`
+  border: 0;
+  background-color: whitesmoke;
+  border: 1px solid #80808057;
+  margin-left: 10px;
+`;
 const CommentBox = styled.div`
-  /* margin-top: 50px; */
-  /* margin-bottom: 80px; */
   overflow-y: scroll;
   height: calc(100% - 190px);
   &::-webkit-scrollbar {
@@ -115,11 +101,7 @@ const MessageForm = styled.form`
   background-color: rgb(242, 242, 245);
   align-items: center;
   justify-content: space-between;
-  /* position: fixed; */
-  /* bottom: 0; */
   padding: 5px 4%;
-  /* z-index: 999; */
-  /* width: 92%; */
   button {
     border: none;
     padding: 0;
@@ -167,12 +149,16 @@ function Chat({ FilterUserObj, setAdd }) {
   const userIdValue = searchParams.get("userId");
   const itemIdValue = searchParams.get("itemId");
 
+  // 채팅에 해당하는 나눔상품
   const filterItemObj = ItemObj.find(
     (item) => item.itemId === Number(itemIdValue)
   );
 
   // 상대방 user Obj 가져오기
   const FilterOtherUserObj = UserObj.find((item) => item.id === userIdValue);
+  const OtherChatObj = FilterOtherUserObj?.chats.find(
+    (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
+  );
 
   // 채팅 obj 가져오기
   const [ChatObj, setChatObj] = useState(
@@ -180,9 +166,6 @@ function Chat({ FilterUserObj, setAdd }) {
       (item) => item.id === userIdValue && item.itemId === Number(itemIdValue)
     )
   );
-  //나눔 거래 상태 변경
-  const [SelectedState, setSelected] = useState();
-
   useEffect(() => {
     setChatObj(
       FilterUserObj.chats.find(
@@ -190,15 +173,21 @@ function Chat({ FilterUserObj, setAdd }) {
       )
     );
   }, [userIdValue, itemIdValue]);
+
+  //나눔 거래 상태 변경
+  const [SelectedState, setSelected] = useState();
   useEffect(() => {
-    setSelected(FilterUserObj.state);
+    if (filterItemObj) {
+      setSelected(filterItemObj.state);
+    }
   }, [ChatObj]);
+  const handleChangeSelect = (e) => {
+    setSelected(e.target.value);
+    filterItemObj.state = SelectedState; //DB의 state 값 update
+    alert("상태가 변경되었습니다");
+  };
 
-  const OtherChatObj = FilterOtherUserObj?.chats.find(
-    (item) => item.id === LoginId && item.itemId === Number(itemIdValue)
-  );
-
-  // 스크롤 맨 아래로 내리기(메시지 입력시 스크롤 맨 아래로)
+  // 스크롤 맨 아래로 내리기(채팅창 스크롤 맨 아래로)
   const scrollRef = useRef();
   const [focusState, setFocusState] = useState(false);
   const scrollHeightFn = () => {
@@ -224,8 +213,6 @@ function Chat({ FilterUserObj, setAdd }) {
       setMessage(value);
     }
   };
-
-  //채팅리스트 마지막 메세지 바꾸기
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -332,12 +319,6 @@ function Chat({ FilterUserObj, setAdd }) {
     setMessage("");
   };
 
-  const handleChangeSelect = (e) => {
-    setSelected(e.target.value);
-    filterItemObj.state = SelectedState; //DB의 state 값 update
-    alert("상태가 변경되었습니다");
-  };
-
   return (
     <Container>
       {/* 상대방 ID 헤더 */}
@@ -361,20 +342,21 @@ function Chat({ FilterUserObj, setAdd }) {
               </span>
             </ItemContent>
 
-            {(filterItemObj.state === "wait" ||
-              filterItemObj.state === "reservate") && (
-              <StateSelect
+            {/* 자기 물품일 때 - 나눔 상태 바꾸기 */}
+            {filterItemObj.userId === LoginId && (
+              <StateSelectInChat
                 value={SelectedState}
                 onChange={(e) => handleChangeSelect(e)}
               >
                 <option value="wait">대기중</option>
                 <option value="reservate">예약중</option>
                 <option value="complete">나눔완료</option>
-              </StateSelect>
+              </StateSelectInChat>
             )}
 
+            {/* 나눔 받는 유저 - 나눔 완료 후 후기*/}
             {filterItemObj.state === "complete" &&
-              filterItemObj.userId !== userIdValue && (
+              filterItemObj.userId !== LoginId && (
                 <WriteReview
                   onClick={() => {
                     history.push({
@@ -388,6 +370,7 @@ function Chat({ FilterUserObj, setAdd }) {
                 </WriteReview>
               )}
           </ItemBox>
+
           {/* 채팅 내용 */}
           <CommentBox ref={scrollRef}>
             {ChatObj !== undefined && (
@@ -395,11 +378,11 @@ function Chat({ FilterUserObj, setAdd }) {
                 {ChatObj.chat.map((item, index) => {
                   return <Comment chatList={item} key={index} />;
                 })}
-                {/* <div ref={scrollRef}></div> */}
               </div>
             )}
           </CommentBox>
-          {/* 메시지 입력창*/}
+
+          {/* 메시지 입력*/}
           <MessageForm onSubmit={onSubmit}>
             <div>
               <MessageIcon icon={faPlus} />
@@ -420,7 +403,7 @@ function Chat({ FilterUserObj, setAdd }) {
             <button type="submit">
               <MessageIcon icon={faPaperPlane} />
             </button>
-          </MessageForm>{" "}
+          </MessageForm>
         </>
       )}
     </Container>
