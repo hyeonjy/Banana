@@ -21,6 +21,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import User from "../components/User";
 import Modal from "../../DesktopView/components/Modal";
 import { LoginId, UserObj } from "../../Data/UserObj";
+import { useEffect } from "react";
 
 const Container = styled.div`
   background-color: white;
@@ -51,6 +52,9 @@ const Header = styled.div`
   align-items: center;
   font-size: 15px;
   color: #37352f;
+  position: fixed;
+  z-index: 2;
+  top: ${(props) => (props.activeGrade ? "-56px" : "0")};
 `;
 
 const HeaderTitle = styled.span`
@@ -180,9 +184,13 @@ function MDetailpost(props) {
 
   //나눔 상태 변경
   const [SelectedState, setSelected] = useState(filterItemObj.state);
+
+  useEffect(() => {
+    filterItemObj.state = SelectedState;
+  }, [SelectedState]);
+
   const handleChangeSelect = (e) => {
     setSelected(e.target.value);
-    filterItemObj.state = SelectedState; //DB의 state 값 update
   };
 
   //img 클릭 시 Fullscreen
@@ -216,7 +224,7 @@ function MDetailpost(props) {
     <>
       <Container activeGrade={activeGrade}>
         {/* Header */}
-        <Header>
+        <Header activeGrade={activeGrade}>
           <PrevIcon
             onClick={() => {
               history.goBack();
@@ -234,6 +242,7 @@ function MDetailpost(props) {
           img={FilterUserObj.src}
           grade={FilterUserObj.grade}
           setActiveGrade={setActiveGrade}
+          profile="true"
         />
         {/* 게시글 이미지  */}
         {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
@@ -258,10 +267,7 @@ function MDetailpost(props) {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <PostTitle>{filterItemObj.title}</PostTitle>
             {isWriter && (
-              <StateSelect
-                value={SelectedState}
-                onChange={(e) => handleChangeSelect(e)}
-              >
+              <StateSelect value={SelectedState} onChange={handleChangeSelect}>
                 <option value="wait">대기중</option>
                 <option value="reservate">예약중</option>
                 <option value="complete">나눔완료</option>

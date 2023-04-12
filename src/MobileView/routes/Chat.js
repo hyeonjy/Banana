@@ -6,6 +6,7 @@ import {
   faBars,
   faChevronLeft,
   faPaperPlane,
+  faPen,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import { useCallback } from "react";
 import { set, useForm } from "react-hook-form";
 import { ItemObj } from "../../Data/ItemObj";
 import { useRef } from "react";
+import { StateSelect } from "./MDetailpost";
 
 const Container = styled.div``;
 
@@ -42,12 +44,10 @@ const HeaderIcon = styled(FontAwesomeIcon)`
   font-size: 20px;
 `;
 
-const ItemBox = styled.div`
+export const ItemBox = styled.div`
   position: fixed;
   top: 56.6px;
   background-color: white;
-  /* margin-top: 56.6px; */
-  /* background-color: orange; */
   display: flex;
   align-items: center;
   border-bottom: 1px solid #e9ecef;
@@ -62,11 +62,15 @@ const ItemBox = styled.div`
     object-fit: cover;
   }
 `;
-const ItemContent = styled.div`
+export const ItemContent = styled.div`
+  width: 180px;
   h1 {
     font-size: 15px;
     margin-bottom: 3px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   span {
     font-size: 13px;
@@ -111,6 +115,21 @@ const MessageInput = styled.input`
   }
 `;
 
+const WriteReview = styled.div`
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  border: 1px solid gray;
+  padding: 9px 10px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  border-radius: 10px;
+  span {
+    font-size: 12px;
+  }
+`;
+
 function Chat(props) {
   const location = useLocation();
   const history = useHistory();
@@ -127,6 +146,17 @@ function Chat(props) {
   // 유저 Obj 가져오기
   const FilterUserObj = UserObj.find((item) => item.id === LoginId);
   const FilterOtherUserObj = UserObj.find((item) => item.id === userIdValue);
+
+  //나눔 거래 상태 변경
+  const [SelectedState, setSelected] = useState(filterItemObj.state);
+
+  useEffect(() => {
+    filterItemObj.state = SelectedState;
+  }, [SelectedState]);
+
+  const handleChangeSelect = (e) => {
+    setSelected(e.target.value);
+  };
 
   // 채팅 obj 가져오기
   const [ChatObj, setChatObj] = useState(
@@ -289,6 +319,37 @@ function Chat(props) {
             {filterItemObj.main} {">"} {filterItemObj.sub}
           </span>
         </ItemContent>
+        {filterItemObj.userId === LoginId ? (
+          <>
+            {(filterItemObj.state === "wait" ||
+              filterItemObj.state === "reservate") && (
+              <StateSelect
+                value={SelectedState}
+                onChange={(e) => handleChangeSelect(e)}
+              >
+                <option value="wait">대기중</option>
+                <option value="reservate">예약중</option>
+                <option value="complete">나눔완료</option>
+              </StateSelect>
+            )}
+          </>
+        ) : (
+          <>
+            {filterItemObj.state === "complete" && (
+              <WriteReview
+                onClick={() => {
+                  history.push({
+                    pathname: "/write",
+                    state: { item: filterItemObj },
+                  });
+                }}
+              >
+                <FontAwesomeIcon style={{ fontSize: "12px" }} icon={faPen} />
+                <span>후기쓰기</span>
+              </WriteReview>
+            )}
+          </>
+        )}
       </ItemBox>
 
       {/* 채팅 내용 */}

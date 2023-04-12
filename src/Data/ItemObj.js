@@ -10,7 +10,7 @@ export const ItemObj = [
     img: ["shoes", "blouse"],
     main: "상의",
     sub: "티셔츠",
-    state: "reservate",
+    state: "complete",
     meta: {
       view: "0",
       heart: "0",
@@ -172,7 +172,7 @@ export const ItemObj = [
       view: "0",
       heart: "0",
     },
-    state: "wait",
+    state: "complete",
   },
 
   {

@@ -24,10 +24,11 @@ export const BackIcon = styled(FontAwesomeIcon)`
   color: black;
 `;
 export const Header = styled.header`
-  height: 35px;
-  line-height: 35px;
-  padding: 12.5px 4%;
-  width: 92%;
+  height: 25px;
+  line-height: 25px;
+  /* padding: 12.5px 4%; */
+  padding: 15px 5%;
+  width: 90%;
   text-align: center;
   background: white;
   position: relative;
@@ -36,9 +37,9 @@ export const Header = styled.header`
     height: 100%;
     font-weight: 600;
   }
-
+  /* top: ${(props) => (props.activeGrade ? "-60px" : "0")}; */
   ${BackIcon} {
-    left: 4%;
+    left: 5%;
     top: 50%;
     position: absolute;
     transform: translate(0, -50%);

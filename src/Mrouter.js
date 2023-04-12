@@ -14,6 +14,7 @@ import ScrollToTop from "./ScrollToTop";
 import Region from "./MobileView/routes/Region";
 import MReview from "./MobileView/routes/MReview";
 import MProfileReview from "./MobileView/routes/MProfileReview";
+import MWriteReview from "./MobileView/routes/MWriteReview";
 
 export function MobileRouter() {
   return (
@@ -69,6 +70,10 @@ export function MobileRouter() {
 
         <Route exact path="/review">
           <MReview />
+        </Route>
+
+        <Route exact path="/write">
+          <MWriteReview />
         </Route>
 
         <Route exact path="/profile">

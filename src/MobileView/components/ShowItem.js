@@ -8,6 +8,7 @@ const ItemDiv = styled.div`
   height: auto;
   font-family: "Pretendard";
   min-height: calc(100vh - 360px - 160px);
+
   padding-top: ${(props) => (props.pad ? "60px" : "0px")};
   padding-bottom: ${(props) => (props.padBottom ? "60px" : "0px")};
 `;
@@ -59,11 +60,15 @@ const Item = styled.div`
 
 const EmptyPage = styled.div`
   width: 100%;
-  height: calc(100vh - 360px - 160px);
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 500;
+  margin-top: ${(props) => (props.profile ? "0" : "60px")};
+  height: ${(props) =>
+    props.profile ? "110px" : "calc(100vh - 360px - 160px)"};
+  /* background-color: orange; */
+  color: rgba(0, 0, 0, 0.3);
 `;
 const QueryDiv = styled.div`
   width: 90%;
@@ -147,7 +152,12 @@ export function ShowItemFn({
             <>
               {item.slice(0, 2).map((item, index) => (
                 <Link to={`/clothes/${item.itemId}`} key={index}>
-                  <Item style={{ paddingLeft: "15px", paddingRight: "15PX" }}>
+                  <Item
+                    style={{
+                      paddingLeft: "15px",
+                      paddingRight: "15PX",
+                    }}
+                  >
                     <ItemText>
                       <ItemTitle>{item.title}</ItemTitle>
                       <ItemContent>{item.content}</ItemContent>
@@ -178,7 +188,7 @@ export function ShowItemFn({
           )}
         </ItemDiv>
       ) : (
-        <EmptyPage>나눔이 없습니다</EmptyPage>
+        <EmptyPage profile={profile}>나눔물품이 없습니다</EmptyPage>
       )}
     </div>
   );

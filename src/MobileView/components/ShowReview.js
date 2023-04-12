@@ -3,11 +3,12 @@ import { LoginId, UserObj } from "../../Data/UserObj";
 // import EmptyPage from "../components/ShowItem";
 
 const Container = styled.div`
-  margin-top: 60px;
   width: 100%;
   height: auto;
   font-family: "Pretendard";
   min-height: calc(100vh - 360px - 160px);
+  padding-top: ${(props) =>
+    props.pad || props.profile === "false" ? "55px" : "0px"};
 `;
 const ReviewBox = styled.div`
   padding: 10px 15px;
@@ -43,20 +44,24 @@ const EmptyPage = styled.div`
   width: 100%;
   align-items: center;
   font-family: "Pretendard";
-  min-height: calc(100vh - 360px - 160px);
+  /* margin-top: 60px; */
+  margin-top: ${(props) => (props.profile === "true" ? "0" : "60px")};
+  min-height: ${(props) =>
+    props.profile ? "110px" : "calc(100vh - 360px - 160px)"};
+  color: rgba(0, 0, 0, 0.3);
 `;
 
-function ShowReview({ user, profile = false }) {
+function ShowReview({ pad, user, profile = "false" }) {
   const reviewList = user.reviews;
   return (
     <>
       {reviewList.length !== 0 ? (
         <>
           {profile ? (
-            <Container style={{ marginTop: "10px" }}>
+            <Container style={{ marginTop: "10px" }} profile={profile}>
               {reviewList.slice(0, 2).map((review, index) => {
                 return (
-                  <ReviewBox>
+                  <ReviewBox key={index}>
                     <Header>
                       <img src={require(`../../Img/${review.src}`)} />
                       <h1>{review.id}</h1>
@@ -67,10 +72,10 @@ function ShowReview({ user, profile = false }) {
               })}
             </Container>
           ) : (
-            <Container>
+            <Container pad={pad}>
               {reviewList.map((review, index) => {
                 return (
-                  <ReviewBox>
+                  <ReviewBox key={index}>
                     <Header>
                       <img src={require(`../../Img/${review.src}`)} />
                       <h1>{review.id}</h1>
@@ -83,7 +88,9 @@ function ShowReview({ user, profile = false }) {
           )}
         </>
       ) : (
-        <EmptyPage>나눔후기가 없습니다</EmptyPage>
+        <EmptyPage pad={pad} profile={profile}>
+          나눔후기가 없습니다
+        </EmptyPage>
       )}
     </>
   );
