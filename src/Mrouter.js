@@ -15,7 +15,7 @@ import Region from "./MobileView/routes/Region";
 import MReview from "./MobileView/routes/MReview";
 import MProfileReview from "./MobileView/routes/MProfileReview";
 import MWriteReview from "./MobileView/routes/MWriteReview";
-import SignUp from "./MobileView/routes/SingUp";
+import SignUp from "./MobileView/routes/SignUp";
 
 export function MobileRouter() {
   return (
