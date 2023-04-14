@@ -148,7 +148,11 @@ function Mmypage() {
             </MainCircle>
             <MainSpan>찜목록</MainSpan>
           </MainDiv>
-          <MainDiv>
+          <MainDiv
+            onClick={() => {
+              history.push("/login");
+            }}
+          >
             <MainCircle>
               <MainIcon icon={faStore} />
             </MainCircle>

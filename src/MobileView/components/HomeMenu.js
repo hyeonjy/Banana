@@ -27,15 +27,26 @@ const MenuList = [
   { name: "지역별", url: "/region?region=전체보기" },
   { name: "마이페이지", url: "/mypage" },
 ];
-
+const existUser = false;
 function HomeMenu() {
   return (
     <MenuDiv>
-      {MenuList.map((Menu, index) => (
-        <Link to={Menu.url} key={index}>
-          <MenuSpan>{Menu.name}</MenuSpan>
-        </Link>
-      ))}
+      {MenuList.map((Menu, index) => {
+        return (
+          <Link
+            to={
+              index === 0 || index === 2
+                ? Menu.url
+                : existUser
+                ? Menu.url
+                : "/login"
+            }
+            key={index}
+          >
+            <MenuSpan>{Menu.name}</MenuSpan>
+          </Link>
+        );
+      })}
     </MenuDiv>
   );
 }

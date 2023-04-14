@@ -15,6 +15,7 @@ import Region from "./MobileView/routes/Region";
 import MReview from "./MobileView/routes/MReview";
 import MProfileReview from "./MobileView/routes/MProfileReview";
 import MWriteReview from "./MobileView/routes/MWriteReview";
+import SignUp from "./MobileView/routes/SingUp";
 
 export function MobileRouter() {
   return (
@@ -27,6 +28,10 @@ export function MobileRouter() {
 
         <Route path="/login" exact>
           <Mlogin />
+        </Route>
+
+        <Route path="/signup" exact>
+          <SignUp />
         </Route>
 
         <Route exact path="/clothes/:clothesid">
