@@ -15,6 +15,7 @@ import Search from "./DesktopView/routes/Search";
 import Chats from "./DesktopView/routes/Chats";
 import UserInfo from "./DesktopView/routes/UserReview";
 import WriteReview from "./DesktopView/routes/WriteReview";
+import SignUp from "./DesktopView/routes/SignUp";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -61,6 +62,10 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/write">
           <WriteReview />
+        </Route>
+
+        <Route path="/signup">
+          <SignUp />
         </Route>
       </Switch>
       <Footer />
