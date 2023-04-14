@@ -60,8 +60,6 @@ const ImgLabel = styled.label`
 const ImgList = styled.div`
   display: flex;
   overflow: auto;
-
-  flex-shrink: ;
   margin-left: 10px;
   flex-grow: 1;
   height: 73px;
