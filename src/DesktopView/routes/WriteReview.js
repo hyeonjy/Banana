@@ -134,7 +134,11 @@ function WriteReview() {
             <ReviewForm onSubmit={handleSubmit(onValid)}>
               <ReviewInput
                 {...register("review", {
-                  required: "최소 5자 이상 입력해주세요",
+                  required: "내용을 입력해주세요",
+                  minLength: {
+                    value: 5,
+                    message: "최소 5자 이상 입력해주세요",
+                  },
                 })}
               />
               {errors && <span>{errors.review?.message}</span>}

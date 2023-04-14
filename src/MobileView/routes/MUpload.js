@@ -89,7 +89,7 @@ const SubmitBtn = styled.button`
   width: 100%;
   margin-top: 15px;
 `;
-const ErrorDiv = styled.div`
+export const ErrorDiv = styled.div`
   height: 30px;
   p {
     line-height: 30px;
