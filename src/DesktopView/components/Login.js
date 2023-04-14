@@ -30,7 +30,7 @@ const ErrorP = styled.p`
   font-weight: 600;
   color: red;
   padding-left: 10px;
-  margin-bottom: 30px;
+  margin-top: 10px;
 `;
 
 function Login() {
@@ -99,7 +99,10 @@ function Login() {
                 </>
               )}
             </div>
-            <MLogin.SubmitBtn type="submit" style={{ cursor: "pointer" }}>
+            <MLogin.SubmitBtn
+              type="submit"
+              style={{ cursor: "pointer", marginTop: "20px" }}
+            >
               Log In
             </MLogin.SubmitBtn>
           </LoginForm>

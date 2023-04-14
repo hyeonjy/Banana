@@ -27,7 +27,7 @@ const SignForm = styled.form`
 const InputDiv = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   label {
     padding-left: 5px;
     margin-bottom: 10px;
@@ -45,12 +45,14 @@ const Input = styled(MLogin.LoginInput)`
 
 const SubmitBtn = styled(MLogin.SubmitBtn)`
   border-radius: 15px;
+  margin-top: 10px;
 `;
 
 const ErrorP = styled.p`
   font-size: 14px;
   color: red;
   padding-left: 5px;
+  margin-top: 10px;
 `;
 
 function SignUp() {
