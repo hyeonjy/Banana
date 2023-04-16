@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { ItemObj } from "../../Data/ItemObj";
 import { useState } from "react";
 import { useEffect } from "react";
+import { ProductHeader } from "../../DesktopView/routes/Gruop";
 const ItemDiv = styled.div`
   width: 100%;
   height: auto;
@@ -23,7 +24,11 @@ const ItemText = styled.div`
     font-size: 15px;
     font-weight: 800;
     display: block;
-    margin-bottom: 7px;
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
   }
   ${ItemContent} {
     display: block;
@@ -97,7 +102,7 @@ const QueryLi = styled.div`
 `;
 
 const ItemState = styled.div`
-  width: 25%;
+  width: 20%;
   padding: 2px 1px;
   display: flex;
   -webkit-box-align: center;
@@ -191,16 +196,19 @@ export function ShowItemFn({
                 <Link to={`/clothes/${item.itemId}`} key={index}>
                   <Item>
                     <ItemText>
-                      {/* <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          marginBottom: "8px",
-                        }}
-                      > */}
-                      <ItemTitle>{item.title}</ItemTitle>
-                      {/* </div> */}
+                      <ProductHeader>
+                        <ItemTitle>{item.title}</ItemTitle>
+                        {item.state === "complete" && (
+                          <ItemState color="gray">
+                            <span>나눔완료</span>
+                          </ItemState>
+                        )}
+                        {item.state === "reservate" && (
+                          <ItemState color="orange">
+                            <span>예약중</span>
+                          </ItemState>
+                        )}
+                      </ProductHeader>
                       <ItemContent>{item.content}</ItemContent>
                       <div
                         style={{
@@ -213,16 +221,6 @@ export function ShowItemFn({
                           <ItemArea>{item.area}</ItemArea>
                           <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
                         </div>
-                        {item.state === "complete" && (
-                          <ItemState color="gray">
-                            <span>거래완료</span>
-                          </ItemState>
-                        )}
-                        {item.state === "reservate" && (
-                          <ItemState color="orange">
-                            <span>예약중</span>
-                          </ItemState>
-                        )}
                       </div>
                     </ItemText>
                     <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
