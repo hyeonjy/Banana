@@ -10,12 +10,11 @@ import { UserObj } from "../../Data/UserObj";
 import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Container } from "./More";
-import { Product, ProductDetail, ProductImg, ProductTitle } from "./Home";
 import { ItemObj } from "../../Data/ItemObj";
-import { NoItemPage } from "./ShareList";
-import { EachReview, ReviewContent, ReviewUserInfo, UserImg } from "./Review";
 import { useState } from "react";
 import Modal from "../components/Modal";
+import { ShowItem, ShowReview } from "../components/ShowItem";
+import NoItem from "../components/NoItem";
 const UserContainer = styled(Container)`
   max-width: 800px;
   padding-top: 90px;
@@ -34,7 +33,7 @@ const EachCate = styled(Link)`
   &:first-of-type {
     border-right: 1px solid #80808052;
   }
-  background-color: ${(props) => (props.isActive ? "#ffe914" : "transparent")};
+  background-color: ${(props) => (props.active ? "#ffe914" : "transparent")};
 `;
 const CateDiv = styled.div`
   display: flex;
@@ -63,7 +62,8 @@ function UserInfo() {
 
   //포스트 + 리뷰
   const reviews = postWriter.reviews;
-  const posts = postWriter.itemIdList;
+  //아이템에서 해당 유저가 올린 post 들
+  const items = ItemObj.filter((item) => item.userId === userId);
 
   //모달
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
@@ -86,13 +86,13 @@ function UserInfo() {
           </Header>
           <CateDiv>
             <EachCate
-              isActive={reviewPage === null ? 1 : 0}
+              active={reviewPage === null ? 1 : 0}
               to={{ pathname: "/user", search: `?id=${postWriter.id}` }}
             >
               판매 목록
             </EachCate>
             <EachCate
-              isActive={reviewPage ? 1 : 0}
+              active={reviewPage ? 1 : 0}
               to={{ search: `id=${postWriter.id}&review=${true}` }}
             >
               나눔 후기
@@ -100,52 +100,16 @@ function UserInfo() {
           </CateDiv>
           <ItemDiv>
             {/* 유저 나눔 목록 & 후기 목록 */}
-
             {reviewPage ? (
               reviews.length > 0 ? (
-                reviews.map((item, index) => (
-                  <EachReview as="div" key={index}>
-                    <ReviewUserInfo>
-                      <UserImg
-                        style={{ width: "30px", height: "auto" }}
-                        src={require(`../../Img/${item.src}`)}
-                      />
-                      <span>{item.id}</span>
-                    </ReviewUserInfo>
-                    <ReviewContent>{item.content}</ReviewContent>
-                  </EachReview>
-                ))
+                <ShowReview reviews={reviews} />
               ) : (
-                <NoItemPage>후기가 없습니다</NoItemPage>
+                <NoItem content={"후기가"}>후기가 없습니다</NoItem>
               )
-            ) : posts.length > 0 ? (
-              posts.map((postId, index) => {
-                //아이템에서 해당 유저가 올린 post 전부 찾기
-                const item = ItemObj.find((item) => item.itemId === postId);
-                return (
-                  <Product key={index}>
-                    <Link
-                      to={{
-                        pathname: `/post/${item.itemId}`,
-                        state: {
-                          item,
-                        },
-                      }}
-                    >
-                      <ProductImg
-                        style={{ height: "150px" }}
-                        src={require(`../../Img/${item.img[0]}.jpg`)}
-                      />
-                      <ProductTitle>{item.title}</ProductTitle>
-                      <ProductDetail>
-                        {item.area} | {item.timeAgo}
-                      </ProductDetail>
-                    </Link>
-                  </Product>
-                );
-              })
+            ) : items.length > 0 ? (
+              <ShowItem item={items} />
             ) : (
-              <NoItemPage>나눔이 없습니다</NoItemPage>
+              <NoItem content={"나눔이"}>나눔이 없습니다</NoItem>
             )}
           </ItemDiv>
         </UserWrap>

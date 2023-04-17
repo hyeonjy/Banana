@@ -7,9 +7,10 @@ import { Container } from "./Home";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
 
-import Paging from "../components/Paging";
+import Paging, { SetPage } from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
+import { ShowItem } from "../components/ShowItem";
 
 export const WrapDiv = styled(Container)`
   justify-content: space-evenly;
@@ -66,9 +67,24 @@ export const Categoryli = styled(Link)`
   }
 `;
 
+//--------현재 카테고리 정보 & Query-------//
+export const CurrentCate = styled.div``;
+export const CurrentCateAndQuery = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 5px 0px;
+  ${CurrentCate} {
+    display: flex;
+    align-items: center;
+    span {
+      font-size: 17px;
+      font-weight: 600;
+    }
+  }
+`;
+
 //------------Item Query-----------//
 export const QueryDiv = styled.div``;
-
 export const QueryUl = styled.ul`
   width: 30%;
   height: 40px;
@@ -96,55 +112,14 @@ export const ItemDiv = styled.div`
   margin: 20px 0;
   display: flex;
   flex-wrap: wrap;
-  //min-height: 60vh;
   padding-left: 10px;
 `;
-export const Product = styled(Link)`
-  &:not(:nth-of-type(4n + 1)) {
-    margin-left: 4%;
-  }
-  margin-bottom: 30px;
-  width: 21%;
-`;
-export const ProductImg = styled.img`
-  //width: 250px;
-  height: 200px;
-  width: 100%;
-  object-fit: cover;
-  margin-bottom: 10px;
-`;
+
 export const ProductHeader = styled.div`
   display: flex;
   margin-bottom: 5px;
   align-items: center;
   gap: 5px;
-`;
-export const ProductTitle = styled.h1`
-  font-weight: 600;
-  font-size: 16px;
-  width: 70%;
-  overflow: hidden; // 을 사용해 영역을 감출 것
-  text-overflow: ellipsis; // 로 ... 을 만들기
-  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
-  word-break: break-all;
-`;
-export const ProductState = styled.div`
-  width: 25%;
-  padding: 2px 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  color: white;
-  background-color: ${(props) =>
-    props.status === "reservate" ? "orange" : "gray"};
-
-  border-radius: 15px;
-  font-size: 10px;
-`;
-export const ProductDetail = styled.span`
-  font-size: 13px;
-  color: #232323ab;
 `;
 
 //배너?
@@ -154,8 +129,6 @@ export const BackGround = styled.div`
   z-index: 0;
   min-width: 1300px;
   width: 100%;
-  //height: 293px;
-  //background-color: beige;
   height: 549px;
   background: linear-gradient(360deg, rgba(255, 255, 255, 1) 0%, #ffffba 100%);
   transform: translate(0, -39%);
@@ -168,16 +141,17 @@ function Group() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("category"); // id( = main category)
-  const pageValue = searchParams.get("page");
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
   const cateItem = ItemObj.filter((item) => item.main === Group.main);
 
   //페이지네이션
-  const [count, setCount] = useState(cateItem.length); // 전체 아이템 개수
-  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
-  const [postPerPage] = useState(12); // 한 페이지 아이템 수
+  const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
+    searchParams,
+    cateItem
+  );
+  const postPerPage = 12; // 한 페이지 아이템 수
 
   //강제 렌더링
   useEffect(() => {
@@ -211,67 +185,32 @@ function Group() {
           {/* 카테고리 끝 */}
           {cateItem.length > 0 ? (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  margin: "8px 5px 0 5px",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ fontSize: "17px", fontWeight: "600" }}>
+              <CurrentCateAndQuery>
+                <CurrentCate>
+                  <span>
                     {Group.main} - 전체({cateItem.length})
                   </span>
-                </div>
+                </CurrentCate>
                 {/*Query*/}
                 <QueryUl>
                   {queryArray.map((query, index) => (
                     <QueryLi key={index}>{query}</QueryLi>
                   ))}
                 </QueryUl>
-              </div>
+              </CurrentCateAndQuery>
 
               <ItemDiv>
-                {cateItem
-                  .slice(
+                <ShowItem
+                  item={cateItem.slice(
                     postPerPage * (currentPage - 1),
                     postPerPage * (currentPage - 1) + postPerPage
-                  )
-                  .map((item, index) => (
-                    <Product
-                      key={index}
-                      to={{
-                        pathname: `/post/${item.itemId}`,
-                        state: {
-                          item,
-                        },
-                      }}
-                    >
-                      <ProductImg
-                        src={require(`../../Img/${item.img[0]}.jpg`)}
-                      />
-                      <ProductHeader>
-                        <ProductTitle>{item.title}</ProductTitle>
-                        {item.state === "reservate" && (
-                          <ProductState status="reservate">예약중</ProductState>
-                        )}
-                        {item.state === "complete" && (
-                          <ProductState status="complete">
-                            나눔완료
-                          </ProductState>
-                        )}
-                      </ProductHeader>
-
-                      <ProductDetail>
-                        {item.area} | {item.timeAgo}
-                      </ProductDetail>
-                    </Product>
-                  ))}
+                  )}
+                  state={true}
+                />
               </ItemDiv>
               <Paging
                 page={currentPage}
                 count={count}
-                //setPage={setPage}
                 setCurrentPage={setCurrentPage}
                 postPerPage={postPerPage}
               />

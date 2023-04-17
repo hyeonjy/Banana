@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import * as MLogin from "../../MobileView/routes/Mlogin";
-import * as Login from "../components/Login";
+import * as Login from "../routes/Login";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";

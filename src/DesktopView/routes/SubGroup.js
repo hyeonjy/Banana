@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
@@ -13,20 +13,17 @@ import {
   CategoryMain,
   CategoryUl,
   ItemDiv,
-  Product,
-  ProductDetail,
-  ProductImg,
-  ProductTitle,
   queryArray,
   QueryLi,
   QueryUl,
   TopCate,
-  ProductHeader,
-  ProductState,
+  CurrentCateAndQuery,
+  CurrentCate,
 } from "./Gruop";
-import Paging from "../components/Paging";
+import Paging, { SetPage } from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
+import { ShowItem } from "../components/ShowItem";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -60,7 +57,6 @@ function SubGroup() {
 
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("subitem"); // id( = main category)
-  const pageValue = searchParams.get("page");
   const mainGroup = itemsGroup.find((item) => item.id === Number(main));
   const subItems = ItemObj.filter(
     (item) => item.sub === categoryValue && item.main === mainGroup.main
@@ -71,9 +67,11 @@ function SubGroup() {
   );
 
   //페이지네이션
-  const [count, setCount] = useState(subItems.length); // 전체 아이템 개수
-  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
-  const [postPerPage] = useState(12); // 한 페이지 아이템 수
+  const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
+    searchParams,
+    subItems
+  );
+  const postPerPage = 12; // 한 페이지 아이템 수
 
   //강제 렌더링
   useEffect(() => {
@@ -124,16 +122,10 @@ function SubGroup() {
           {/*Query*/}
           {subItems.length > 0 ? (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  margin: "8px 5px 0 5px",
-                }}
-              >
+              <CurrentCateAndQuery>
                 {/* 상단 카테고리 경로(ex:상의 > 티셔츠) */}
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ fontSize: "17px", fontWeight: "600" }}>
+                <CurrentCate style={{ display: "flex", alignItems: "center" }}>
+                  <span>
                     <Link
                       to={{
                         pathname: `/group`,
@@ -144,51 +136,24 @@ function SubGroup() {
                     </Link>
                     &nbsp; &gt; &nbsp;{categoryValue} ({subItems.length})
                   </span>
-                </div>
+                </CurrentCate>
 
                 <QueryUl>
                   {queryArray.map((query, index) => (
                     <QueryLi key={index}>{query}</QueryLi>
                   ))}
                 </QueryUl>
-              </div>
+              </CurrentCateAndQuery>
 
               {/*Item List */}
               <ItemDiv>
-                {subItems
-                  .slice(
+                <ShowItem
+                  item={subItems.slice(
                     postPerPage * (currentPage - 1),
                     postPerPage * (currentPage - 1) + postPerPage
-                  )
-                  .map((item, index) => (
-                    <Product
-                      key={index}
-                      to={{
-                        pathname: `/post/${item.itemId}`,
-                        state: {
-                          item,
-                        },
-                      }}
-                    >
-                      <ProductImg
-                        src={require(`../../Img/${item.img[0]}.jpg`)}
-                      />
-                      <ProductHeader>
-                        <ProductTitle>{item.title}</ProductTitle>
-                        {item.state === "reservate" && (
-                          <ProductState status="reservate">예약중</ProductState>
-                        )}
-                        {item.state === "complete" && (
-                          <ProductState status="complete">
-                            나눔완료
-                          </ProductState>
-                        )}
-                      </ProductHeader>
-                      <ProductDetail>
-                        {item.area}|{item.timeAgo}
-                      </ProductDetail>
-                    </Product>
-                  ))}
+                  )}
+                  state={true}
+                />
               </ItemDiv>
 
               {/*Pagination */}

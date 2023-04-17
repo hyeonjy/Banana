@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as MLogin from "../../MobileView/routes/Mlogin";
-import { Container } from "../routes/Home";
+import { Container } from "./Home";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 

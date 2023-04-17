@@ -1,14 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
-import profile from "../../Img/profile.jpg";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Modal from "../components/Modal";
+import Review from "./Review";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
-import { useState } from "react";
-import Modal from "../components/Modal";
-import { useEffect } from "react";
-import Review from "./Review";
 import { LoginId, UserObj } from "../../Data/UserObj";
 
 const Container = styled.div`

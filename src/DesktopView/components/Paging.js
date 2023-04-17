@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useState } from "react";
 
 const PageNationItem = styled(Pagination)``;
 const PaginationDiv = styled.div`
@@ -51,6 +52,13 @@ const ArrowIcon = styled(FontAwesomeIcon)`
   font-size: 15px;
   color: gray;
 `;
+export function SetPage(searchParams, searchItem) {
+  const pageValue = searchParams.get("page"); // id( = main category)
+  const [count, setCount] = useState(searchItem.length); // 전체 아이템 개수
+  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
+  return { pageValue, count, setCount, currentPage, setCurrentPage };
+}
+
 const Paging = ({ page, count, setCurrentPage, postPerPage }) => {
   const location = useLocation();
   const history = useHistory();

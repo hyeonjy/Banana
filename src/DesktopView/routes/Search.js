@@ -1,21 +1,14 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import {
-  Container,
-  Product,
-  ProductDetail,
-  ProductImg,
-  ProductTitle,
-  ProductsBox,
-} from "./More";
+import { Container, ProductsBox } from "./More";
 import { QueryDiv, QueryLi, QueryUl, queryArray } from "./Gruop";
 import NoItem from "../components/NoItem";
-import { useState } from "react";
-import Paging from "../components/Paging";
+import Paging, { SetPage } from "../components/Paging";
 import { useEffect } from "react";
 import { ItemObj } from "../../Data/ItemObj";
+import { ShowItem } from "../components/ShowItem";
 
 const SearchContainer = styled(Container)`
   min-height: 750px;
@@ -50,15 +43,16 @@ function Search() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content"); // id( = main category)
-  const pageValue = searchParams.get("page"); // id( = main category)
   const searchItem = ItemObj.filter(
     (item) =>
       item.title.includes(searchValue) || item.content.includes(searchValue)
   );
 
-  const [count, setCount] = useState(searchItem.length); // 전체 아이템 개수
-  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
-  const [postPerPage] = useState(15); // 한 페이지 아이템 수
+  const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
+    searchParams,
+    searchItem
+  );
+  const postPerPage = 15; // 한 페이지 아이템 수
 
   //강제 렌더링
   useEffect(() => {
@@ -87,29 +81,13 @@ function Search() {
       {searchItem.length > 0 ? (
         <div>
           <ProductsBox as="ul" style={{ minHeight: "450px" }}>
-            {searchItem
-              .slice(
+            <ShowItem
+              item={searchItem.slice(
                 postPerPage * (currentPage - 1),
                 postPerPage * (currentPage - 1) + postPerPage
-              )
-              .map((item, index) => (
-                <Product key={index} as="li">
-                  <Link
-                    to={{
-                      pathname: `/post/${item.itemId}`,
-                      state: {
-                        item,
-                      },
-                    }}
-                  >
-                    <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-                    <ProductTitle>{item.title}</ProductTitle>
-                    <ProductDetail>
-                      {item.area} |{item.timeAgo}
-                    </ProductDetail>
-                  </Link>
-                </Product>
-              ))}
+              )}
+              responsive={true}
+            />
           </ProductsBox>
           <Paging
             page={currentPage}
