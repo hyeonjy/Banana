@@ -159,7 +159,13 @@ function ImgUpload({ showImages, setShowImages }) {
           <ImgLabel htmlFor="input-file" onChange={handleAddImages}>
             <CameraIcon icon={faCamera} />
             <span>{showImages.length} / 10</span>
-            <ImgInput type="file" multiple accept="image/*" id="input-file" />
+            <ImgInput
+              type="file"
+              multiple
+              accept="image/*"
+              id="input-file"
+              required
+            />
           </ImgLabel>
 
           <ImgList>
