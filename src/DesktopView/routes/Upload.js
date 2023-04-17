@@ -7,6 +7,8 @@ import { BackGround } from "./Gruop";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { itemsGroup } from "../../Data/ItemGroup";
 import area from "../../Data/Area";
+import { useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -185,6 +187,15 @@ const Xbtn = styled(FontAwesomeIcon)`
   color: white;
   background: black;
 `;
+const LetterCount = styled.div`
+  float: right;
+  margin: 10px;
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  color: #aaaaaa;
+  font-size: 15px;
+`;
 
 function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
@@ -225,18 +236,29 @@ function Upload() {
   };
 
   // 폼 제출시 실행되는 함수 (object를 저장)
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setObject({
-      imgUrl: [...imgFile],
-      title: event.target.title.value,
-      detail: event.target.area.value,
-      view: "0",
-      main: event.target.major.value,
-      sub: event.target.minor.value,
-      id: "77777",
-      content: event.target.content.value,
-    });
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   setObject({
+  //     imgUrl: [...imgFile],
+  //     title: event.target.title.value,
+  //     detail: event.target.area.value,
+  //     view: "0",
+  //     main: event.target.major.value,
+  //     sub: event.target.minor.value,
+  //     id: "77777",
+  //     content: event.target.content.value,
+  //   });
+  // };
+  const history = useHistory();
+  const { watch, register, handleSubmit } = useForm();
+  //form 유효할 때 실행
+  const onValid = (data) => {
+    console.log("onValid");
+    console.log(data); // form 데이터
+    console.log(imgFile); //img url 데이터
+    alert("등록되었습니다"); // 따로 cumstom ????
+    //해당 post 페이지로 이동
+    //history.push("");
   };
 
   // 이미지 썸네일 가로 스크롤
@@ -255,7 +277,6 @@ function Upload() {
     el.addEventListener("wheel", onWheel);
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
-
   return (
     <div style={{ position: "relative" }}>
       {/* 노란색 그라데이션 배경 */}
@@ -264,13 +285,19 @@ function Upload() {
       <Container>
         <KeySubject>게시글</KeySubject>
         {/* 폼 시작 */}
-        <CreateForm onSubmit={handleSubmit}>
+        <CreateForm onSubmit={handleSubmit(onValid)}>
           <Box>
             {/* 카테고리 SELECT */}
             <CategoryBox>
               <SelectTitle>카테고리</SelectTitle>
               {/* 옷 대분류 */}
-              <Select name="major" onChange={optionChange}>
+              <Select
+                name="major"
+                {...register("major", {
+                  required: "카테고리를 선택은 필수입니다",
+                })}
+                onChange={optionChange}
+              >
                 <Option value="">선택하세요</Option>
                 {itemsGroup.map((item, index) => {
                   return (
@@ -281,7 +308,12 @@ function Upload() {
                 })}
               </Select>
               {/* 옷 소분류 */}
-              <Select name="minor">
+              <Select
+                name="minor"
+                {...register("minor", {
+                  required: "하위 카테고리를 선택해주세요",
+                })}
+              >
                 {minor.map((item, index) => {
                   return (
                     <Option key={index} value={item}>
@@ -295,7 +327,10 @@ function Upload() {
             {/* 지역 SELECT */}
             <CategoryBox>
               <SelectTitle>지역</SelectTitle>
-              <Select name="area">
+              <Select
+                name="area"
+                {...register("area", { required: "지역을 선택해주세요" })}
+              >
                 {area.map((item, index) => {
                   return (
                     <Option key={index} value={item}>
@@ -311,16 +346,31 @@ function Upload() {
           <TextInput
             type="text"
             placeholder="제목을 입력해주세요."
-            maxLength={35}
             name="title"
+            required
             titletext={"true"}
+            {...register("title", {
+              required: "제목을 작성해주세요",
+              maxLength: {
+                value: 30,
+                message: "제목은 30자 이하로 작성해주세요",
+              },
+            })}
           />
-          <TextInput
-            type="text"
-            placeholder="내용을 입력해주세요."
-            maxLength={255}
-            name="content"
-          />
+          <div style={{ position: "relative" }}>
+            <TextInput
+              type="text"
+              placeholder="내용을 입력해주세요."
+              maxLength={300}
+              required
+              name="content"
+              {...register("content", {
+                required: "내용을 작성하세요",
+              })}
+              style={{ position: "relative" }}
+            />
+            <LetterCount>{watch("content").length} / 300</LetterCount>
+          </div>
 
           {/* 카메라 아이콘과 등록 버튼 */}
           <Box primary>
@@ -335,6 +385,7 @@ function Upload() {
               onChange={saveImgFile}
               ref={imgRef}
               multiple
+              required
             />
             <SubmitBtn type="submit">등록</SubmitBtn>
           </Box>
