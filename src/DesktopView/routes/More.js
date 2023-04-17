@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { ShowItem } from "../components/ShowItem";
 
 export const Container = styled.div`
   padding: 120px 30px 60px;
@@ -61,9 +62,7 @@ export const ProductsBox = styled.div`
 `;
 
 export const Product = styled.div`
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 35px;
+  padding: 0 10px 35px 10px;
   box-sizing: inherit;
 `;
 
@@ -106,24 +105,7 @@ const More = (props) => {
           : "실시간 베스트 상품!"}
       </MoreTitle>
       <ProductsBox as="ul">
-        {searchItem.slice(0, 15).map((item, index) => (
-          <Product key={index} as="li">
-            <Link
-              to={{
-                pathname: `/post/${item.itemId}`,
-                state: {
-                  item,
-                },
-              }}
-            >
-              <ProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-              <ProductTitle>{item.title}</ProductTitle>
-              <ProductDetail>
-                {item.area} | {item.timeAgo}
-              </ProductDetail>
-            </Link>
-          </Product>
-        ))}
+        <ShowItem item={searchItem} responsive={true} />
       </ProductsBox>
     </Container>
   );
