@@ -169,66 +169,42 @@ export function ShowItemFn({
               ))}
             </QueryDiv>
           )}
-          {profile ? (
-            <>
-              {item.slice(0, 2).map((item, index) => (
-                <Link to={`/clothes/${item.itemId}`} key={index}>
-                  <Item
+
+          {item.map((item, index) => (
+            <Link to={`/clothes/${item.itemId}`} key={index}>
+              <Item>
+                <ItemText>
+                  <ProductHeader>
+                    <ItemTitle>{item.title}</ItemTitle>
+                    {item.state === "complete" && (
+                      <ItemState color="gray">
+                        <span>나눔완료</span>
+                      </ItemState>
+                    )}
+                    {item.state === "reservate" && (
+                      <ItemState color="orange">
+                        <span>예약중</span>
+                      </ItemState>
+                    )}
+                  </ProductHeader>
+                  <ItemContent>{item.content}</ItemContent>
+                  <div
                     style={{
-                      paddingLeft: "15px",
-                      paddingRight: "15PX",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <ItemText>
-                      <ItemTitle>{item.title}</ItemTitle>
-                      <ItemContent>{item.content}</ItemContent>
+                    <div>
                       <ItemArea>{item.area}</ItemArea>
                       <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
-                    </ItemText>
-                    <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-                  </Item>
-                </Link>
-              ))}
-            </>
-          ) : (
-            <>
-              {item.map((item, index) => (
-                <Link to={`/clothes/${item.itemId}`} key={index}>
-                  <Item>
-                    <ItemText>
-                      <ProductHeader>
-                        <ItemTitle>{item.title}</ItemTitle>
-                        {item.state === "complete" && (
-                          <ItemState color="gray">
-                            <span>나눔완료</span>
-                          </ItemState>
-                        )}
-                        {item.state === "reservate" && (
-                          <ItemState color="orange">
-                            <span>예약중</span>
-                          </ItemState>
-                        )}
-                      </ProductHeader>
-                      <ItemContent>{item.content}</ItemContent>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <div>
-                          <ItemArea>{item.area}</ItemArea>
-                          <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
-                        </div>
-                      </div>
-                    </ItemText>
-                    <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-                  </Item>
-                </Link>
-              ))}
-            </>
-          )}
+                    </div>
+                  </div>
+                </ItemText>
+                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
+              </Item>
+            </Link>
+          ))}
         </ItemDiv>
       ) : (
         <EmptyPage profile={profile}>나눔물품이 없습니다</EmptyPage>

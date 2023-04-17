@@ -110,11 +110,7 @@ function MProfileReview() {
             <h1>나눔물품</h1>
             <ItemIcon icon={faChevronRight} />
           </ItemHeader>
-          <ShowItemFn
-            item={filterItemObj}
-            profile="true"
-            style={{ innerHeight: "200px" }}
-          />
+          <ShowItemFn item={filterItemObj.slice(0, 2)} profile="true" />
         </ItemBox>
 
         <ItemBox style={{ marginBottom: "100px" }}>
@@ -122,7 +118,10 @@ function MProfileReview() {
             <h1>나의나눔후기</h1>
             <ItemIcon icon={faChevronRight} />
           </ItemHeader>
-          <ShowReview user={FilterUserObj} pad={true} profile="true" />
+          <ShowReview
+            reviews={FilterUserObj.reviews.slice(0, 2)}
+            profile="true"
+          />
         </ItemBox>
 
         <HomeMenu />

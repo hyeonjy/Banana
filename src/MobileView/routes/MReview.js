@@ -10,12 +10,6 @@ import { useLocation } from "react-router-dom";
 const Container = styled.div``;
 
 function MReview(props) {
-  // const history = useHistory();
-  // const location = useLocation();
-  // const userId = location.state.userId;
-  // const filterUserObj = UserObj.find((user) => user.id === userId);
-  // console.log(userId);
-
   const location = useLocation();
   const history = useHistory();
 
@@ -37,7 +31,7 @@ function MReview(props) {
         <span>{userIdValue}님 나눔후기</span>
       </Header>
       {/* 나눔 후기 리스트 */}
-      <ShowReview user={filterUserObj} pad={true} />
+      <ShowReview reviews={filterUserObj.reviews} pad={true} />
     </Container>
   );
 }
