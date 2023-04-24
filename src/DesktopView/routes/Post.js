@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
-import Modal from "../components/Modal";
+import Modal from "../../Modal";
 import NewItem from "../components/NewItem";
 
 import { Swiper, SwiperSlide } from "swiper/react";

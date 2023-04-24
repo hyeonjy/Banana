@@ -1,17 +1,13 @@
 import styled, { css } from "styled-components";
-import banana from "../../Img/banana.png";
 import { Link, useHistory } from "react-router-dom";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import Modal from "../../DesktopView/components/Modal";
+import { GradeIcon, gradeList } from "../../Modal";
 
 // 유저 정보(이름, 프로필이미지, 등급) - 시작
 const UserBox = styled.div`
   height: 60px;
   display: flex;
-  padding: 0 3%;
-  width: 94%;
+  padding: 0 4% 0 3%;
+  width: 93%;
   //padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
@@ -45,14 +41,7 @@ const UserGrade = styled.div`
   flex-direction: column;
   align-items: center;
   height: 65%;
-`;
-
-const GradeImg = styled.img`
-  width: 25px;
-  //height: 25px;
-  //padding: 5px;
-  color: #92d050;
-  flex-grow: 1;
+  gap: 5px;
 `;
 
 const GradeName = styled.h1`
@@ -86,8 +75,8 @@ function User(props) {
             ); /**부모 요소(MDetailPost)로 전달 => 그래야 배경을 흐릿하게 설정가능 */
           }}
         >
-          <GradeImg src={require(`../../Img/${props.grade}`)} />
-          <GradeName>노란 바나나</GradeName>
+          <GradeIcon src={gradeList[0].icon} />
+          <GradeName> {gradeList[0].grade}</GradeName>
         </UserGrade>
       </UserBox>
     </>

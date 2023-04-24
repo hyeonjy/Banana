@@ -19,7 +19,7 @@ import { Navigation, Pagination } from "swiper";
 import { useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import User from "../components/User";
-import Modal from "../../DesktopView/components/Modal";
+import Modal from "../../Modal";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import { useEffect } from "react";
 

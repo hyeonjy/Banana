@@ -4,6 +4,7 @@ import {
   MembershipText,
   ProfImg,
   MembershipIcon,
+  MembershipWrap,
 } from "../components/PostDatil";
 import { ProfileName } from "../routes/MyPage";
 import { UserObj } from "../../Data/UserObj";
@@ -12,7 +13,7 @@ import styled from "styled-components";
 import { Container } from "./More";
 import { ItemObj } from "../../Data/ItemObj";
 import { useState } from "react";
-import Modal from "../components/Modal";
+import Modal, { GradeIcon, gradeList } from "../../Modal";
 import { ShowItem, ShowReview } from "../components/ShowItem";
 import NoItem from "../components/NoItem";
 const UserContainer = styled(Container)`
@@ -76,13 +77,13 @@ function UserInfo() {
             <ProfileName style={{ fontSize: "17px" }}>
               {postWriter.id}
             </ProfileName>
-            <div style={{ cursor: "pointer" }}>
-              <MembershipIcon
-                icon={faSeedling}
+            <MembershipWrap>
+              <GradeIcon
                 onClick={() => setActiveGrade(true)}
+                src={gradeList[0].icon}
               />
-              <MembershipText>새싹</MembershipText>
-            </div>
+              <MembershipText>{gradeList[0].grade}</MembershipText>
+            </MembershipWrap>
           </Header>
           <CateDiv>
             <EachCate

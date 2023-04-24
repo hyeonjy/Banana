@@ -1,17 +1,12 @@
 import { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
-
-import {
-  faSeedling,
-  faChevronRight,
-  faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BsFillShareFill } from "react-icons/bs";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { LoginId, UserObj } from "../../Data/UserObj";
+import { UserObj } from "../../Data/UserObj";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
+import { GradeIcon, gradeList } from "../../Modal";
 
 //-----------오른쪽 컨테이너-----------//
 const PostRightDiv = styled.div`
@@ -31,6 +26,14 @@ export const ProfImg = styled(ProfileImg)`
   height: 40px;
   object-fit: cover;
 `;
+
+export const MembershipWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+`;
+
 export const MembershipIcon = styled(FontAwesomeIcon)`
   font-size: 20px;
   display: block;
@@ -41,6 +44,7 @@ export const MembershipText = styled.span`
   font-size: 10px;
   text-align: center;
   display: block;
+  margin-top: 5px;
   font-weight: 600;
 `;
 
@@ -183,13 +187,13 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
       >
         <ProfImg img={require(`../../Img/${postWriter.src}`)} />
         <ProfileName style={{ fontSize: "17px" }}>{item.userId}</ProfileName>
-        <div style={{ cursor: "pointer" }}>
-          <MembershipIcon
-            icon={faSeedling}
+        <MembershipWrap>
+          <GradeIcon
             onClick={() => setActiveGrade(true)}
+            src={gradeList[0].icon}
           />
-          <MembershipText>새싹</MembershipText>
-        </div>
+          <MembershipText>{gradeList[0].grade}</MembershipText>
+        </MembershipWrap>
       </Header>
       <PostContents>
         <div

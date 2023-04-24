@@ -3,11 +3,16 @@ import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Modal from "../components/Modal";
+import Modal, { GradeIcon, gradeList } from "../../Modal";
 import Review from "./Review";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
 import { LoginId, UserObj } from "../../Data/UserObj";
+
+import nuts from "../../Img/nuts.png";
+import sprout from "../../Img/sprout.png";
+import treeGrade from "../../Img/tree-grade.png";
+import bananaGrade from "../../Img/banana-grade.png";
 
 const Container = styled.div`
   padding-top: 70px;
@@ -142,7 +147,7 @@ function MyPage() {
           <MembershipDiv>
             <MembershipTitle>
               <span style={{ verticalAlign: "middle" }}>
-                멤버십 등급 : 새싹
+                멤버십 등급 : {gradeList[0].grade}
               </span>
               <ExplainBtn onClick={() => setActiveGrade(true)}>
                 등급 상세
@@ -153,8 +158,15 @@ function MyPage() {
                 노랑 멤버십 회원이 되시면 회원 일부에게 모바일 상품권 혜택을
                 받으실 수 있습니다
               </span>
-              <div style={{ width: "15%", background: "white" }}>
-                <MembershipIcon icon={faSeedling} />
+              <div
+                style={{
+                  width: "15%",
+                  background: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <GradeIcon src={gradeList[0].icon} />
               </div>
             </MembershipDetail>
           </MembershipDiv>

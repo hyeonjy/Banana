@@ -27,7 +27,7 @@ const MenuList = [
   { name: "지역별", url: "/region?region=전체보기" },
   { name: "마이페이지", url: "/mypage" },
 ];
-const existUser = false;
+const existUser = true;
 function HomeMenu() {
   return (
     <MenuDiv>

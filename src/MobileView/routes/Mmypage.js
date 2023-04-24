@@ -9,7 +9,7 @@ import styled, { css } from "styled-components";
 import HomeMenu from "../components/HomeMenu";
 import User from "../components/User";
 import { useState } from "react";
-import Modal from "../../DesktopView/components/Modal";
+import Modal from "../../Modal";
 import { LoginId } from "../../Data/UserObj";
 
 const Container = styled.div`

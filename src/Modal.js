@@ -6,6 +6,11 @@ import {
   faSeedling,
 } from "@fortawesome/free-solid-svg-icons";
 
+import nuts from "./Img/nuts.png";
+import sprout from "./Img/sprout.png";
+import treeGrade from "./Img/tree-grade.png";
+import bananaGrade from "./Img/banana-grade.png";
+
 import { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 
@@ -40,44 +45,41 @@ const XIcon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
-const gradeList = [
+export const gradeList = [
   {
-    grade: "새싹",
+    grade: "씨앗 등급",
     detail:
-      "나눔을 시작하는 새싹 등급으로 나눔 글 작성이 하루 당 1회로 제한됩니다",
+      "나눔을 시작하는 씨앗 등급으로 나눔 글 작성이 하루 당 1회로 제한됩니다",
 
-    icon: faSeedling,
-    iconColor: "green",
+    icon: nuts,
   },
   {
-    grade: "나무",
+    grade: "새싹 등급",
     detail:
       "나눔 5회 이상 시 나무 등급으로 등업하며 나눔 글 작성이 하루 당 3회로 제한됩니다",
 
-    icon: faTree,
-    iconColor: "#a67d00",
+    icon: sprout,
   },
   {
-    grade: "초록 바나나",
+    grade: "나무 등급",
     detail:
-      "나눔 10회 이상 시 초록 바나나 등급으로 등업하며 나눔 글 작성이 하루 당 5회로 제한됩니다",
+      "나눔 10회 이상 시 나무 등급으로 등업하며 나눔 글 작성이 하루 당 5회로 제한됩니다",
 
-    icon: faLemon,
-    iconColor: "green",
+    icon: treeGrade,
   },
   {
-    grade: "노란 바나나",
+    grade: "바나나 등급",
     detail:
-      "나눔 20회 이상 시 노란 바나나 등급으로 등업하며 무제한으로 글을 작성할 수 있습니다. ",
-    icon: faLemon,
-    iconColor: "yellow",
+      "나눔 20회 이상 시 바나나 등급으로 등업하며 무제한으로 글을 작성할 수 있습니다. ",
+    icon: bananaGrade,
   },
 ];
 const EachGradeDiv = styled.div`
   flex-grow: 1;
   display: flex;
-  justify-content: space-evenly;
+  gap: 16px;
   margin-top: 5px;
+  padding-left: 10px;
   div {
     margin-top: 3px;
     width: 80%;
@@ -94,8 +96,10 @@ const EachGradeDiv = styled.div`
     }
   }
 `;
-const GradeIcon = styled(FontAwesomeIcon)`
-  font-size: 25px;
+
+export const GradeIcon = styled.img`
+  width: 25px;
+  height: 25px;
 `;
 
 function Modal({ setActiveGrade, isMobile }) {
@@ -143,7 +147,7 @@ function Modal({ setActiveGrade, isMobile }) {
 
       {gradeList.map((grade, index) => (
         <EachGradeDiv key={index}>
-          <GradeIcon icon={grade.icon} color={grade.iconColor} />
+          <GradeIcon src={grade.icon} />
           <div style={{ display: "inline-block" }}>
             <h4>{grade.grade}</h4>
             <span>{grade.detail}</span>

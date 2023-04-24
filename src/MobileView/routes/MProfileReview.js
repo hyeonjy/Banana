@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import Modal from "../../DesktopView/components/Modal";
+import Modal from "../../Modal";
 import HomeMenu from "../components/HomeMenu";
 import { useState } from "react";
 import { LoginId, UserObj } from "../../Data/UserObj";
