@@ -165,7 +165,7 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
     alert("상태가 변경되었습니다");
   };
 
-  //작성 유저 정보 찾기
+  //작성 유저 정보 찾기.
   const postWriter = UserObj.find((user) => user.id === item.userId);
 
   //채팅으로 이동
