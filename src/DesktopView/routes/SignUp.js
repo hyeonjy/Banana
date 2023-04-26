@@ -167,6 +167,10 @@ function SignUp() {
               placeholder="닉네임"
               {...register("nickname", {
                 required: "닉네임을 입력해주세요",
+                maxLength: {
+                  value: 8,
+                  message: "닉네임은 8자 이하로 입력해주세요",
+                },
               })}
             />
             {errors.nickname && <ErrorP>{errors.nickname.message}</ErrorP>}
