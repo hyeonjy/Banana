@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -189,6 +191,12 @@ export function ShowItem({
   state = false,
   layout = "col",
 }) {
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/data")
+      .then((response) => console.log(response.data))
+      .catch((error) => console.error(error));
+  }, []);
   if (responsive) {
     return (
       <>
