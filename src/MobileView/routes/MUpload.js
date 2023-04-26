@@ -223,7 +223,7 @@ function MUpload() {
             {...register("contents", {
               required: "내용을 작성하세요",
               maxLength: {
-                value: 400,
+                value: 300,
                 message: "내용은 400자 이하로 작성해주세요",
               },
             })}
