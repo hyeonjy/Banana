@@ -1,4 +1,4 @@
-/*서버 */
+/*서버 연동 */
 const express = require("express");
 const path = require("path");
 const app = express();
