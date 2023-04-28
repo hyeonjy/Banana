@@ -28,7 +28,7 @@ app.get("/data", function (request, response) {
   });
   //connection.connect();
   connection.query(
-    `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category
+    `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state
   FROM post p
   LEFT JOIN (
   SELECT t.img_id, t.fk_post_id, t.img_src
