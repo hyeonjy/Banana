@@ -28,7 +28,7 @@ app.get("/data", function (request, response) {
   });
   //connection.connect();
   connection.query(
-    `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src
+    `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category
   FROM post p
   LEFT JOIN (
   SELECT t.img_id, t.fk_post_id, t.img_src
@@ -38,7 +38,7 @@ app.get("/data", function (request, response) {
   FROM post_img
   WHERE fk_post_id = t.fk_post_id
   )
-  ) AS pi_id ON p.post_id = pi_id.fk_post_id`,
+  ) AS pi_id ON p.post_id = pi_id.fk_post_id ORDER BY post_id DESC`,
     (error, result) => {
       if (error) throw error;
       else {
