@@ -192,19 +192,6 @@ export function ShowItem({
   state = false,
   layout = "col",
 }) {
-  const { response, loading, error } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data",
-  });
-  useEffect(() => {
-    // axios
-    //   .get("http://localhost:8080/data")
-    //   .then((response) => console.log(response.data))
-    //   .catch((error) => console.error(error));
-    console.log(response);
-    console.log(loading);
-    //console.log(error);
-  }, [response, loading, error]);
   if (responsive) {
     return (
       <>
@@ -231,41 +218,55 @@ export function ShowItem({
   } else {
     return (
       <>
-        {item.map((item, index) => (
-          <Product
-            layout={layout}
-            key={index}
-            to={{
-              pathname: `/post/${item.itemId}`,
-              state: {
-                item,
-              },
-            }}
-          >
-            <ProductImg
+        {item.map((item, index) => {
+          const datetime = new Date(item.post_date);
+          const now = new Date();
+          const diffInMs = now - datetime;
+          const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+          let timeago = null;
+          if (diffInMinutes < 60) {
+            timeago = `${diffInMinutes}분 전`;
+          } else if (diffInMinutes < 60 * 24) {
+            timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
+          } else {
+            timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
+          }
+          return (
+            <Product
               layout={layout}
-              src={require(`../../Img/${item.img[0]}.jpg`)}
-            />
-            <ProductDatailDiv layout={layout}>
-              <ProductHeader>
-                <ProductTitle layout={layout}>{item.title}</ProductTitle>
-                {state && (
-                  <>
-                    {item.state === "reservate" && (
-                      <ProductState status="reservate">예약중</ProductState>
-                    )}
-                    {item.state === "complete" && (
-                      <ProductState status="complete">나눔완료</ProductState>
-                    )}
-                  </>
-                )}
-              </ProductHeader>
-              <ProductDetail layout={layout}>
-                {item.area} | {item.timeAgo}
-              </ProductDetail>
-            </ProductDatailDiv>
-          </Product>
-        ))}
+              key={index}
+              to={{
+                pathname: `/post/${item.post_id}`,
+                state: {
+                  item,
+                },
+              }}
+            >
+              <ProductImg
+                layout={layout}
+                src={require(`../../Data/Img/${item.img_src}`)}
+              />
+              <ProductDatailDiv layout={layout}>
+                <ProductHeader>
+                  <ProductTitle layout={layout}>{item.title}</ProductTitle>
+                  {state && (
+                    <>
+                      {item.state === "reservate" && (
+                        <ProductState status="reservate">예약중</ProductState>
+                      )}
+                      {item.state === "complete" && (
+                        <ProductState status="complete">나눔완료</ProductState>
+                      )}
+                    </>
+                  )}
+                </ProductHeader>
+                <ProductDetail layout={layout}>
+                  {item.area} | {timeago}
+                </ProductDetail>
+              </ProductDatailDiv>
+            </Product>
+          );
+        })}
       </>
     );
   }
