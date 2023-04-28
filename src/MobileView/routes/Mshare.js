@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { ShowItemFn } from "../components/ShowItem";
 import { BackIcon, Header } from "./MUpload";
 import { ItemObj } from "../../Data/ItemObj";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 const Container = styled.div``;
 
