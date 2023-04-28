@@ -24,6 +24,8 @@ import Paging, { SetPage } from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -57,9 +59,14 @@ function SubGroup() {
 
   const searchParams = new URLSearchParams(location.search);
   const categoryValue = searchParams.get("subitem"); // id( = main category)
+
   const mainGroup = itemsGroup.find((item) => item.id === Number(main));
-  const subItems = ItemObj.filter(
-    (item) => item.sub === categoryValue && item.main === mainGroup.main
+
+  const data = useRecoilValue(postData);
+  const subItems = data.filter(
+    (item) =>
+      item.sub_category === categoryValue &&
+      item.main_category === mainGroup.main
   );
 
   const [currentIdx, setCurrentIdx] = useState(
