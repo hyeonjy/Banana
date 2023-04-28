@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
+import useAxios from "../../useAxio";
 
 export const Product = styled(Link)`
   ${(props) =>
@@ -191,12 +192,19 @@ export function ShowItem({
   state = false,
   layout = "col",
 }) {
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data",
+  });
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/data")
-      .then((response) => console.log(response.data))
-      .catch((error) => console.error(error));
-  }, []);
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    console.log(response);
+    console.log(loading);
+    //console.log(error);
+  }, [response, loading, error]);
   if (responsive) {
     return (
       <>
