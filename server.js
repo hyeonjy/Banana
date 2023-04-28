@@ -19,7 +19,8 @@ app.get("/", function (request, response) {
 });
 app.get("/data", function (request, response) {
   const connection = mysql.createConnection({
-    host: "172.30.1.46",
+    //host: "172.30.1.46",
+    host: "172.16.61.69",
     //port: "3306",
     user: "banana",
     password: process.env.DB_PASSWORD,
@@ -36,6 +37,7 @@ app.get("/data", function (request, response) {
   });
   //response.sendFile(path.join(__dirname, "build/index.html"));
 });
+
 //
 app.listen(8080, function () {
   console.log("listening in 8080");
