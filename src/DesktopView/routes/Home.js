@@ -162,7 +162,7 @@ function Home() {
         <Products>
           <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={response} />
+            <ShowItem item={response.slice(0, 8)} />
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("new", newList)}>
             더보기
@@ -173,7 +173,7 @@ function Home() {
         <Products>
           <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={response} />
+            <ShowItem item={response.slice(0, 8)} />
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("hot", hotList)}>
             더보기

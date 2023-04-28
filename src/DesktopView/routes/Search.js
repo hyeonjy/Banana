@@ -7,8 +7,9 @@ import { QueryDiv, QueryLi, QueryUl, queryArray } from "./Gruop";
 import NoItem from "../components/NoItem";
 import Paging, { SetPage } from "../components/Paging";
 import { useEffect } from "react";
-import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 const SearchContainer = styled(Container)`
   min-height: 750px;
@@ -43,7 +44,8 @@ function Search() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content"); // id( = main category)
-  const searchItem = ItemObj.filter(
+  const data = useRecoilValue(postData);
+  const searchItem = data.filter(
     (item) =>
       item.title.includes(searchValue) || item.content.includes(searchValue)
   );
