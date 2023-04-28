@@ -1,8 +1,5 @@
-import axios from "axios";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
-import useAxios from "../../useAxio";
 
 export const Product = styled(Link)`
   ${(props) =>

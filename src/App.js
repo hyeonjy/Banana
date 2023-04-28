@@ -2,6 +2,10 @@ import { BrowserView, MobileView } from "react-device-detect";
 import { createGlobalStyle } from "styled-components";
 import { MobileRouter } from "./Mrouter";
 import { DeskTopRouter } from "./Router";
+import { useRecoilState } from "recoil";
+import { postData } from "./atom";
+import { useEffect } from "react";
+import useAxios from "./useAxio";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -63,14 +67,26 @@ button{
 }
 `;
 function App() {
+  const [posts, setPosts] = useRecoilState(postData);
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data",
+  });
+  useEffect(() => {
+    console.log(response);
+    if (!loading) {
+      console.log(response);
+      setPosts(response);
+    }
+  }, [response, loading, error]);
   return (
     <>
       <GlobalStyle />
       <BrowserView>
-        <DeskTopRouter />
+        {loading ? <span>loading...</span> : <DeskTopRouter />}
       </BrowserView>
       <MobileView>
-        <MobileRouter />
+        {loading ? <span>loading...</span> : <MobileRouter />}
       </MobileView>
     </>
   );
