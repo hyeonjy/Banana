@@ -4,6 +4,7 @@ import { ItemObj } from "../../Data/ItemObj";
 import { useState } from "react";
 import { useEffect } from "react";
 import { ProductHeader } from "../../DesktopView/routes/Gruop";
+import useAxios from "../../useAxio";
 const ItemDiv = styled.div`
   width: 100%;
   height: auto;
@@ -134,6 +135,11 @@ export function ShowItemFn({
   const searchValue = searchParams.get("query");
 
   const [currentQuery, setCurrentQuery] = useState();
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data",
+  });
+
   useEffect(() => {
     if (searchValue) {
       setCurrentQuery(Number(searchValue));
