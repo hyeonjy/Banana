@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
+import useAxios from "../../useAxio";
 
 export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
@@ -133,7 +134,19 @@ function Home() {
       search: "?" + searchParams.toString(),
     });
   };
-
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data",
+  });
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    console.log(response);
+    console.log(loading);
+    //console.log(error);
+  }, [response, loading, error]);
   return (
     <>
       <Nav />
@@ -147,7 +160,7 @@ function Home() {
         <Products>
           <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={newList.slice(0, 8)} />
+            {loading ? <span>loading...</span> : <ShowItem item={response} />}
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("new", newList)}>
             더보기
@@ -158,7 +171,7 @@ function Home() {
         <Products>
           <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={hotList.slice(0, 8)} />
+            {loading ? <span>loading...</span> : <ShowItem item={response} />}
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("hot", hotList)}>
             더보기
