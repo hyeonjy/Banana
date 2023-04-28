@@ -182,7 +182,21 @@ export const ReviewContent = styled.span`
   padding-left: 3px;
   line-height: 2px;
 `;
-
+function calcTimeAgo(item) {
+  const datetime = new Date(item.post_date);
+  const now = new Date();
+  const diffInMs = now - datetime;
+  const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+  let timeago = null;
+  if (diffInMinutes < 60) {
+    timeago = `${diffInMinutes}분 전`;
+  } else if (diffInMinutes < 60 * 24) {
+    timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
+  } else {
+    timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
+  }
+  return timeago;
+}
 export function ShowItem({
   item,
   responsive = false,
@@ -192,42 +206,36 @@ export function ShowItem({
   if (responsive) {
     return (
       <>
-        {item.map((item, index) => (
-          <ResProduct key={index} as="li">
-            <Link
-              to={{
-                pathname: `/post/${item.itemId}`,
-                state: {
-                  item,
-                },
-              }}
-            >
-              <ResProductImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-              <ResProductTitle>{item.title}</ResProductTitle>
-              <ResProductDetail>
-                {item.area} | {item.timeAgo}
-              </ResProductDetail>
-            </Link>
-          </ResProduct>
-        ))}
+        {item.map((item, index) => {
+          const timeAgo = calcTimeAgo(item);
+          return (
+            <ResProduct key={index} as="li">
+              <Link
+                to={{
+                  pathname: `/post/${item.post_id}`,
+                  state: {
+                    item,
+                  },
+                }}
+              >
+                <ResProductImg
+                  src={require(`../../Data/Img/${item.img_src}`)}
+                />
+                <ResProductTitle>{item.title}</ResProductTitle>
+                <ResProductDetail>
+                  {item.area} | {timeAgo}
+                </ResProductDetail>
+              </Link>
+            </ResProduct>
+          );
+        })}
       </>
     );
   } else {
     return (
       <>
         {item.map((item, index) => {
-          const datetime = new Date(item.post_date);
-          const now = new Date();
-          const diffInMs = now - datetime;
-          const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-          let timeago = null;
-          if (diffInMinutes < 60) {
-            timeago = `${diffInMinutes}분 전`;
-          } else if (diffInMinutes < 60 * 24) {
-            timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
-          } else {
-            timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
-          }
+          const timeAgo = calcTimeAgo(item);
           return (
             <Product
               layout={layout}
@@ -258,7 +266,7 @@ export function ShowItem({
                   )}
                 </ProductHeader>
                 <ProductDetail layout={layout}>
-                  {item.area} | {timeago}
+                  {item.area} | {timeAgo}
                 </ProductDetail>
               </ProductDatailDiv>
             </Product>

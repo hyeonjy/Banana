@@ -11,6 +11,8 @@ import Paging, { SetPage } from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 export const WrapDiv = styled(Container)`
   justify-content: space-evenly;
@@ -144,7 +146,8 @@ function Group() {
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
-  const cateItem = ItemObj.filter((item) => item.main === Group.main);
+  const data = useRecoilValue(postData);
+  const cateItem = data.filter((item) => item.main_category === Group.main);
 
   //페이지네이션
   const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(

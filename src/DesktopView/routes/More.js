@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ShowItem } from "../components/ShowItem";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 export const Container = styled.div`
   padding: 120px 30px 60px;
@@ -93,10 +95,11 @@ export const ProductDetail = styled.span`
 
 const More = (props) => {
   const location = useLocation();
-  const searchItem = location.state?.object; //new or hot의 object item 저장
+  const data = useRecoilValue(postData);
+  //const searchItem = location.state?.object; //new or hot의 object item 저장
   const searchParams = new URLSearchParams(location.search);
   const typeValue = searchParams.get("type"); // type이  new or hot 인지 확안
-
+  console.log(data);
   return (
     <Container>
       <MoreTitle>
@@ -105,7 +108,7 @@ const More = (props) => {
           : "실시간 베스트 상품!"}
       </MoreTitle>
       <ProductsBox as="ul">
-        <ShowItem item={searchItem} responsive={true} />
+        <ShowItem item={data.slice(0, 12)} responsive={true} />
       </ProductsBox>
     </Container>
   );
