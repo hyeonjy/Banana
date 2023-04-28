@@ -18,6 +18,8 @@ import "swiper/swiper-bundle.css";
 import { Navigation, Pagination, Autoplay } from "swiper";
 import HeaderComponent from "../components/Header";
 import { Link } from "react-router-dom";
+import useAxios from "../../useAxio";
+import { useEffect } from "react";
 
 const Container = styled.div``;
 
@@ -107,6 +109,21 @@ const WriteBtn = styled(Link)`
 function Mhome() {
   const [currentCate, setCurrentCate] = useState(categoryList[0]);
   const [currentSubCate, setCurrentSubCate] = useState(categoryList[0].sub[0]);
+
+  // const { response, loading, error } = useAxios({
+  //   method: "get",
+  //   url: "http://localhost:8080/data",
+  // });
+  // useEffect(() => {
+  //   // axios
+  //   //   .get("http://localhost:8080/data")
+  //   //   .then((response) => console.log(response.data))
+  //   //   .catch((error) => console.error(error));
+  //   console.log(response);
+  //   console.log(loading);
+  //   //console.log(error);
+  // }, [response, loading, error]);
+
   return (
     <Container>
       <HeaderComponent />
@@ -161,7 +178,7 @@ function Mhome() {
           </SubCategory>
         )}
       </CategoryWrap>
-      <ShowItem main={currentCate.main} sub={currentSubCate} />
+      <ShowItem main={currentCate} sub={currentSubCate} />
       <HomeMenu />
       <WriteBtn to="/upload">+ 글쓰기</WriteBtn>
       <Footer />
