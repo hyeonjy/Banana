@@ -122,6 +122,8 @@ const queryItem = ["최신등록순", "조회순", "관심순"];
 // pad : paddingTop(최상단 header 유무)/ padBottom : 하단 메뉴 유무
 // query : query block 존재 여부
 
+// const [postItem, setPostItem] = useState();
+
 export function ShowItemFn({
   item,
   pad = false,
@@ -133,12 +135,8 @@ export function ShowItemFn({
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("query");
-
   const [currentQuery, setCurrentQuery] = useState();
-  const { response, loading, error } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data",
-  });
+  const [postItem, setPostItem] = useState();
 
   useEffect(() => {
     if (searchValue) {
@@ -176,13 +174,26 @@ export function ShowItemFn({
             </QueryDiv>
           )}
 
-          {item.map((item, index) => (
-            <Link to={`/clothes/${item.itemId}`} key={index}>
-              <Item>
-                <ItemText>
-                  <ProductHeader>
-                    <ItemTitle>{item.title}</ItemTitle>
-                    {item.state === "complete" && (
+          {item.map((item, index) => {
+            const datetime = new Date(item.post_date);
+            const now = new Date();
+            const diffInMs = now - datetime;
+            const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+            let timeago = null;
+            if (diffInMinutes < 60) {
+              timeago = `${diffInMinutes}분 전`;
+            } else if (diffInMinutes < 60 * 24) {
+              timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
+            } else {
+              timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
+            }
+            return (
+              <Link to={`/clothes/${item.post_id}`} key={index}>
+                <Item>
+                  <ItemText>
+                    <ProductHeader>
+                      <ItemTitle>{item.title}</ItemTitle>
+                      {/* {item.state === "complete" && (
                       <ItemState color="gray">
                         <span>나눔완료</span>
                       </ItemState>
@@ -191,26 +202,27 @@ export function ShowItemFn({
                       <ItemState color="orange">
                         <span>예약중</span>
                       </ItemState>
-                    )}
-                  </ProductHeader>
-                  <ItemContent>{item.content}</ItemContent>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <ItemArea>{item.area}</ItemArea>
-                      <ItemTimeAgo>{item.timeAgo}</ItemTimeAgo>
+                    )} */}
+                    </ProductHeader>
+                    <ItemContent>{item.content}</ItemContent>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <ItemArea>{item.area}</ItemArea>
+                        <ItemTimeAgo>{timeago}</ItemTimeAgo>
+                      </div>
                     </div>
-                  </div>
-                </ItemText>
-                <ItemImg src={require(`../../Img/${item.img[0]}.jpg`)} />
-              </Item>
-            </Link>
-          ))}
+                  </ItemText>
+                  <ItemImg src={require(`../../Data/Img/${item.img_src}`)} />
+                </Item>
+              </Link>
+            );
+          })}
         </ItemDiv>
       ) : (
         <EmptyPage profile={profile}>나눔물품이 없습니다</EmptyPage>
@@ -220,9 +232,43 @@ export function ShowItemFn({
 }
 
 function ShowItem({ main, sub }) {
-  const filterItemObj = ItemObj.filter(
-    (item) => item.main === main && item.sub === sub
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data",
+  });
+  // const [filterItemObj, setFilterItemObj] = useState();
+
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    console.log("showitem: ", response);
+    console.log(loading);
+    //console.log(error);
+    if (!loading) {
+      console.log("main: ", main);
+      console.log("sub: ", sub);
+      console.log(
+        response.filter(
+          (item) =>
+            item.main_category === main.main && item.sub_category === sub
+        )
+      );
+    }
+  }, [response, loading, error]);
+
+  return (
+    <>
+      {!loading && (
+        <ShowItemFn
+          item={response.filter(
+            (item) =>
+              item.main_category === main.main && item.sub_category === sub
+          )}
+        />
+      )}
+    </>
   );
-  return <ShowItemFn item={filterItemObj} />;
 }
 export default ShowItem;
