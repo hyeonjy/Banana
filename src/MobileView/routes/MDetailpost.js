@@ -166,15 +166,13 @@ function MDetailpost(props) {
   const [hits, setHits] = useState(123); /**조회수 */
   const [heart, setHeart] = useState(false); /**좋아요 */
   const [index, setIndex] = useState(0); /**사진 인덱스 */
-  const { clothesid } = useParams();
+  const { postId } = useParams();
   const history = useHistory();
 
   const [activeGrade, setActiveGrade] = useState(false);
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
-  const filterItemObj = ItemObj.find(
-    (item) => item.itemId === Number(clothesid)
-  );
+  const filterItemObj = ItemObj.find((item) => item.itemId === Number(postId));
   // 작성자 user obj
   const FilterUserObj = UserObj.find(
     (user) => user.id === filterItemObj.userId
@@ -196,7 +194,7 @@ function MDetailpost(props) {
   //img 클릭 시 Fullscreen
   function handleImageClick(props) {
     const searchParams = new URLSearchParams();
-    searchParams.append("object", clothesid);
+    searchParams.append("object", postId);
     searchParams.append("index", index);
     history.push({
       pathname: "/images",
@@ -210,10 +208,10 @@ function MDetailpost(props) {
   };
 
   //채팅목록 클릭 이벤트
-  const handleChatClick = (userId, clothesId) => {
+  const handleChatClick = (userId, postId) => {
     const searchParams = new URLSearchParams();
     searchParams.append("userId", userId);
-    searchParams.append("itemId", clothesId);
+    searchParams.append("itemId", postId);
     history.push({
       pathname: "/chat",
       search: "?" + searchParams.toString(),
@@ -301,7 +299,7 @@ function MDetailpost(props) {
         {isWriter ? (
           <ChatBtn>삭제하기</ChatBtn>
         ) : (
-          <ChatBtn onClick={() => handleChatClick(FilterUserObj.id, clothesid)}>
+          <ChatBtn onClick={() => handleChatClick(FilterUserObj.id, postId)}>
             채팅하기
           </ChatBtn>
         )}
