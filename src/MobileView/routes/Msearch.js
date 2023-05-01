@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HomeMenu from "../components/HomeMenu";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 const SearchContainer = styled.div``;
 const SerchForm = styled.form`
   width: calc(93% - 20px);
@@ -38,7 +40,8 @@ function Msearch() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content");
-  const searchItem = ItemObj.filter(
+  const response = useRecoilValue(postData);
+  const searchItem = response.filter(
     (item) =>
       item.title.includes(searchValue) || item.content.includes(searchValue)
   );

@@ -12,6 +12,8 @@ import area from "../../Data/Area";
 
 import HomeMenu from "../components/HomeMenu";
 import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 
 const RegionContainer = styled.div``;
 const RegionCate = styled.div`
@@ -76,7 +78,11 @@ function Region() {
     });
   };
   //지역 쿼리 추가
-  //const regionItem = ItemObj.filter((item)=>item.region===currentRegion);
+  const response = useRecoilValue(postData);
+  const filterItem = response.filter(
+    (item) => item.area === currentRegion || currentRegion === "전체보기"
+  );
+
   return (
     <RegionContainer>
       <Header
@@ -115,7 +121,7 @@ function Region() {
           ))}
         </RegionList>
       ) : (
-        <ShowItemFn item={ItemObj} pad={true} padBottom={true} />
+        <ShowItemFn item={filterItem} pad={true} padBottom={true} />
       )}
       <HomeMenu />
     </RegionContainer>

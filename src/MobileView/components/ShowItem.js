@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { ProductHeader } from "../../DesktopView/routes/Gruop";
 import useAxios from "../../useAxio";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
 const ItemDiv = styled.div`
   width: 100%;
   height: auto;
@@ -193,16 +195,16 @@ export function ShowItemFn({
                   <ItemText>
                     <ProductHeader>
                       <ItemTitle>{item.title}</ItemTitle>
-                      {/* {item.state === "complete" && (
-                      <ItemState color="gray">
-                        <span>나눔완료</span>
-                      </ItemState>
-                    )}
-                    {item.state === "reservate" && (
-                      <ItemState color="orange">
-                        <span>예약중</span>
-                      </ItemState>
-                    )} */}
+                      {item.state === "complete" && (
+                        <ItemState color="gray">
+                          <span>나눔완료</span>
+                        </ItemState>
+                      )}
+                      {item.state === "reservate" && (
+                        <ItemState color="orange">
+                          <span>예약중</span>
+                        </ItemState>
+                      )}
                     </ProductHeader>
                     <ItemContent>{item.content}</ItemContent>
                     <div
@@ -232,43 +234,19 @@ export function ShowItemFn({
 }
 
 function ShowItem({ main, sub }) {
-  const { response, loading, error } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data",
-  });
-  // const [filterItemObj, setFilterItemObj] = useState();
-
+  const response = useRecoilValue(postData);
   useEffect(() => {
-    // axios
-    //   .get("http://localhost:8080/data")
-    //   .then((response) => console.log(response.data))
-    //   .catch((error) => console.error(error));
-    console.log("showitem: ", response);
-    console.log(loading);
-    //console.log(error);
-    if (!loading) {
-      console.log("main: ", main);
-      console.log("sub: ", sub);
-      console.log(
-        response.filter(
-          (item) =>
-            item.main_category === main.main && item.sub_category === sub
-        )
-      );
-    }
-  }, [response, loading, error]);
+    response.filter(
+      (item) => item.main_category === main.main && item.sub_category === sub
+    );
+  }, [response]);
 
   return (
-    <>
-      {!loading && (
-        <ShowItemFn
-          item={response.filter(
-            (item) =>
-              item.main_category === main.main && item.sub_category === sub
-          )}
-        />
+    <ShowItemFn
+      item={response.filter(
+        (item) => item.main_category === main.main && item.sub_category === sub
       )}
-    </>
+    />
   );
 }
 export default ShowItem;
