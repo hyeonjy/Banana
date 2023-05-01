@@ -139,6 +139,7 @@ export const BackGround = styled.div`
 
 export const queryArray = ["최신등록순", "조회순", "관심순"];
 function Group() {
+  const data = useRecoilValue(postData);
   //url - 현재 카테고리 정보
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -146,7 +147,6 @@ function Group() {
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
-  const data = useRecoilValue(postData);
   const cateItem = data.filter((item) => item.main_category === Group.main);
 
   //페이지네이션
