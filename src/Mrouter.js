@@ -34,7 +34,7 @@ export function MobileRouter() {
           <SignUp />
         </Route>
 
-        <Route exact path="/clothes/:clothesid">
+        <Route exact path="/post/:postId">
           <MDetailpost />
         </Route>
 
