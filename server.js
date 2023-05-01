@@ -6,8 +6,6 @@ const cors = require("cors");
 
 app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 
-const http = require("http").createServer(app);
-
 require("dotenv").config();
 
 const mysql = require("mysql");
@@ -17,6 +15,8 @@ app.use(express.static(path.join(__dirname, "build")));
 app.get("/", function (request, response) {
   response.sendFile(path.join(__dirname, "build/index.html"));
 });
+
+// module.exports = router;
 app.get("/data", function (request, response) {
   const connection = mysql.createConnection({
     host: "172.30.1.46",
@@ -51,7 +51,10 @@ app.get("/data", function (request, response) {
   //response.sendFile(path.join(__dirname, "build/index.html"));
 });
 
-//
+app.get("*", function (request, response) {
+  response.sendFile(path.join(__dirname, "build/index.html"));
+});
+
 app.listen(8080, function () {
   console.log("listening in 8080");
 });
