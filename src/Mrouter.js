@@ -50,7 +50,7 @@ export function MobileRouter() {
           <Mbasket />
         </Route>
 
-        <Route exact path="/share">
+        <Route exact path="/share/:userId">
           <Mshare />
         </Route>
 
@@ -81,7 +81,7 @@ export function MobileRouter() {
           <MWriteReview />
         </Route>
 
-        <Route exact path="/profile">
+        <Route exact path="/profile/:userId">
           <MProfileReview />
         </Route>
       </Switch>

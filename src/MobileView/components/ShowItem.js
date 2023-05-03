@@ -190,7 +190,7 @@ export function ShowItemFn({
               timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
             }
             return (
-              <Link to={`/clothes/${item.post_id}`} key={index}>
+              <Link to={`/post/${item.post_id}`} key={index}>
                 <Item>
                   <ItemText>
                     <ProductHeader>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import User from "../components/User";
 import { ShowItemFn } from "../components/ShowItem";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { ItemObj } from "../../Data/ItemObj";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,6 +16,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ShowReview from "../components/ShowReview";
 import { BackIcon, Header } from "./MUpload";
+import useAxios from "../../useAxio";
+import { useEffect } from "react";
 
 const Container = styled.div`
   filter: ${(props) => (props.activeGrade ? "blur(2px)" : "unset")};
@@ -64,26 +66,51 @@ function MProfileReview() {
 
   // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
   const searchParams = new URLSearchParams(location.search);
-  const userIdValue = searchParams.get("userId");
-  const FilterUserObj = UserObj.find((user) => user.id === userIdValue);
-  const filterItemObj = ItemObj.filter((item) => item.userId === userIdValue);
-  const handleReviewClick = () => {
-    const searchParams = new URLSearchParams();
-    searchParams.append("userId", userIdValue);
-    history.push({
-      pathname: "/review",
-      search: "?" + searchParams.toString(),
-    });
-  };
+  // const userIdValue = searchParams.get("userId");
+  const { userId } = useParams();
+  const FilterUserObj = UserObj.find((user) => user.id === "바나나좋아");
+  const filterItemObj = ItemObj.filter((item) => item.userId === "바나나좋아");
+  // const [shareItem, setShareItem] = useState();
+  const [user, setUser] = useState();
+  const [userPost, setUserPosts] = useState();
 
-  const handleShareClick = () => {
-    const searchParams = new URLSearchParams();
-    searchParams.append("userId", userIdValue);
-    history.push({
-      pathname: "/share",
-      search: "?" + searchParams.toString(),
-    });
-  };
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/userpage/data/${userId}`,
+  });
+
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    if (!loading) {
+      console.log("share:", response);
+      setUser(response.user);
+      setUserPosts(response.posts);
+      // console.log("postItem:", postItem);
+    }
+    console.log(loading);
+    //console.log(error);
+  }, [response, loading, error]);
+
+  // const handleReviewClick = () => {
+  //   const searchParams = new URLSearchParams();
+  //   searchParams.append("userId", usernickname);
+  //   history.push({
+  //     pathname: "/review",
+  //     search: "?" + searchParams.toString(),
+  //   });
+  // };
+
+  // const handleShareClick = () => {
+  //   const searchParams = new URLSearchParams();
+  //   searchParams.append("userId", usernickname);
+  //   history.push({
+  //     pathname: "/share",
+  //     search: "?" + searchParams.toString(),
+  //   });
+  // };
 
   return (
     <>
@@ -97,23 +124,46 @@ function MProfileReview() {
           />
           <span>프로필</span>
         </DHeader>
-        <User
-          img={FilterUserObj.src}
-          grade={FilterUserObj.grade}
-          userId={FilterUserObj.id}
+        {userPost ? (
+          <>
+            <User
+              img={user.profile}
+              grade={user.grade}
+              nickname={user.nickname}
+              userId={user.user_id}
+              setActiveGrade={setActiveGrade}
+              profile="true"
+            />
+            <ItemBox>
+              <Link to={`/share/${user.user_id}`}>
+                <ItemHeader>
+                  <h1>나눔물품</h1>
+                  <ItemIcon icon={faChevronRight} />
+                </ItemHeader>
+                <ShowItemFn item={userPost} profile="true" />
+              </Link>
+            </ItemBox>
+          </>
+        ) : (
+          <h1>loading...</h1>
+        )}
+        {/* <User
+          img={shareItem[0].profile}
+          grade={shareItem[0].grade}
+          userId={shareItem[0].nickname}
           setActiveGrade={setActiveGrade}
           profile="true"
-        />
+        /> */}
 
-        <ItemBox>
+        {/* <ItemBox>
           <ItemHeader onClick={handleShareClick}>
             <h1>나눔물품</h1>
             <ItemIcon icon={faChevronRight} />
           </ItemHeader>
-          <ShowItemFn item={filterItemObj.slice(0, 2)} profile="true" />
-        </ItemBox>
+          <ShowItemFn item={shareItem} profile="true" />
+        </ItemBox> */}
 
-        <ItemBox style={{ marginBottom: "100px" }}>
+        {/* <ItemBox style={{ marginBottom: "100px" }}>
           <ItemHeader onClick={handleReviewClick}>
             <h1>나의나눔후기</h1>
             <ItemIcon icon={faChevronRight} />
@@ -122,7 +172,7 @@ function MProfileReview() {
             reviews={FilterUserObj.reviews.slice(0, 2)}
             profile="true"
           />
-        </ItemBox>
+        </ItemBox> */}
 
         <HomeMenu />
       </Container>

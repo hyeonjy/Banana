@@ -131,17 +131,20 @@ function Mmypage() {
       <Container activeGrade={activeGrade}>
         <User
           img="bananaface.png"
-          grade="bananaIcon.png"
-          userId={LoginId}
+          nickname="바나나좋아"
+          grade={1}
+          userId={1}
           setActiveGrade={setActiveGrade}
         />
         <MainWrap>
-          <MainDiv onClick={handleShareClick}>
-            <MainCircle>
-              <MainIcon icon={faStore} />
-            </MainCircle>
-            <MainSpan>나눔목록</MainSpan>
-          </MainDiv>
+          <Link to={`/share/${1}`}>
+            <MainDiv>
+              <MainCircle>
+                <MainIcon icon={faStore} />
+              </MainCircle>
+              <MainSpan>나눔목록</MainSpan>
+            </MainDiv>
+          </Link>
           <MainDiv>
             <MainCircle>
               <MainIcon icon={faCartShopping} />,
