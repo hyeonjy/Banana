@@ -35,9 +35,13 @@ export function DeskTopRouter() {
         <Route path="/user">
           <UserInfo />
         </Route>
-        <Route path="/img">
+        {/**
+         *      <Route path="/img">
           <ImgFullPage />
         </Route>
+         * 
+         */}
+
         <Route path="/group" exact>
           <Gruop />
         </Route>

@@ -6,7 +6,11 @@ const useAxios = ({ method, url, config }) => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const [loading, setloading] = useState(true);
-
+  const [trigger, setTrigger] = useState(0);
+  const refetch = () => {
+    setloading(true);
+    setTrigger(Date.now());
+  };
   const fetchData = () => {
     axios[method](url, config)
       .then((res) => {
@@ -22,9 +26,9 @@ const useAxios = ({ method, url, config }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [trigger]);
 
-  return { response, error, loading };
+  return { response, error, loading, refetch };
 };
 
 export default useAxios;
