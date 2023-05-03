@@ -64,10 +64,12 @@ function User(props) {
   return (
     <>
       <UserBox profile={props.profile}>
-        <UserInfo onClick={handleChatClick}>
-          <UserImg src={require(`../../Img/${props.img}`)} />
-          <UserName>{props.userId}</UserName>
-        </UserInfo>
+        <Link to={`/profile/${props.userId}`}>
+          <UserInfo>
+            <UserImg src={require(`../../Img/${props.img}`)} />
+            <UserName>{props.nickname}</UserName>
+          </UserInfo>
+        </Link>
         <UserGrade
           onClick={() => {
             props.setActiveGrade(
@@ -75,8 +77,8 @@ function User(props) {
             ); /**부모 요소(MDetailPost)로 전달 => 그래야 배경을 흐릿하게 설정가능 */
           }}
         >
-          <GradeIcon src={gradeList[0].icon} />
-          <GradeName> {gradeList[0].grade}</GradeName>
+          <GradeIcon src={gradeList[props.grade].icon} />
+          <GradeName> {gradeList[props.grade].grade}</GradeName>
         </UserGrade>
       </UserBox>
     </>
