@@ -7,6 +7,7 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { UserObj } from "../../Data/UserObj";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
+import { calcTimeAgo } from "./ShowItem";
 
 //-----------오른쪽 컨테이너-----------//
 const PostRightDiv = styled.div`
@@ -165,34 +166,32 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
     alert("상태가 변경되었습니다");
   };
 
-  //작성 유저 정보 찾기
-  const postWriter = UserObj.find((user) => user.id === item.userId);
-
   //채팅으로 이동
-  const handleChatClick = (postWriter, postId) => {
-    const searchParams = new URLSearchParams();
-    searchParams.append("userId", postWriter.id);
-    searchParams.append("itemId", postId);
-    history.push({
-      pathname: "/chat",
-      search: "?" + searchParams.toString(),
-    });
-  };
-
+  // const handleChatClick = (postWriter, postId) => {
+  //   const searchParams = new URLSearchParams();
+  //   searchParams.append("userId", postWriter.id);
+  //   searchParams.append("itemId", postId);
+  //   history.push({
+  //     pathname: "/chat",
+  //     search: "?" + searchParams.toString(),
+  //   });
+  // };
+  const timeAgo = calcTimeAgo(item);
   return (
     <PostRightDiv>
       <Header
         as={Link}
         to={{ pathname: "/user", search: `?id=${item.userId}` }}
       >
-        <ProfImg img={require(`../../Img/${postWriter.src}`)} />
-        <ProfileName style={{ fontSize: "17px" }}>{item.userId}</ProfileName>
+        <ProfImg img={require(`../../Img/${item.profile}`)} />
+        <ProfileName style={{ fontSize: "17px" }}>{item.nickname}</ProfileName>
+
         <MembershipWrap>
           <GradeIcon
             onClick={() => setActiveGrade(true)}
-            src={gradeList[0].icon}
+            src={gradeList[item.grade].icon}
           />
-          <MembershipText>{gradeList[0].grade}</MembershipText>
+          <MembershipText>{gradeList[item.grade].grade}</MembershipText>
         </MembershipWrap>
       </Header>
       <PostContents>
@@ -221,8 +220,8 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
               </StateSelect>
             )}
             <PostDetail>
-              {item.area} | {item.timeAgo}
-              <PostView>조회수 {item.meta.view}</PostView>
+              {item.area} | {timeAgo}
+              <PostView>조회수 {item.hits}</PostView>
             </PostDetail>
           </FlexColumn>
         </div>
@@ -248,7 +247,7 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
           ) : (
             <GoChatBtn
               onClick={() => {
-                handleChatClick(postWriter, postId);
+                //handleChatClick(postWriter, postId);
               }}
             >
               채팅하기

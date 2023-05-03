@@ -19,13 +19,16 @@ import "swiper/css/pagination";
 import "./Post.css";
 
 import PostRightContents from "../components/PostDatil";
-import { ItemObj } from "../../Data/ItemObj";
 import { LoginId } from "../../Data/UserObj";
+import { useEffect } from "react";
+import useAxios from "../../useAxio";
+import ImgFullPage from "./ImgFullPage";
 
 const PageContainer = styled.div`
   max-width: 900px;
   min-width: 900px;
-  margin: 70px auto;
+  margin: ${(props) =>
+    props.activeModal && !props.activeGrade ? "0px auto" : "70px auto"};
   padding-top: 30px;
   filter: ${(props) => (props.activeGrade ? "blur(2px)" : "unset")};
 `;
@@ -73,91 +76,139 @@ const PostImg = styled.img`
 //-----이미지(+swiper) 끝-----//
 
 function Post() {
-  const history = useHistory(); // img Full screen 이동
   const { postId } = useParams();
-  const item = ItemObj.find((item) => item.itemId === Number(postId)); // Post info query
   const [imgCurrentIdx, setImgCurrentIdx] = useState(0); // 현재 img 페이지 index
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
 
+  //img 1개 -> Navigation hidden
+  const shouldHideNavigation = true; //item.img.length <= 1;
+  const [imgFullModal, setImgFullModal] = useState(false);
+
+  // 수정 권한 - 본인 글인지 확인
+  const [isWriter, setIsWriter] = useState(false); //item.userId === LoginId;
+
+  // 패치
+  const [item, setItem] = useState();
+  const { response, loading, error, refetch } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/postdata/${postId}`,
+  });
+  useEffect(() => {
+    if (!loading) {
+      setItem(response);
+      if (response.nickname === LoginId) {
+        setIsWriter(true);
+      } else {
+        setIsWriter(false);
+      }
+    } else {
+      if (error) {
+        console.log("error:", error);
+      }
+    }
+  }, [response, loading, error, postId]);
+
+  useEffect(() => {
+    refetch();
+  }, [postId]);
+
   //img 클릭 시 Fullscreen
-  function handleImageClick() {
-    const searchParams = new URLSearchParams();
-    searchParams.append("object", item.itemId);
-    searchParams.append("index", imgCurrentIdx);
-    history.push({
-      pathname: "/img",
-      state: { index: imgCurrentIdx }, //현재 이미지 index
-      search: "?" + searchParams.toString(), //query string
-    });
-  }
+
   // swiper onSlideChange 시 - 현재 img index 저장
   const handleSlideChange = (currentIndex) => {
     setImgCurrentIdx(currentIndex.activeIndex);
   };
 
-  //img 1개 -> Navigation hidden
-  const shouldHideNavigation = item.img.length <= 1;
-
-  // 수정 권한
-  // 본인 글인지 확인
-  const isWriter = item.userId === LoginId;
-
+  useEffect(() => {
+    const body = document.querySelector("body");
+    if (imgFullModal || activeGrade) {
+      body.classList.add("no-scroll");
+    } else if (!imgFullModal && !activeGrade) {
+      body.classList.remove("no-scroll");
+    }
+  }, [imgFullModal, activeGrade]);
   return (
     <>
-      <PageContainer activeGrade={activeGrade}>
-        <PostContainer>
-          {/* Post Image Slider */}
-          <div>
-            <StyledSwiper
-              //containerClassName="post-swiper"
-              className="post-swiper"
-              onSlideChange={handleSlideChange}
-              modules={[Navigation, Pagination]}
-              spaceBetween={0}
-              loop={true}
-              grabCursor={true}
-              slidesPerView={1}
-              navigation={{
-                //Navi custom
-                nextEl: ".post-next",
-                prevEl: ".post-prev",
-                onlyInViewport: true,
-                disabledClass: "post-disabled",
-                hiddenClass: "post-disabled",
-                hidden: shouldHideNavigation, //swiper에서 제공하는 속성은 x (기본 속성)
-              }}
-              pagination={{
-                clickable: true,
-                //el: ".post-pagination",
-                bulletClass: "post-swiper-bullet",
-                bulletActiveClass: "post-swiper-bullet-active",
-              }}
-            >
-              {/* PostImg */}
-              {item.img.map((item, index) => (
-                <ImgSlide key={index} onClick={handleImageClick}>
-                  <PostImg src={require(`../../Img/${item}.jpg`)} />
-                </ImgSlide>
-              ))}
-              {/* CustomNav */}
-              <NavRight icon={faChevronRight} className="post-next"></NavRight>
-              <NavLeft icon={faChevronLeft} className="post-prev"></NavLeft>
-              {/*세밀하게 custom 할 때 div className="post-pagination"></div> */}
-            </StyledSwiper>
-          </div>
+      <PageContainer
+        activeGrade={activeGrade}
+        activeModal={activeGrade || imgFullModal}
+      >
+        {!item ? (
+          <span>Loading..</span>
+        ) : (
+          <PostContainer>
+            <div>
+              <StyledSwiper
+                //containerClassName="post-swiper"
+                className="post-swiper"
+                onSlideChange={handleSlideChange}
+                modules={[Navigation, Pagination]}
+                spaceBetween={0}
+                loop={true}
+                grabCursor={true}
+                slidesPerView={1}
+                navigation={{
+                  //Navi custom
+                  nextEl: ".post-next",
+                  prevEl: ".post-prev",
+                  onlyInViewport: true,
+                  disabledClass: "post-disabled",
+                  hiddenClass: "post-disabled",
+                  hidden: shouldHideNavigation, //swiper에서 제공하는 속성은 x (기본 속성)
+                }}
+                pagination={{
+                  clickable: true,
+                  //el: ".post-pagination",
+                  bulletClass: "post-swiper-bullet",
+                  bulletActiveClass: "post-swiper-bullet-active",
+                }}
+              >
+                {/* PostImg */}
+                {item.imgs.map((src, index) => (
+                  <ImgSlide
+                    key={index}
+                    onClick={() => {
+                      setImgFullModal(true);
+                    }}
+                  >
+                    <PostImg src={require(`../../Data/Img/${src}`)} />
+                  </ImgSlide>
+                ))}
+                {/* CustomNav */}
+                <NavRight
+                  icon={faChevronRight}
+                  className="post-next"
+                ></NavRight>
+                <NavLeft icon={faChevronLeft} className="post-prev"></NavLeft>
+                {/*세밀하게 custom 할 때 div className="post-pagination"></div> */}
+              </StyledSwiper>
+            </div>
 
-          {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
-          <PostRightContents
-            setActiveGrade={setActiveGrade}
-            item={item}
-            isWriter={isWriter}
-          />
-        </PostContainer>
+            {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
+            {item && (
+              <PostRightContents
+                setActiveGrade={setActiveGrade}
+                item={item}
+                isWriter={isWriter}
+              />
+            )}
+          </PostContainer>
+        )}
+
         <NewItem />
       </PageContainer>
 
-      {/* 클릭 시 모달 */}
-      {activeGrade && <Modal setActiveGrade={setActiveGrade} />}
+      {/* 모달 : 등급 & 이미지 full */}
+      {activeGrade && !imgFullModal && (
+        <Modal setActiveGrade={setActiveGrade} />
+      )}
+      {imgFullModal && !activeGrade && (
+        <ImgFullPage
+          item={item}
+          index={imgCurrentIdx}
+          setImgFullModal={setImgFullModal}
+        />
+      )}
     </>
   );
 }

@@ -182,7 +182,7 @@ export const ReviewContent = styled.span`
   padding-left: 3px;
   line-height: 2px;
 `;
-function calcTimeAgo(item) {
+export function calcTimeAgo(item) {
   const datetime = new Date(item.post_date);
   const now = new Date();
   const diffInMs = now - datetime;
@@ -192,8 +192,10 @@ function calcTimeAgo(item) {
     timeago = `${diffInMinutes}분 전`;
   } else if (diffInMinutes < 60 * 24) {
     timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
-  } else {
+  } else if (diffInMinutes < 60 * 24 * 365) {
     timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
+  } else {
+    timeago = `${Math.floor(diffInMinutes / (60 * 24 * 365))}년 전`;
   }
   return timeago;
 }

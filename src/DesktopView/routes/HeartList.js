@@ -1,8 +1,8 @@
 import { ItemObj } from "../../Data/ItemObj";
 import MypageContents from "../components/MypageContents";
 
-function HeartList() {
-  return <MypageContents item={ItemObj} />;
+function HeartList({ item }) {
+  return item ? <MypageContents item={item} /> : <span>Loading...</span>;
 }
 
 export default HeartList;
