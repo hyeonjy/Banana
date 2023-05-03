@@ -10,6 +10,9 @@ import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ItemObj } from "../../Data/ItemObj";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
+import { calcTimeAgo } from "./ShowItem";
 
 const NewContainer = styled.div`
   width: 96%;
@@ -83,7 +86,8 @@ const EachDetail = styled.span`
 //------------------------------//
 
 function NewItem() {
-  const NewtList = ItemObj.slice(0, 8);
+  const data = useRecoilValue(postData);
+  const NewtList = data.slice(0, 8);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
@@ -125,17 +129,20 @@ function NewItem() {
             onlyInViewport: true,
           }}
         >
-          {NewtList.map((item, index) => (
-            <SwiperSlide key={index}>
-              <EachItem to={`/post/${item.itemId}`}>
-                <EachThum src={require(`../../Img/${item.img[0]}.jpg`)} />
-                <EachTitle>{item.title}</EachTitle>
-                <EachDetail>
-                  {item.area} | {item.timeAgo}
-                </EachDetail>
-              </EachItem>
-            </SwiperSlide>
-          ))}
+          {NewtList.map((item, index) => {
+            const timeAgo = calcTimeAgo(item);
+            return (
+              <SwiperSlide key={index}>
+                <EachItem to={`/post/${item.post_id}`}>
+                  <EachThum src={require(`../../Data/Img/${item.img_src}`)} />
+                  <EachTitle>{item.title}</EachTitle>
+                  <EachDetail>
+                    {item.area} | {timeAgo}
+                  </EachDetail>
+                </EachItem>
+              </SwiperSlide>
+            );
+          })}
         </ItemDiv>
       </NewContainer>
     </>

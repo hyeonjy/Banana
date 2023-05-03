@@ -170,3 +170,7 @@
   font-weight: normal;
   font-style: normal;
 }
+body.no-scroll {
+  height: 100%;
+  overflow: hidden;
+}

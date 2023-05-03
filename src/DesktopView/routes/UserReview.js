@@ -7,15 +7,16 @@ import {
   MembershipWrap,
 } from "../components/PostDatil";
 import { ProfileName } from "../routes/MyPage";
-import { UserObj } from "../../Data/UserObj";
+import { LoginId, UserObj } from "../../Data/UserObj";
 import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Container } from "./More";
 import { ItemObj } from "../../Data/ItemObj";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal, { GradeIcon, gradeList } from "../../Modal";
 import { ShowItem, ShowReview } from "../components/ShowItem";
 import NoItem from "../components/NoItem";
+import useAxios from "../../useAxio";
 const UserContainer = styled(Container)`
   max-width: 800px;
   padding-top: 90px;
@@ -59,62 +60,87 @@ function UserInfo() {
   const searchParams = new URLSearchParams(location.search);
   const userId = searchParams.get("id");
   const reviewPage = searchParams.get("review");
-  const postWriter = UserObj.find((user) => user.id === userId);
+  //const postWriter = UserObj.find((user) => user.id === userId);
 
   //포스트 + 리뷰
-  const reviews = postWriter.reviews;
+  //const reviews = postWriter.reviews;
   //아이템에서 해당 유저가 올린 post 들
-  const items = ItemObj.filter((item) => item.userId === userId);
+  //const items = ItemObj.filter((item) => item.userId === userId);
+  // 패치
+  const [user, setUser] = useState();
+  const [userPosts, setUserPosts] = useState();
+  const { response, loading, error, refetch } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/userpage/data/${userId}`,
+  });
+  useEffect(() => {
+    console.log("item:", response);
+    if (!loading) {
+      setUser(response.user);
+      setUserPosts(response.posts);
+    } else {
+      if (error) {
+        console.log("error:", error);
+      }
+    }
+  }, [response, loading, error]);
 
   //모달
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
+
   return (
     <>
-      <UserContainer activeGrade={activeGrade}>
-        <UserWrap>
-          <Header as="div">
-            <ProfImg img={require(`../../Img/${postWriter.src}`)} />
-            <ProfileName style={{ fontSize: "17px" }}>
-              {postWriter.id}
-            </ProfileName>
-            <MembershipWrap>
-              <GradeIcon
-                onClick={() => setActiveGrade(true)}
-                src={gradeList[0].icon}
-              />
-              <MembershipText>{gradeList[0].grade}</MembershipText>
-            </MembershipWrap>
-          </Header>
-          <CateDiv>
-            <EachCate
-              active={reviewPage === null ? 1 : 0}
-              to={{ pathname: "/user", search: `?id=${postWriter.id}` }}
-            >
-              판매 목록
-            </EachCate>
-            <EachCate
-              active={reviewPage ? 1 : 0}
-              to={{ search: `id=${postWriter.id}&review=${true}` }}
-            >
-              나눔 후기
-            </EachCate>
-          </CateDiv>
-          <ItemDiv>
-            {/* 유저 나눔 목록 & 후기 목록 */}
-            {reviewPage ? (
-              reviews.length > 0 ? (
-                <ShowReview reviews={reviews} />
+      {user && userPosts ? (
+        <UserContainer activeGrade={activeGrade}>
+          <UserWrap>
+            <Header as="div">
+              <ProfImg img={require(`../../Img/${user.profile}`)} />
+              <ProfileName style={{ fontSize: "17px" }}>
+                {user.nickname}
+              </ProfileName>
+              <MembershipWrap>
+                <GradeIcon
+                  onClick={() => setActiveGrade(true)}
+                  src={gradeList[user.grade].icon}
+                />
+                <MembershipText>{gradeList[user.grade].grade}</MembershipText>
+              </MembershipWrap>
+            </Header>
+            <CateDiv>
+              <EachCate
+                active={reviewPage === null ? 1 : 0}
+                to={{ pathname: "/user", search: `?id=${userId}` }}
+              >
+                판매 목록
+              </EachCate>
+              <EachCate
+                active={reviewPage ? 1 : 0}
+                to={{ search: `id=${userId}&review=${true}` }}
+              >
+                나눔 후기
+              </EachCate>
+            </CateDiv>
+            <ItemDiv>
+              {/* 유저 나눔 목록 & 후기 목록 */}
+              {/*                <ShowReview reviews={reviews} /> */}
+              {reviewPage ? (
+                [0, 1].length > 0 ? (
+                  <span>리뷰</span>
+                ) : (
+                  <NoItem content={"후기가"}>후기가 없습니다</NoItem>
+                )
+              ) : userPosts.length > 0 ? (
+                <ShowItem item={userPosts} />
               ) : (
-                <NoItem content={"후기가"}>후기가 없습니다</NoItem>
-              )
-            ) : items.length > 0 ? (
-              <ShowItem item={items} />
-            ) : (
-              <NoItem content={"나눔이"}>나눔이 없습니다</NoItem>
-            )}
-          </ItemDiv>
-        </UserWrap>
-      </UserContainer>
+                <NoItem content={"나눔이"}>나눔이 없습니다</NoItem>
+              )}
+            </ItemDiv>
+          </UserWrap>
+        </UserContainer>
+      ) : (
+        <span>loading...</span>
+      )}
+
       {/* 클릭 시 모달 */}
       {activeGrade && <Modal setActiveGrade={setActiveGrade} />}
     </>

@@ -59,18 +59,20 @@ const GoBackBtn = styled(FontAwesomeIcon)`
   width: 20px;
   cursor: pointer;
 `;
-const ImgFullPage = () => {
-  const location = useLocation();
-  const history = useHistory(); //goBack
+const ImgFullPage = ({ item, index, setImgFullModal }) => {
+  //서버에서 이미지 불러오려고 하다가 - 모달로 변경
+
+  // const location = useLocation();
+  // const history = useHistory(); //goBack
 
   //query string - (EX:img?object=0) - 이미지 query
-  const searchParams = new URLSearchParams(location.search);
-  const objectValue = searchParams.get("object"); // id(=object) 값 가져오기
-  const searchItem = ItemObj.find(
-    (item) => item.itemId === Number(objectValue)
-  );
+  // const searchParams = new URLSearchParams(location.search);
+  // const objectValue = searchParams.get("object"); // id(=object) 값 가져오기
+  // const item = ItemObj.find(
+  //   (item) => item.itemId === Number(objectValue)
+  // );
   // post page에서 클릭한 Img 그대로 DP
-  const index = Number(searchParams.get("index"));
+  //const index = Number(searchParams.get("index"));
   return (
     <ImgContainer>
       <StyledSwiper
@@ -91,15 +93,15 @@ const ImgFullPage = () => {
           // },
         }}
       >
-        {searchItem.img.map((item, index) => (
+        {item.imgs.map((item, index) => (
           <ImgSlide key={index}>
-            <EachImg key={index} src={require(`../../Img/${item}.jpg`)} />
+            <EachImg key={index} src={require(`../../Data/Img/${item}`)} />
           </ImgSlide>
         ))}
         <GoBackBtn
           icon={faX}
           onClick={() => {
-            history.goBack();
+            setImgFullModal(false);
           }}
         />
         {/* <div className="img-full-pagination"></div>*/}
