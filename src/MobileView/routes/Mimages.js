@@ -34,10 +34,12 @@ const StyledSlider = styled(Slider)`
 
 const Container = styled.div`
   background-color: black;
-  position: relative;
   overflow: hidden;
-
+  width: 100%;
   height: calc(var(--vh, 1vh) * 100);
+  position: fixed;
+  top: 0;
+  z-index: 999;
 `;
 
 const XDiv = styled.div`
@@ -67,18 +69,7 @@ const PostImg = styled.img`
   transform: translate(-50%, -50%);
 `;
 
-function Mimages() {
-  const location = useLocation();
-  const history = useHistory();
-
-  // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
-  const searchParams = new URLSearchParams(location.search);
-  const objectValue = searchParams.get("object");
-  const filterItemObj = ItemObj.find(
-    (item) => item.itemId === Number(objectValue)
-  );
-  const index = Number(searchParams.get("index"));
-
+function Mimages(props) {
   const settings = {
     dots: true,
     speed: 1000,
@@ -98,16 +89,18 @@ function Mimages() {
   return (
     <Container>
       {/* X 버튼 */}
-      <XDiv onClick={() => history.goBack()}>
-        <XIcon icon={faX} />
-      </XDiv>
+      <div style={{ position: "relative" }}>
+        <XDiv onClick={() => props.setImgFullModal(false)}>
+          <XIcon icon={faX} />
+        </XDiv>
+      </div>
 
       {/* 이미지 슬라이더 */}
-      <StyledSlider {...settings} initialSlide={index}>
-        {filterItemObj.img.map((img, index) => {
+      <StyledSlider {...settings} initialSlide={props.index}>
+        {props.imgs.map((img, index) => {
           return (
             <PostImgDiv key={index}>
-              <PostImg src={require(`../../Img/${img}.jpg`)} />
+              <PostImg src={require(`../../Data/Img/${img}`)} />
             </PostImgDiv>
           );
         })}

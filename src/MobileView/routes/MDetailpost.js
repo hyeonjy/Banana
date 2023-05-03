@@ -22,6 +22,10 @@ import User from "../components/User";
 import Modal from "../../Modal";
 import { LoginId, UserObj } from "../../Data/UserObj";
 import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { postData } from "../../atom";
+import useAxios from "../../useAxio";
+import Mimages from "./Mimages";
 
 const Container = styled.div`
   background-color: white;
@@ -162,30 +166,75 @@ export const StateSelect = styled.select`
   font-size: 13px;
 `;
 
-function MDetailpost(props) {
+function MDetailpost() {
   const [hits, setHits] = useState(123); /**조회수 */
   const [heart, setHeart] = useState(false); /**좋아요 */
   const [index, setIndex] = useState(0); /**사진 인덱스 */
   const { postId } = useParams();
   const history = useHistory();
+  const [postItem, setPostItem] = useState(null);
 
   const [activeGrade, setActiveGrade] = useState(false);
+  const [isWriter, setIsWriter] = useState(false);
+  const [SelectedState, setSelected] = useState("");
+  const [timeago, setTimeago] = useState("");
+  const [imgFullModal, setImgFullModal] = useState(false);
+
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/postdata/${postId}}`,
+  });
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    if (!loading) {
+      console.log("res:", response);
+      setPostItem(response);
+      setIsWriter(response.nickname === LoginId);
+      setSelected(response.state);
+      console.log("postItem:", postItem);
+
+      const datetime = new Date(response.post_date);
+      const now = new Date();
+      const diffInMs = now - datetime;
+      const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+      if (diffInMinutes < 60) {
+        setTimeago(`${diffInMinutes}분 전`);
+      } else if (diffInMinutes < 60 * 24) {
+        setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
+      } else {
+        setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
+      }
+    }
+    console.log(loading);
+    //console.log(error);
+  }, [response, loading, error, postItem]);
+
+  // const response = useRecoilValue(postData);
+  // response.filter((item) => item.post_id === postId);
+  // useEffect(() => {
+  //   response.filter((item) => item.post_id === postId);
+  // }, [response]);
+  // console.log("postId: ", postId);
+  // console.log("res:", response);
+  // console.log("res.state:", response.state);
+  // console.log("res.state:", response.state);
 
   // url 파라미터를 통해 맞는 옷 상품 가져오기
-  const filterItemObj = ItemObj.find((item) => item.itemId === Number(postId));
+  // const filterItemObj = ItemObj.find((item) => item.itemId === Number(postId));
   // 작성자 user obj
-  const FilterUserObj = UserObj.find(
-    (user) => user.id === filterItemObj.userId
-  );
+  // const FilterUserObj = UserObj.find(
+  //   (user) => user.id === filterItemObj.userId
+  // );
   // 본인 글인지 확인
-  const isWriter = FilterUserObj.id === LoginId;
 
   //나눔 상태 변경
-  const [SelectedState, setSelected] = useState(filterItemObj.state);
 
-  useEffect(() => {
-    filterItemObj.state = SelectedState;
-  }, [SelectedState]);
+  // useEffect(() => {
+  //   filterItemObj.state = SelectedState;
+  // }, [SelectedState]);
 
   const handleChangeSelect = (e) => {
     setSelected(e.target.value);
@@ -234,78 +283,105 @@ function MDetailpost(props) {
             <PrevIcon icon={faHouse} />
           </Link>
         </Header>
-        {/* 유저 정보 */}
-        <User
-          userId={FilterUserObj.id}
-          img={FilterUserObj.src}
-          grade={FilterUserObj.grade}
-          setActiveGrade={setActiveGrade}
-          profile="true"
-        />
-        {/* 게시글 이미지  */}
-        {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
-        <Swiper
-          modules={[Navigation, Pagination]}
-          spaceBetween={0}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-          onSwiper={(swiper) => {}}
-          onSlideChange={handleSlideChange}
-        >
-          {filterItemObj.img.map((img, index) => {
-            return (
-              <SwiperSlide key={index} onClick={handleImageClick}>
-                <PostImg src={require(`../../Img/${img}.jpg`)} />
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-        {/* 게시글 제목 - 카테고리|지역|시간 */}
-        <Post>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <PostTitle>{filterItemObj.title}</PostTitle>
-            {isWriter && (
-              <StateSelect value={SelectedState} onChange={handleChangeSelect}>
-                <option value="wait">대기중</option>
-                <option value="reservate">예약중</option>
-                <option value="complete">나눔완료</option>
-              </StateSelect>
-            )}
-          </div>
+        {postItem ? (
+          <>
+            {/* 유저 정보 */}
+            <User
+              userId={postItem.userId}
+              nickname={postItem.nickname}
+              img={postItem.profile}
+              grade={postItem.grade}
+              setActiveGrade={setActiveGrade}
+              profile="true"
+            />
 
-          <PostSubtitle>
-            {filterItemObj.sub} | {filterItemObj.area} | {filterItemObj.timeAgo}
-          </PostSubtitle>
-        </Post>
-        {/* 게시글 내용 */}
-        <PostContent>{filterItemObj.content}</PostContent>
-        {/* 게시글 하트, 조회수 */}
-        <PostMore>
-          <HeartSvg
-            heart={heart}
-            width="30"
-            height="30"
-            viewBox="12 10 30 40"
-            fill={heart ? "tomato" : "none"}
-            stroke="rgba(0, 0, 0, 0.5)"
-            strokeWidth="1.3"
-            onClick={() => setHeart(!heart)}
-          >
-            <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
-          </HeartSvg>
-          <Morehits>조회수 {filterItemObj.meta.view}</Morehits>
-        </PostMore>
-        {/* 채팅하기 버튼 */}
-        {isWriter ? (
-          <ChatBtn>삭제하기</ChatBtn>
+            {/* 게시글 이미지  */}
+            {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
+            <Swiper
+              modules={[Navigation, Pagination]}
+              spaceBetween={0}
+              slidesPerView={1}
+              pagination={{ clickable: true }}
+              onSwiper={(swiper) => {}}
+              onSlideChange={handleSlideChange}
+            >
+              {postItem.imgs.map((img, index) => {
+                return (
+                  <SwiperSlide
+                    key={index}
+                    onClick={() => setImgFullModal(true)}
+                  >
+                    <PostImg src={require(`../../Data/Img/${img}`)} />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+
+            {/* 게시글 제목 - 카테고리|지역|시간 */}
+            <Post>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <PostTitle>{postItem.title}</PostTitle>
+                {isWriter && (
+                  <StateSelect
+                    value={SelectedState}
+                    onChange={handleChangeSelect}
+                  >
+                    <option value="wait">대기중</option>
+                    <option value="reservate">예약중</option>
+                    <option value="complete">나눔완료</option>
+                  </StateSelect>
+                )}
+              </div>
+
+              <PostSubtitle>
+                {postItem.sub_category} | {postItem.area} | {timeago}
+              </PostSubtitle>
+            </Post>
+
+            {/* 게시글 내용 */}
+            <PostContent>{postItem.content}</PostContent>
+
+            {/* 게시글 하트, 조회수 */}
+            <PostMore>
+              <HeartSvg
+                heart={heart}
+                width="30"
+                height="30"
+                viewBox="12 10 30 40"
+                fill={heart ? "tomato" : "none"}
+                stroke="rgba(0, 0, 0, 0.5)"
+                strokeWidth="1.3"
+                onClick={() => setHeart(!heart)}
+              >
+                <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
+              </HeartSvg>
+              <Morehits>조회수 {postItem.hits}</Morehits>
+            </PostMore>
+
+            {/* 채팅하기 버튼 */}
+            {isWriter ? (
+              <ChatBtn>삭제하기</ChatBtn>
+            ) : (
+              <ChatBtn
+                onClick={() => handleChatClick(postItem.user_id, postId)}
+              >
+                채팅하기
+              </ChatBtn>
+            )}
+          </>
         ) : (
-          <ChatBtn onClick={() => handleChatClick(FilterUserObj.id, postId)}>
-            채팅하기
-          </ChatBtn>
+          <h1>loading</h1>
         )}
       </Container>
       {activeGrade && (
         <Modal setActiveGrade={setActiveGrade} isMobile={"true"} />
+      )}
+      {imgFullModal && !activeGrade && (
+        <Mimages
+          imgs={postItem.imgs}
+          setImgFullModal={setImgFullModal}
+          index={index}
+        />
       )}
     </>
   );
