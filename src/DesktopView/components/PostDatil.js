@@ -156,9 +156,14 @@ const FlexColumn = styled.div`
   flex-direction: column;
 `;
 
-const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
+const PostRightContents = ({
+  item,
+  setActiveGrade,
+  isWriter,
+  heart,
+  setHeart,
+}) => {
   const history = useHistory();
-  const [heart, setHeart] = useState(false); //하트 toggle
   const { postId } = useParams();
   //나눔 상태 변경
   const [SelectedState, setSelected] = useState(item.state);
@@ -186,11 +191,17 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
   const handleHeart = () => {
     //찜 취소
     if (heart) {
-      executePost({ mode: "remove", userId: 1, postId: postId });
+      executePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "remove", userId: 1, postId: postId },
+      });
     }
     //찜 등록
     else if (!heart) {
-      executePost({ mode: "add", userId: 1, postId: postId });
+      executePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "add", userId: 1, postId: postId },
+      });
     }
     setHeart(!heart);
   };

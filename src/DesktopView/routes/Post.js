@@ -89,6 +89,7 @@ function Post() {
 
   // 패치
   const [item, setItem] = useState();
+  const [heart, setHeart] = useState();
   const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/postdata/${postId}`,
@@ -100,7 +101,8 @@ function Post() {
 
   useEffect(() => {
     if (!loading) {
-      setItem(response);
+      setItem(response.post);
+      setHeart(response.heart);
       if (response.nickname === LoginId) {
         setIsWriter(true);
       } else {
@@ -191,6 +193,8 @@ function Post() {
                 setActiveGrade={setActiveGrade}
                 item={item}
                 isWriter={isWriter}
+                heart={heart}
+                setHeart={setHeart}
               />
             )}
           </PostContainer>
