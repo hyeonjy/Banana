@@ -89,10 +89,15 @@ function Post() {
 
   // 패치
   const [item, setItem] = useState();
-  const { response, loading, error, refetch } = useAxios({
+  const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/postdata/${postId}`,
   });
+  useEffect(() => {
+    //refetch();
+    executeGet();
+  }, [postId]);
+
   useEffect(() => {
     if (!loading) {
       setItem(response);
@@ -107,10 +112,6 @@ function Post() {
       }
     }
   }, [response, loading, error, postId]);
-
-  useEffect(() => {
-    refetch();
-  }, [postId]);
 
   //img 클릭 시 Fullscreen
 

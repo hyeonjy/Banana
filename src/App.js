@@ -69,12 +69,15 @@ button{
 `;
 function App() {
   const [posts, setPosts] = useRecoilState(postData);
-  const { response, loading, error } = useAxios({
+  const { response, loading, error, executeGet } = useAxios({
     method: "get",
     url: "http://localhost:8080/data",
   });
+
   useEffect(() => {
-    console.log(response);
+    executeGet();
+  }, []);
+  useEffect(() => {
     if (!loading) {
       console.log(response);
       setPosts(response);

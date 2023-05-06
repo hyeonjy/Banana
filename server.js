@@ -8,6 +8,10 @@ app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 
 require("dotenv").config();
 
+// body 접근하기 위해
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const mysql = require("mysql");
 
 app.use(express.static(path.join(__dirname, "build")));
@@ -19,7 +23,8 @@ app.get("/", function (request, response) {
 // module.exports = router;
 app.get("/data", function (request, response) {
   const connection = mysql.createConnection({
-    host: "172.30.1.46",
+    //host: "172.30.1.46",
+    host: "172.16.61.69",
     // host: "172.16.61.69",
     //port: "3306",
     user: "banana",
@@ -53,57 +58,108 @@ app.get("/data", function (request, response) {
 
 app.get("/postdata/:postId", function (req, res) {
   const postId = req.params.postId;
-  const sql = `SELECT post.*, user.*, post_img.img_src
+  // const sql = `SELECT post.*, user.*, post_img.img_src
+  // FROM post
+  // LEFT JOIN user
+  // ON post.fk_user_id = user.user_id
+  // LEFT JOIN post_img
+  // ON post.post_id = post_img.fk_post_id
+  // WHERE post_id = ?`;
+  const query1 = `SELECT post.*, user.*, post_img.img_src
   FROM post
   LEFT JOIN user
   ON post.fk_user_id = user.user_id
   LEFT JOIN post_img
   ON post.post_id = post_img.fk_post_id
-  WHERE post_id = ?`;
+  WHERE post_id = ${postId};`;
+  const query2 = `SELECT * FROM heart WHERE fk_user_id = 1 AND fk_post_id = ${postId}; `;
+
   const connection = mysql.createConnection({
-    host: "172.30.1.46",
+    //host: "172.30.1.46",
+    host: "172.16.61.69",
     user: "banana",
     password: process.env.DB_PASSWORD,
     database: "mydatabase",
+    multipleStatements: true,
   });
   //connection.connect();
-  connection.query(sql, [postId], (error, result) => {
-    if (error) throw error;
-    else {
-      //console.log("result: ", result);
+  // connection.query(sql, [postId], (error, result) => {
+  //   if (error) throw error;
+  //   else {
+  //     //console.log("result: ", result);
 
-      const post = {
-        area: result[0].area,
-        title: result[0].title,
-        content: result[0].content,
-        grade: result[0].grade,
-        hits: result[0].hits,
-        nickname: result[0].nickname,
-        userId: result[0].user_id,
-        post_date: result[0].post_date,
-        profile: result[0].profile,
-        state: result[0].state,
-        sub_category: result[0].sub_category,
-        imgs: [],
-      };
+  //     const post = {
+  //       area: result[0].area,
+  //       title: result[0].title,
+  //       content: result[0].content,
+  //       grade: result[0].grade,
+  //       hits: result[0].hits,
+  //       nickname: result[0].nickname,
+  //       userId: result[0].user_id,
+  //       post_date: result[0].post_date,
+  //       profile: result[0].profile,
+  //       state: result[0].state,
+  //       sub_category: result[0].sub_category,
+  //       imgs: [],
+  //     };
 
-      for (let i = 0; i < result.length; i++) {
-        if (result[i].img_src) {
-          post.imgs.push(result[i].img_src);
+  //     for (let i = 0; i < result.length; i++) {
+  //       if (result[i].img_src) {
+  //         post.imgs.push(result[i].img_src);
+  //       }
+  //     }
+
+  //     res.json(post);
+  //     //res.json(result[0]);
+  //   }
+  //   connection.end();
+  // });
+
+  function getPostsAndHeart() {
+    return new Promise((resolve, reject) => {
+      connection.query(query1 + query2, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log("results :", results);
+          const post = {
+            area: results[0][0].area,
+            title: results[0][0].title,
+            content: results[0][0].content,
+            grade: results[0][0].grade,
+            hits: results[0][0].hits,
+            nickname: results[0][0].nickname,
+            userId: results[0][0].user_id,
+            post_date: results[0][0].post_date,
+            profile: results[0][0].profile,
+            state: results[0][0].state,
+            sub_category: results[0][0].sub_category,
+            imgs: [],
+          };
+
+          const heart = results[1][0];
+          resolve({ post, heart });
         }
-      }
+      });
+    });
+  }
 
-      res.json(post);
-      //res.json(result[0]);
-    }
-    connection.end();
-  });
+  getPostsAndHeart()
+    .then(({ user, posts }) => {
+      console.log("User:", user);
+      console.log("Posts:", posts);
+      res.json({ user, posts });
+    })
+    .catch((error) => {
+      throw error;
+    });
 });
 
 app.get("/userpage/data/:userId", function (req, res) {
   const userId = req.params.userId;
   const connection = mysql.createConnection({
-    host: "172.30.1.46",
+    //host: "172.30.1.46",
+    host: "172.16.61.69",
     user: "banana",
     password: process.env.DB_PASSWORD,
     database: "mydatabase",
@@ -146,7 +202,10 @@ app.get("/userpage/data/:userId", function (req, res) {
       throw error;
     });
 });
-
+app.post("/heartclick", (req, res) => {
+  console.log(req.body);
+  res.sendStatus(400);
+});
 app.get("*", function (request, response) {
   response.sendFile(path.join(__dirname, "build/index.html"));
 });
