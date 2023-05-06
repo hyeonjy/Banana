@@ -8,6 +8,7 @@ import { UserObj } from "../../Data/UserObj";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
+import useAxios from "../../useAxio";
 
 //-----------오른쪽 컨테이너-----------//
 const PostRightDiv = styled.div`
@@ -154,6 +155,7 @@ const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
 const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
   const history = useHistory();
   const [heart, setHeart] = useState(false); //하트 toggle
@@ -165,7 +167,10 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
     item.state = SelectedState; //DB의 state 값 update
     alert("상태가 변경되었습니다");
   };
-
+  const { response, loading, error, refetch, executePost } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/heartclick`,
+  });
   //채팅으로 이동
   // const handleChatClick = (postWriter, postId) => {
   //   const searchParams = new URLSearchParams();
@@ -177,6 +182,19 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
   //   });
   // };
   const timeAgo = calcTimeAgo(item);
+
+  const handleHeart = () => {
+    //찜 취소
+    if (heart) {
+      executePost({ mode: "remove", userId: 1, postId: postId });
+    }
+    //찜 등록
+    else if (!heart) {
+      executePost({ mode: "add", userId: 1, postId: postId });
+    }
+    setHeart(!heart);
+  };
+
   return (
     <PostRightDiv>
       <Header
@@ -236,7 +254,7 @@ const PostRightContents = ({ item, setActiveGrade, isWriter }) => {
               fill={heart ? "red" : "none"}
               stroke="black"
               strokeWidth="1.5"
-              onClick={() => setHeart(!heart)}
+              onClick={handleHeart}
             >
               <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
             </HeartSvg>

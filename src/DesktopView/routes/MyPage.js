@@ -135,12 +135,14 @@ function MyPage() {
   // 패치
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
-  const { response, loading, error, refetch } = useAxios({
+  const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/1`,
   });
   useEffect(() => {
-    console.log("item:", response);
+    executeGet();
+  }, []);
+  useEffect(() => {
     if (!loading) {
       setUser(response.user);
       setUserPosts(response.posts);
