@@ -69,12 +69,15 @@ function UserInfo() {
   // 패치
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
-  const { response, loading, error, refetch } = useAxios({
+  const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/${userId}`,
   });
   useEffect(() => {
-    console.log("item:", response);
+    executeGet();
+  }, []);
+  useEffect(() => {
+    executeGet();
     if (!loading) {
       setUser(response.user);
       setUserPosts(response.posts);
