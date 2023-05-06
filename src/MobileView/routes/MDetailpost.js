@@ -184,6 +184,7 @@ function MDetailpost() {
     method: "get",
     url: `http://localhost:8080/postdata/${postId}}`,
   });
+
   useEffect(() => {
     // axios
     //   .get("http://localhost:8080/data")
@@ -191,22 +192,22 @@ function MDetailpost() {
     //   .catch((error) => console.error(error));
     if (!loading) {
       console.log("res:", response);
-      setPostItem(response);
-      setIsWriter(response.nickname === LoginId);
-      setSelected(response.state);
-      console.log("postItem:", postItem);
+      // setPostItem(response);
+      // setIsWriter(response.nickname === LoginId);
+      // setSelected(response.state);
+      // console.log("postItem:", postItem);
 
-      const datetime = new Date(response.post_date);
-      const now = new Date();
-      const diffInMs = now - datetime;
-      const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-      if (diffInMinutes < 60) {
-        setTimeago(`${diffInMinutes}분 전`);
-      } else if (diffInMinutes < 60 * 24) {
-        setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
-      } else {
-        setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
-      }
+      // const datetime = new Date(response.post_date);
+      // const now = new Date();
+      // const diffInMs = now - datetime;
+      // const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+      // if (diffInMinutes < 60) {
+      //   setTimeago(`${diffInMinutes}분 전`);
+      // } else if (diffInMinutes < 60 * 24) {
+      //   setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
+      // } else {
+      //   setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
+      // }
     }
     console.log(loading);
     //console.log(error);
@@ -283,9 +284,8 @@ function MDetailpost() {
             <PrevIcon icon={faHouse} />
           </Link>
         </Header>
-        {postItem ? (
+        {/* {postItem ? (
           <>
-            {/* 유저 정보 */}
             <User
               userId={postItem.userId}
               nickname={postItem.nickname}
@@ -295,8 +295,6 @@ function MDetailpost() {
               profile="true"
             />
 
-            {/* 게시글 이미지  */}
-            {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
             <Swiper
               modules={[Navigation, Pagination]}
               spaceBetween={0}
@@ -317,7 +315,6 @@ function MDetailpost() {
               })}
             </Swiper>
 
-            {/* 게시글 제목 - 카테고리|지역|시간 */}
             <Post>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <PostTitle>{postItem.title}</PostTitle>
@@ -338,10 +335,8 @@ function MDetailpost() {
               </PostSubtitle>
             </Post>
 
-            {/* 게시글 내용 */}
             <PostContent>{postItem.content}</PostContent>
 
-            {/* 게시글 하트, 조회수 */}
             <PostMore>
               <HeartSvg
                 heart={heart}
@@ -358,7 +353,6 @@ function MDetailpost() {
               <Morehits>조회수 {postItem.hits}</Morehits>
             </PostMore>
 
-            {/* 채팅하기 버튼 */}
             {isWriter ? (
               <ChatBtn>삭제하기</ChatBtn>
             ) : (
@@ -371,18 +365,18 @@ function MDetailpost() {
           </>
         ) : (
           <h1>loading</h1>
-        )}
+        )} */}
       </Container>
       {activeGrade && (
         <Modal setActiveGrade={setActiveGrade} isMobile={"true"} />
       )}
-      {imgFullModal && !activeGrade && (
+      {/* {imgFullModal && !activeGrade && (
         <Mimages
           imgs={postItem.imgs}
           setImgFullModal={setImgFullModal}
           index={index}
         />
-      )}
+      )} */}
     </>
   );
 }
