@@ -180,23 +180,47 @@ function MDetailpost() {
   const [timeago, setTimeago] = useState("");
   const [imgFullModal, setImgFullModal] = useState(false);
 
-  const { response, loading, error } = useAxios({
+  const {
+    response: postDataResponse,
+    loading: postDataLoading,
+    error: postDataError,
+    refetch: postDataRefetch,
+    executeGet: postDataExecuteGet,
+  } = useAxios({
     method: "get",
-    url: `http://localhost:8080/postdata/${postId}}`,
+    url: `http://localhost:8080/postdata/${postId}`,
   });
+
+  const {
+    response: heartClickResponse,
+    loading: heartClickLoading,
+    error: heartClickError,
+    refetch: heartClickRefetch,
+    executePost: heartClickExecutePost,
+  } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/heartclick`,
+  });
+
+  useEffect(() => {
+    //refetch();
+    postDataExecuteGet();
+  }, []);
+
   useEffect(() => {
     // axios
     //   .get("http://localhost:8080/data")
     //   .then((response) => console.log(response.data))
     //   .catch((error) => console.error(error));
-    if (!loading) {
-      console.log("res:", response);
-      setPostItem(response);
-      setIsWriter(response.nickname === LoginId);
-      setSelected(response.state);
+    if (!postDataLoading) {
+      console.log("res:", postDataResponse);
+      setPostItem(postDataResponse.post);
+      setIsWriter(postDataResponse.post.userId === LoginId);
+      setSelected(postDataResponse.post.state);
+      setHeart(postDataResponse.heart);
       console.log("postItem:", postItem);
 
-      const datetime = new Date(response.post_date);
+      const datetime = new Date(postDataResponse.post.post_date);
       const now = new Date();
       const diffInMs = now - datetime;
       const diffInMinutes = Math.round(diffInMs / (1000 * 60));
@@ -208,9 +232,9 @@ function MDetailpost() {
         setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
       }
     }
-    console.log(loading);
+    console.log(postDataLoading);
     //console.log(error);
-  }, [response, loading, error, postItem]);
+  }, [postDataResponse, postDataLoading, postDataError, postItem]);
 
   // const response = useRecoilValue(postData);
   // response.filter((item) => item.post_id === postId);
@@ -267,6 +291,24 @@ function MDetailpost() {
     });
   };
 
+  const handleHeart = () => {
+    //찜 취소
+    if (heart) {
+      heartClickExecutePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "remove", userId: 1, postId: postId },
+      });
+    }
+    //찜 등록
+    else if (!heart) {
+      heartClickExecutePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "add", userId: 1, postId: postId },
+      });
+    }
+    setHeart(!heart);
+  };
+
   return (
     <>
       <Container activeGrade={activeGrade}>
@@ -285,7 +327,6 @@ function MDetailpost() {
         </Header>
         {postItem ? (
           <>
-            {/* 유저 정보 */}
             <User
               userId={postItem.userId}
               nickname={postItem.nickname}
@@ -295,8 +336,6 @@ function MDetailpost() {
               profile="true"
             />
 
-            {/* 게시글 이미지  */}
-            {/* 사진 클릭하면 Mimages.js로 이동, obj와 클릭한 사진 인덱스 전달 */}
             <Swiper
               modules={[Navigation, Pagination]}
               spaceBetween={0}
@@ -317,7 +356,6 @@ function MDetailpost() {
               })}
             </Swiper>
 
-            {/* 게시글 제목 - 카테고리|지역|시간 */}
             <Post>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <PostTitle>{postItem.title}</PostTitle>
@@ -338,10 +376,8 @@ function MDetailpost() {
               </PostSubtitle>
             </Post>
 
-            {/* 게시글 내용 */}
             <PostContent>{postItem.content}</PostContent>
 
-            {/* 게시글 하트, 조회수 */}
             <PostMore>
               <HeartSvg
                 heart={heart}
@@ -351,14 +387,13 @@ function MDetailpost() {
                 fill={heart ? "tomato" : "none"}
                 stroke="rgba(0, 0, 0, 0.5)"
                 strokeWidth="1.3"
-                onClick={() => setHeart(!heart)}
+                onClick={() => handleHeart()}
               >
                 <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
               </HeartSvg>
               <Morehits>조회수 {postItem.hits}</Morehits>
             </PostMore>
 
-            {/* 채팅하기 버튼 */}
             {isWriter ? (
               <ChatBtn>삭제하기</ChatBtn>
             ) : (
