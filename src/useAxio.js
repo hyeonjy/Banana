@@ -54,10 +54,10 @@ const useAxios = ({
   }, [method, url, axiosInstance]);
 
   const executePost = useCallback(
-    async (data) => {
+    async ({ url, data }) => {
       console.log("executePost");
       console.log("data:", data);
-      console.log("data:", url);
+      console.log("url:", url);
       try {
         //setState({ data: null, loading: true, error: null });
         setResponse(null);

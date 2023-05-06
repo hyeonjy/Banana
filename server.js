@@ -121,7 +121,6 @@ app.get("/postdata/:postId", function (req, res) {
         if (error) {
           reject(error);
         } else {
-          console.log("results :", results);
           const post = {
             area: results[0][0].area,
             title: results[0][0].title,
@@ -137,7 +136,13 @@ app.get("/postdata/:postId", function (req, res) {
             imgs: [],
           };
 
-          const heart = results[1][0];
+          for (let i = 0; i < results[0].length; i++) {
+            if (results[0][i].img_src) {
+              post.imgs.push(results[0][i].img_src);
+            }
+          }
+          // const post = results[0];
+          const heart = results[1][0] !== undefined;
           resolve({ post, heart });
         }
       });
@@ -145,10 +150,8 @@ app.get("/postdata/:postId", function (req, res) {
   }
 
   getPostsAndHeart()
-    .then(({ user, posts }) => {
-      console.log("User:", user);
-      console.log("Posts:", posts);
-      res.json({ user, posts });
+    .then(({ post, heart }) => {
+      res.json({ post, heart });
     })
     .catch((error) => {
       throw error;
@@ -194,8 +197,6 @@ app.get("/userpage/data/:userId", function (req, res) {
 
   getUserAndPosts()
     .then(({ user, posts }) => {
-      console.log("User:", user);
-      console.log("Posts:", posts);
       res.json({ user, posts });
     })
     .catch((error) => {
@@ -203,9 +204,39 @@ app.get("/userpage/data/:userId", function (req, res) {
     });
 });
 app.post("/heartclick", (req, res) => {
-  console.log(req.body);
-  res.sendStatus(400);
+  const connection = mysql.createConnection({
+    //host: "172.30.1.46",
+    host: "172.16.61.69",
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const { mode, userId, postId } = req.body;
+
+  const addQuery = `INSERT INTO mydatabase.heart (fk_user_id, fk_post_id) VALUES (${userId}, ${postId})`;
+  const removeQuery = `DELETE FROM mydatabase.heart WHERE fk_user_id=${userId} AND fk_post_id=${postId} `;
+  if (mode === "remove") {
+    connection.query(removeQuery, (error, result) => {
+      if (error) throw error;
+      else {
+        res.sendStatus(200);
+      }
+      connection.end();
+    });
+  } else if (mode === "add") {
+    connection.query(addQuery, (error, result) => {
+      if (error) throw error;
+      else {
+        res.sendStatus(200);
+      }
+      connection.end();
+    });
+  } else {
+    res.sendStatus(500);
+  }
 });
+
 app.get("*", function (request, response) {
   response.sendFile(path.join(__dirname, "build/index.html"));
 });
