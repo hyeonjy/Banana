@@ -180,38 +180,61 @@ function MDetailpost() {
   const [timeago, setTimeago] = useState("");
   const [imgFullModal, setImgFullModal] = useState(false);
 
-  const { response, loading, error } = useAxios({
+  const {
+    response: postDataResponse,
+    loading: postDataLoading,
+    error: postDataError,
+    refetch: postDataRefetch,
+    executeGet: postDataExecuteGet,
+  } = useAxios({
     method: "get",
-    url: `http://localhost:8080/postdata/${postId}}`,
+    url: `http://localhost:8080/postdata/${postId}`,
   });
+
+  const {
+    response: heartClickResponse,
+    loading: heartClickLoading,
+    error: heartClickError,
+    refetch: heartClickRefetch,
+    executePost: heartClickExecutePost,
+  } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/heartclick`,
+  });
+
+  useEffect(() => {
+    //refetch();
+    postDataExecuteGet();
+  }, []);
 
   useEffect(() => {
     // axios
     //   .get("http://localhost:8080/data")
     //   .then((response) => console.log(response.data))
     //   .catch((error) => console.error(error));
-    if (!loading) {
-      console.log("res:", response);
-      // setPostItem(response);
-      // setIsWriter(response.nickname === LoginId);
-      // setSelected(response.state);
-      // console.log("postItem:", postItem);
+    if (!postDataLoading) {
+      console.log("res:", postDataResponse);
+      setPostItem(postDataResponse.post);
+      setIsWriter(postDataResponse.post.userId === LoginId);
+      setSelected(postDataResponse.post.state);
+      setHeart(postDataResponse.heart);
+      console.log("postItem:", postItem);
 
-      // const datetime = new Date(response.post_date);
-      // const now = new Date();
-      // const diffInMs = now - datetime;
-      // const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-      // if (diffInMinutes < 60) {
-      //   setTimeago(`${diffInMinutes}분 전`);
-      // } else if (diffInMinutes < 60 * 24) {
-      //   setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
-      // } else {
-      //   setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
-      // }
+      const datetime = new Date(postDataResponse.post.post_date);
+      const now = new Date();
+      const diffInMs = now - datetime;
+      const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+      if (diffInMinutes < 60) {
+        setTimeago(`${diffInMinutes}분 전`);
+      } else if (diffInMinutes < 60 * 24) {
+        setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
+      } else {
+        setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
+      }
     }
-    console.log(loading);
+    console.log(postDataLoading);
     //console.log(error);
-  }, [response, loading, error, postItem]);
+  }, [postDataResponse, postDataLoading, postDataError, postItem]);
 
   // const response = useRecoilValue(postData);
   // response.filter((item) => item.post_id === postId);
@@ -268,6 +291,24 @@ function MDetailpost() {
     });
   };
 
+  const handleHeart = () => {
+    //찜 취소
+    if (heart) {
+      heartClickExecutePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "remove", userId: 1, postId: postId },
+      });
+    }
+    //찜 등록
+    else if (!heart) {
+      heartClickExecutePost({
+        url: "http://localhost:8080/heartclick",
+        data: { mode: "add", userId: 1, postId: postId },
+      });
+    }
+    setHeart(!heart);
+  };
+
   return (
     <>
       <Container activeGrade={activeGrade}>
@@ -284,7 +325,7 @@ function MDetailpost() {
             <PrevIcon icon={faHouse} />
           </Link>
         </Header>
-        {/* {postItem ? (
+        {postItem ? (
           <>
             <User
               userId={postItem.userId}
@@ -346,7 +387,7 @@ function MDetailpost() {
                 fill={heart ? "tomato" : "none"}
                 stroke="rgba(0, 0, 0, 0.5)"
                 strokeWidth="1.3"
-                onClick={() => setHeart(!heart)}
+                onClick={() => handleHeart()}
               >
                 <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" />
               </HeartSvg>
@@ -365,18 +406,18 @@ function MDetailpost() {
           </>
         ) : (
           <h1>loading</h1>
-        )} */}
+        )}
       </Container>
       {activeGrade && (
         <Modal setActiveGrade={setActiveGrade} isMobile={"true"} />
       )}
-      {/* {imgFullModal && !activeGrade && (
+      {imgFullModal && !activeGrade && (
         <Mimages
           imgs={postItem.imgs}
           setImgFullModal={setImgFullModal}
           index={index}
         />
-      )} */}
+      )}
     </>
   );
 }
