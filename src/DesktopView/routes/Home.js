@@ -103,6 +103,41 @@ const MoreBtn = styled.div`
 
 /*상품 리스트 - 끝*/
 
+//Merge Sort 알고리즘 - hits 기준
+function mergeSortObjects(arr, key) {
+  if (arr.length === 1) {
+    return arr;
+  }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  return mergeObjects(
+    mergeSortObjects(left, key),
+    mergeSortObjects(right, key),
+    key
+  );
+}
+
+function mergeObjects(left, right, key) {
+  let result = [];
+  let indexLeft = 0;
+  let indexRight = 0;
+
+  while (indexLeft < left.length && indexRight < right.length) {
+    if (left[indexLeft][key] > right[indexRight][key]) {
+      result.push(left[indexLeft]);
+      indexLeft++;
+    } else {
+      result.push(right[indexRight]);
+      indexRight++;
+    }
+  }
+
+  return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
+}
+
 function Home() {
   const history = useHistory();
   const [newList, setNewList] = useState([...ItemObj]);
@@ -149,6 +184,11 @@ function Home() {
   //   //console.log(error);
   // }, [response, loading, error]);
   const response = useRecoilValue(postData);
+
+  const lastItem = response.slice(0, 8);
+
+  const sortedItemByHits = mergeSortObjects(response, "hits");
+
   return (
     <>
       <Nav />
@@ -162,7 +202,7 @@ function Home() {
         <Products>
           <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={response.slice(0, 8)} />
+            <ShowItem item={lastItem} />
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("new", newList)}>
             더보기
@@ -173,7 +213,7 @@ function Home() {
         <Products>
           <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
           <ProductsBox>
-            <ShowItem item={response.slice(0, 8)} />
+            <ShowItem item={sortedItemByHits} />
           </ProductsBox>
           <MoreBtn onClick={() => handleImageClick("hot", hotList)}>
             더보기
