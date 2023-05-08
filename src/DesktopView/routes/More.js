@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { ShowItem } from "../components/ShowItem";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
+import { useEffect, useState } from "react";
+import useAxios from "../../useAxio";
 
 export const Container = styled.div`
   padding: 120px 30px 60px;
@@ -95,11 +97,32 @@ export const ProductDetail = styled.span`
 
 const More = (props) => {
   const location = useLocation();
-  const data = useRecoilValue(postData);
+
+  const [data, setData] = useState(useRecoilValue(postData));
   //const searchItem = location.state?.object; //new or hot의 object item 저장
   const searchParams = new URLSearchParams(location.search);
-  const typeValue = searchParams.get("type"); // type이  new or hot 인지 확안
-  console.log(data);
+  const typeValue = searchParams.get("type"); // type이  new or hot 인지 확인
+
+  const { loading, error, response, executeGet } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data/hits",
+  });
+  useEffect(() => {
+    if (typeValue === "hot") {
+      console.log(typeValue);
+      executeGet();
+      // hot일 경우 -> 조회순 rank top 20 -> 서버 (정렬 요청)
+    }
+    // else (new) 최신순 -> app.js에서 recoil로 저장한 최신순 데이터 그대로
+  }, []);
+
+  useEffect(() => {
+    if (response && !error) {
+      setData(data);
+      console.log(data);
+    }
+  }, [loading]);
+
   return (
     <Container>
       <MoreTitle>
