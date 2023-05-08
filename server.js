@@ -1,3 +1,6 @@
+const HOST_IP = "172.30.1.46"; //커나
+//const HOST_IP= "172.16.61.69"; //세종
+
 /*서버 연동 */
 const express = require("express");
 const path = require("path");
@@ -21,11 +24,24 @@ app.get("/", function (request, response) {
 });
 
 // module.exports = router;
-app.get("/data", function (request, response) {
+app.get("/data/:sort", function (request, response) {
+  let option = null;
+  const sort = request.params.sort;
+  switch (sort) {
+    case "hits":
+      option = "hits";
+      break;
+    case "heart":
+      option = "heart";
+      break;
+    default:
+      option = "post_date";
+      break;
+  }
   const connection = mysql.createConnection({
     //host: "172.30.1.46",
-    host: "172.16.61.69",
-    // host: "172.16.61.69",
+    host: HOST_IP,
+    // host: HOST_IP,
     //port: "3306",
     user: "banana",
     password: process.env.DB_PASSWORD,
@@ -43,7 +59,7 @@ app.get("/data", function (request, response) {
   FROM post_img
   WHERE fk_post_id = t.fk_post_id
   )
-  ) AS pi_id ON p.post_id = pi_id.fk_post_id ORDER BY post_id DESC`,
+  ) AS pi_id ON p.post_id = pi_id.fk_post_id ORDER BY ${option} DESC`,
     (error, result) => {
       if (error) throw error;
       else {
@@ -53,7 +69,55 @@ app.get("/data", function (request, response) {
       connection.end();
     }
   );
-  //response.sendFile(path.join(__dirname, "build/index.html"));
+});
+
+app.get("/searchdata/:searchkey/:sort", function (req, res) {
+  let option = null;
+  const sort = req.params.sort;
+  switch (sort) {
+    case "1":
+      option = "hits";
+      break;
+    case "2":
+      option = "heart";
+      break;
+    default:
+      option = "post_date";
+      break;
+  }
+  const searchkey = req.params.searchkey;
+  console.log("sort: , type: ", sort, typeof sort);
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+
+  connection.query(
+    `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+    FROM post p
+    LEFT JOIN (
+      SELECT t.img_id, t.fk_post_id, t.img_src
+      FROM post_img t
+      WHERE t.img_id = (
+        SELECT MIN(img_id)
+        FROM post_img
+        WHERE fk_post_id = t.fk_post_id
+      )
+    ) AS pi_id ON p.post_id = pi_id.fk_post_id
+    WHERE p.title LIKE '%${searchkey}%' OR p.content LIKE '%${searchkey}%'
+    ORDER BY p.${option} DESC;`,
+    (error, result) => {
+      if (error) throw error;
+      else {
+        //console.log("SQL: ", result);
+        res.json(result);
+      }
+      connection.end();
+    }
+  );
 });
 
 app.get("/postdata/:postId", function (req, res) {
@@ -65,84 +129,53 @@ app.get("/postdata/:postId", function (req, res) {
   // LEFT JOIN post_img
   // ON post.post_id = post_img.fk_post_id
   // WHERE post_id = ?`;
-  const query1 = `SELECT post.*, user.*, post_img.img_src
+  const postQuery = `SELECT post.*, user.*, post_img.img_src
   FROM post
   LEFT JOIN user
   ON post.fk_user_id = user.user_id
   LEFT JOIN post_img
   ON post.post_id = post_img.fk_post_id
   WHERE post_id = ${postId};`;
-  const query2 = `SELECT * FROM heart WHERE fk_user_id = 1 AND fk_post_id = ${postId}; `;
+  const heartQuery = `SELECT * FROM heart WHERE fk_user_id = 1 AND fk_post_id = ${postId}; `;
+  const hitsQuery = `UPDATE post SET hits = hits + 1 WHERE post_id = ${postId};`;
 
   const connection = mysql.createConnection({
     //host: "172.30.1.46",
-    host: "172.16.61.69",
+    host: HOST_IP,
     user: "banana",
     password: process.env.DB_PASSWORD,
     database: "mydatabase",
     multipleStatements: true,
   });
-  //connection.connect();
-  // connection.query(sql, [postId], (error, result) => {
-  //   if (error) throw error;
-  //   else {
-  //     //console.log("result: ", result);
-
-  //     const post = {
-  //       area: result[0].area,
-  //       title: result[0].title,
-  //       content: result[0].content,
-  //       grade: result[0].grade,
-  //       hits: result[0].hits,
-  //       nickname: result[0].nickname,
-  //       userId: result[0].user_id,
-  //       post_date: result[0].post_date,
-  //       profile: result[0].profile,
-  //       state: result[0].state,
-  //       sub_category: result[0].sub_category,
-  //       imgs: [],
-  //     };
-
-  //     for (let i = 0; i < result.length; i++) {
-  //       if (result[i].img_src) {
-  //         post.imgs.push(result[i].img_src);
-  //       }
-  //     }
-
-  //     res.json(post);
-  //     //res.json(result[0]);
-  //   }
-  //   connection.end();
-  // });
 
   function getPostsAndHeart() {
     return new Promise((resolve, reject) => {
-      connection.query(query1 + query2, (error, results) => {
+      connection.query(hitsQuery + postQuery + heartQuery, (error, results) => {
         if (error) {
           reject(error);
         } else {
           const post = {
-            area: results[0][0].area,
-            title: results[0][0].title,
-            content: results[0][0].content,
-            grade: results[0][0].grade,
-            hits: results[0][0].hits,
-            nickname: results[0][0].nickname,
-            userId: results[0][0].user_id,
-            post_date: results[0][0].post_date,
-            profile: results[0][0].profile,
-            state: results[0][0].state,
-            sub_category: results[0][0].sub_category,
+            area: results[1][0].area,
+            title: results[1][0].title,
+            content: results[1][0].content,
+            grade: results[1][0].grade,
+            hits: results[1][0].hits,
+            nickname: results[1][0].nickname,
+            userId: results[1][0].user_id,
+            post_date: results[1][0].post_date,
+            profile: results[1][0].profile,
+            state: results[1][0].state,
+            sub_category: results[1][0].sub_category,
             imgs: [],
           };
 
-          for (let i = 0; i < results[0].length; i++) {
-            if (results[0][i].img_src) {
-              post.imgs.push(results[0][i].img_src);
+          for (let i = 0; i < results[1].length; i++) {
+            if (results[1][i].img_src) {
+              post.imgs.push(results[1][i].img_src);
             }
           }
           // const post = results[0];
-          const heart = results[1][0] !== undefined;
+          const heart = results[2][0] !== undefined;
           resolve({ post, heart });
         }
       });
@@ -161,8 +194,7 @@ app.get("/postdata/:postId", function (req, res) {
 app.get("/userpage/data/:userId", function (req, res) {
   const userId = req.params.userId;
   const connection = mysql.createConnection({
-    //host: "172.30.1.46",
-    host: "172.16.61.69",
+    host: HOST_IP,
     user: "banana",
     password: process.env.DB_PASSWORD,
     database: "mydatabase",
@@ -205,18 +237,17 @@ app.get("/userpage/data/:userId", function (req, res) {
 });
 app.post("/heartclick", (req, res) => {
   const connection = mysql.createConnection({
-    //host: "172.30.1.46",
-    host: "172.16.61.69",
+    host: HOST_IP,
     user: "banana",
     password: process.env.DB_PASSWORD,
     database: "mydatabase",
     multipleStatements: true,
   });
-  const { mode, userId, postId } = req.body;
-
+  const { heart, userId, postId } = req.body;
+  console.log("heart:", heart);
   const addQuery = `INSERT INTO mydatabase.heart (fk_user_id, fk_post_id) VALUES (${userId}, ${postId})`;
   const removeQuery = `DELETE FROM mydatabase.heart WHERE fk_user_id=${userId} AND fk_post_id=${postId} `;
-  if (mode === "remove") {
+  if (heart) {
     connection.query(removeQuery, (error, result) => {
       if (error) throw error;
       else {
@@ -224,7 +255,7 @@ app.post("/heartclick", (req, res) => {
       }
       connection.end();
     });
-  } else if (mode === "add") {
+  } else if (!heart) {
     connection.query(addQuery, (error, result) => {
       if (error) throw error;
       else {

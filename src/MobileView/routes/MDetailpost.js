@@ -293,19 +293,11 @@ function MDetailpost() {
 
   const handleHeart = () => {
     //찜 취소
-    if (heart) {
-      heartClickExecutePost({
-        url: "http://localhost:8080/heartclick",
-        data: { mode: "remove", userId: 1, postId: postId },
-      });
-    }
-    //찜 등록
-    else if (!heart) {
-      heartClickExecutePost({
-        url: "http://localhost:8080/heartclick",
-        data: { mode: "add", userId: 1, postId: postId },
-      });
-    }
+    heartClickExecutePost({
+      url: "http://localhost:8080/heartclick",
+      data: { heart, userId: 1, postId },
+    });
+
     setHeart(!heart);
   };
 

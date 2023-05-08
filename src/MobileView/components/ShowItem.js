@@ -132,6 +132,7 @@ export function ShowItemFn({
   padBottom = false,
   query = false,
   profile = false,
+  setIndex,
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -166,6 +167,7 @@ export function ShowItemFn({
                 <QueryLi
                   onClick={() => {
                     querySelect(index);
+                    setIndex(index);
                   }}
                   isActive={currentQuery === index ? true : false}
                   key={index}
