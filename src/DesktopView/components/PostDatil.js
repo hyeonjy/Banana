@@ -172,7 +172,7 @@ const PostRightContents = ({
     item.state = SelectedState; //DB의 state 값 update
     alert("상태가 변경되었습니다");
   };
-  const { response, loading, error, refetch, executePost } = useAxios({
+  const { executePost } = useAxios({
     method: "post",
     url: `http://localhost:8080/heartclick`,
   });
@@ -189,20 +189,10 @@ const PostRightContents = ({
   const timeAgo = calcTimeAgo(item);
 
   const handleHeart = () => {
-    //찜 취소
-    if (heart) {
-      executePost({
-        url: "http://localhost:8080/heartclick",
-        data: { mode: "remove", userId: 1, postId: postId },
-      });
-    }
-    //찜 등록
-    else if (!heart) {
-      executePost({
-        url: "http://localhost:8080/heartclick",
-        data: { mode: "add", userId: 1, postId: postId },
-      });
-    }
+    executePost({
+      url: "http://localhost:8080/heartclick",
+      data: { heart, userId: 1, postId },
+    });
     setHeart(!heart);
   };
 

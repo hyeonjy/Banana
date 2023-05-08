@@ -87,12 +87,6 @@ const useAxios = ({
     [method, url, axiosInstance]
   );
 
-  // useEffect(() => {
-  //   if (method === "get") {
-  //     fetchData();
-  //   }
-  // }, [trigger]);
-
   return { response, error, loading, executePost, executeGet, refetch };
 };
 

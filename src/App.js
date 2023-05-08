@@ -71,14 +71,15 @@ function App() {
   const [posts, setPosts] = useRecoilState(postData);
   const { response, loading, error, executeGet } = useAxios({
     method: "get",
-    url: "http://localhost:8080/data",
+    url: "http://localhost:8080/data/last",
   });
 
   useEffect(() => {
     executeGet();
   }, []);
   useEffect(() => {
-    if (!loading) {
+    console.log(response, loading, error);
+    if (!loading && !error && response) {
       console.log(response);
       setPosts(response);
     }
@@ -87,10 +88,18 @@ function App() {
     <>
       <GlobalStyle />
       <BrowserView>
-        {loading ? <span>loading...</span> : <DeskTopRouter />}
+        {loading || error || posts.length === 0 ? (
+          <span>loading...</span>
+        ) : (
+          <DeskTopRouter />
+        )}
       </BrowserView>
       <MobileView>
-        {loading ? <span>loading...</span> : <MobileRouter />}
+        {loading || error || posts.length === 0 ? (
+          <span>loading...</span>
+        ) : (
+          <MobileRouter />
+        )}
       </MobileView>
     </>
   );
