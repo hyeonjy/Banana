@@ -27,10 +27,16 @@ function Mshare() {
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
 
-  const { response, loading, error } = useAxios({
+  const { response, loading, error, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/${userId}`,
   });
+
+  useEffect(() => {
+    //refetch();
+    executeGet();
+  }, []);
+
   useEffect(() => {
     // axios
     //   .get("http://localhost:8080/data")
