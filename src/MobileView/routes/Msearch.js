@@ -11,6 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HomeMenu from "../components/HomeMenu";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
+import useAxios from "../../useAxio";
+import { useEffect } from "react";
 const SearchContainer = styled.div``;
 const SerchForm = styled.form`
   width: calc(93% - 20px);
@@ -40,11 +42,30 @@ function Msearch() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content");
-  const response = useRecoilValue(postData);
-  const searchItem = response.filter(
-    (item) =>
-      item.title.includes(searchValue) || item.content.includes(searchValue)
-  );
+  const [searchItem, setSearchItem] = useState();
+  const [index, setIndex] = useState(0);
+
+  const { response, loading, error, refetch, executeGet } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/searchdata/${searchValue}/${index}`,
+  });
+
+  useEffect(() => {
+    //refetch();
+    console.log("useeffect!!");
+    executeGet();
+  }, [searchValue, index]);
+
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    if (!loading) {
+      setSearchItem(response);
+    }
+    console.log(loading);
+  }, [response, loading, error, searchItem]);
   const history = useHistory();
 
   //검색 후 search input의 커서가 계속 깜박이는 문제() -> 전체 컴포넌트 렌더링
@@ -95,7 +116,17 @@ function Msearch() {
         </SerchForm>
       </Header>
 
-      <ShowItemFn item={searchItem} pad={true} padBottom={true} query={true} />
+      {/* 조회수 |  버튼 클릭 => setQuery(1) */}
+
+      {searchItem && (
+        <ShowItemFn
+          item={searchItem}
+          pad={true}
+          padBottom={true}
+          query={true}
+          setIndex={setIndex}
+        />
+      )}
       <HomeMenu />
     </SearchContainer>
   );
