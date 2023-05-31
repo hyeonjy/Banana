@@ -46,7 +46,7 @@ export function MobileRouter() {
           <Mmypage />
         </Route>
 
-        <Route exact path="/mypage/basket">
+        <Route exact path="/mypage/basket/:userId">
           <Mbasket />
         </Route>
 
@@ -73,7 +73,7 @@ export function MobileRouter() {
           <Region />
         </Route>
 
-        <Route exact path="/review">
+        <Route exact path="/review/:userId">
           <MReview />
         </Route>
 
