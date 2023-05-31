@@ -1,5 +1,6 @@
-const HOST_IP = "172.30.1.46"; //커나
-//const HOST_IP= "172.16.61.69"; //세종
+// const HOST_IP = "172.30.72.97"; //스벅
+//const HOST_IP = "172.30.1.46"; //커나
+const HOST_IP = "172.16.61.69"; //세종
 
 /*서버 연동 */
 const express = require("express");
@@ -86,7 +87,7 @@ app.get("/searchdata/:searchkey/:sort", function (req, res) {
       break;
   }
   const searchkey = req.params.searchkey;
-  console.log("sort: , type: ", sort, typeof sort);
+  // console.log("sort: , type: ", sort, typeof sort);
   const connection = mysql.createConnection({
     host: HOST_IP,
     user: "banana",
@@ -118,6 +119,100 @@ app.get("/searchdata/:searchkey/:sort", function (req, res) {
       connection.end();
     }
   );
+});
+
+app.get("/main/:main/:sort", function (req, res) {
+  let option = null;
+  const sort = req.params.sort;
+  const main = req.params.main;
+
+  switch (sort) {
+    case "1":
+      option = "hits";
+      break;
+    case "2":
+      option = "heart";
+      break;
+    default:
+      option = "post_date";
+      break;
+  }
+
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const mainSQL = `
+  SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+  FROM post p
+  LEFT JOIN (
+  SELECT t.img_id, t.fk_post_id, t.img_src
+  FROM post_img t
+  WHERE t.img_id = (
+  SELECT MIN(img_id)
+  FROM post_img
+  WHERE fk_post_id = t.fk_post_id
+  )
+  ) AS pi_id ON p.post_id = pi_id.fk_post_id 
+  WHERE p.main_category='${main}'
+  ORDER BY ${option} DESC; `;
+  connection.query(mainSQL, (error, result) => {
+    if (error) throw error;
+    else {
+      res.json(result);
+    }
+    connection.end();
+  });
+});
+app.get("/sub/:sub/:sort", function (req, res) {
+  let option = null;
+  const sort = req.params.sort;
+  const sub = req.params.sub;
+  switch (sort) {
+    case "1":
+      option = "hits";
+      break;
+    case "2":
+      option = "heart";
+      break;
+    default:
+      option = "post_date";
+      break;
+  }
+  // console.log(option);
+  // console.log(sub);
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const mainSQL = `
+  SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+  FROM post p
+  LEFT JOIN (
+  SELECT t.img_id, t.fk_post_id, t.img_src
+  FROM post_img t
+  WHERE t.img_id = (
+  SELECT MIN(img_id)
+  FROM post_img
+  WHERE fk_post_id = t.fk_post_id
+  )
+  ) AS pi_id ON p.post_id = pi_id.fk_post_id 
+  WHERE p.sub_category='${sub}'
+  ORDER BY ${option} DESC;
+  `;
+  connection.query(mainSQL, (error, result) => {
+    if (error) throw error;
+    else {
+      res.json(result);
+    }
+    connection.end();
+  });
 });
 
 app.get("/postdata/:postId", function (req, res) {
@@ -212,29 +307,80 @@ app.get("/userpage/data/:userId", function (req, res) {
   LEFT JOIN post_img as pi
   ON select_thum.fk_post_id = pi.fk_post_id AND select_thum.min_img_id = pi.img_id
   WHERE p.fk_user_id = ${userId};`;
+  const query3 = `SELECT r.*, u.nickname, u.profile
+  FROM review r
+  JOIN USER u ON r.fk_review_writer_id = u.user_id
+  WHERE r.fk_review_receiver_id = ${userId};`;
+  // const query3 = `SELECT * FROM review r
+  // WHERE r.fk_review_receiver_id = ${userId}; `;
   function getUserAndPosts() {
     return new Promise((resolve, reject) => {
-      connection.query(query1 + query2, (error, results) => {
+      connection.query(query1 + query2 + query3, (error, results) => {
         if (error) {
           reject(error);
         } else {
-          //console.log("results :", results);
           const user = results[0][0];
           const posts = results[1];
-          resolve({ user, posts });
+          const reviews = results[2];
+          // console.log("reviews :", reviews);
+          resolve({ user, posts, reviews });
         }
       });
     });
   }
 
   getUserAndPosts()
-    .then(({ user, posts }) => {
-      res.json({ user, posts });
+    .then(({ user, posts, reviews }) => {
+      res.json({ user, posts, reviews });
     })
     .catch((error) => {
       throw error;
     });
 });
+
+app.get("/userpage/heartdata/:userId", function (req, res) {
+  const userId = req.params.userId;
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const query = `SELECT p.*, pi.img_src, h.heart_id
+  FROM heart h
+  LEFT JOIN post p ON h.fk_post_id = p.post_id
+  LEFT JOIN (
+    SELECT fk_post_id, MIN(img_id) AS min_img_id
+    FROM post_img
+    GROUP BY fk_post_id
+  ) AS min_img ON p.post_id = min_img.fk_post_id
+  LEFT JOIN post_img PI ON min_img.fk_post_id = pi.fk_post_id AND min_img.min_img_id = pi.img_id
+  WHERE h.fk_user_id = ${userId}
+  ORDER BY h.heart_id DESC`;
+
+  function getUserAndPosts() {
+    return new Promise((resolve, reject) => {
+      connection.query(query, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          const posts = results;
+          resolve({ posts });
+        }
+      });
+    });
+  }
+
+  getUserAndPosts()
+    .then(({ posts }) => {
+      res.json({ posts });
+    })
+    .catch((error) => {
+      throw error;
+    });
+});
+
 app.post("/heartclick", (req, res) => {
   const connection = mysql.createConnection({
     host: HOST_IP,
@@ -244,7 +390,7 @@ app.post("/heartclick", (req, res) => {
     multipleStatements: true,
   });
   const { heart, userId, postId } = req.body;
-  console.log("heart:", heart);
+  // console.log("heart:", heart);
   const addQuery = `INSERT INTO mydatabase.heart (fk_user_id, fk_post_id) VALUES (${userId}, ${postId})`;
   const removeQuery = `DELETE FROM mydatabase.heart WHERE fk_user_id=${userId} AND fk_post_id=${postId} `;
   if (heart) {
@@ -257,6 +403,32 @@ app.post("/heartclick", (req, res) => {
     });
   } else if (!heart) {
     connection.query(addQuery, (error, result) => {
+      if (error) throw error;
+      else {
+        res.sendStatus(200);
+      }
+      connection.end();
+    });
+  } else {
+    res.sendStatus(500);
+  }
+});
+
+app.post("/stateChange", (req, res) => {
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const { state, postId } = req.body;
+  // console.log("state:", state);
+  const stateUpdateQuery = `UPDATE post
+  SET state = ${state}
+  WHERE post_id = ${postId};`;
+  if (state !== null) {
+    connection.query(stateUpdateQuery, (error, result) => {
       if (error) throw error;
       else {
         res.sendStatus(200);

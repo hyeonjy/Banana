@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
@@ -26,6 +26,7 @@ import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
+import useAxios from "../../useAxio";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -68,24 +69,48 @@ function SubGroup() {
       item.sub_category === categoryValue &&
       item.main_category === mainGroup.main
   );
-
+  const [subItem, setSubItem] = useState(subItems);
   const [currentIdx, setCurrentIdx] = useState(
     mainGroup.sub.indexOf(categoryValue)
   );
 
   //페이지네이션
-  const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
-    searchParams,
-    subItems
-  );
+  // const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
+  //   searchParams,
+  //   subItems
+  // );
+  const pageValue = searchParams.get("page");
+  const [currentPage, setCurrentPage] = useState(Number(pageValue));
+  const [count, setCount] = useState();
   const postPerPage = 12; // 한 페이지 아이템 수
+
+  const [currentQuery, setCurrentQuery] = useState(0);
+  const history = useHistory();
+
+  function changeQuery(index) {
+    const searchParams = new URLSearchParams(location.search);
+    setCurrentQuery(index);
+    searchParams.set("query", index);
+    history.push({ search: searchParams.toString() });
+  }
+  const { response, loading, error, executeGet } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/sub/${categoryValue}/${currentQuery}`,
+  });
+
+  useEffect(() => {
+    if (!loading && !error) {
+      setSubItem(response);
+      setCurrentIdx(mainGroup.sub.indexOf(categoryValue));
+      setCurrentPage(Number(pageValue));
+      setCount(response.length);
+    }
+  }, [response, loading, error]);
 
   //강제 렌더링
   useEffect(() => {
-    setCurrentIdx(mainGroup.sub.indexOf(categoryValue));
-    setCurrentPage(Number(pageValue));
-    setCount(subItems.length);
-  }, [categoryValue]);
+    executeGet();
+  }, [categoryValue, currentQuery]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -147,7 +172,15 @@ function SubGroup() {
 
                 <QueryUl>
                   {queryArray.map((query, index) => (
-                    <QueryLi key={index}>{query}</QueryLi>
+                    <QueryLi
+                      key={index}
+                      onClick={() => {
+                        changeQuery(index);
+                      }}
+                      isActive={index === currentQuery}
+                    >
+                      {query}
+                    </QueryLi>
                   ))}
                 </QueryUl>
               </CurrentCateAndQuery>
@@ -155,7 +188,7 @@ function SubGroup() {
               {/*Item List */}
               <ItemDiv>
                 <ShowItem
-                  item={subItems.slice(
+                  item={subItem.slice(
                     postPerPage * (currentPage - 1),
                     postPerPage * (currentPage - 1) + postPerPage
                   )}
