@@ -1,8 +1,11 @@
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { ShowItemFn } from "../components/ShowItem";
 import { BackIcon, Header } from "./MUpload";
+import { useState } from "react";
+import useAxios from "../../useAxio";
+import { useEffect } from "react";
 
 const Container = styled.div``;
 
@@ -132,22 +135,58 @@ const basketList = [
 ];
 
 function Mbasket() {
+  const location = useLocation();
   const history = useHistory();
+  const { userId } = useParams();
+
+  const [postItem, setPostItem] = useState();
+  const [user, setUser] = useState();
+  const [userPosts, setUserPosts] = useState();
+
+  const { response, loading, error, executeGet } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/userpage/heartdata/${userId}`,
+  });
+
+  useEffect(() => {
+    //refetch();
+    executeGet();
+  }, []);
+
+  useEffect(() => {
+    // axios
+    //   .get("http://localhost:8080/data")
+    //   .then((response) => console.log(response.data))
+    //   .catch((error) => console.error(error));
+    if (!loading) {
+      console.log("basket:", response);
+      setUserPosts(response.posts);
+      // console.log("postItem:", postItem);
+    }
+    console.log(loading);
+    //console.log(error);
+  }, [response, loading, error]);
 
   return (
     <Container>
-      {/* 찜 목록 헤더 */}
-      <Header style={{ position: "fixed", top: "0" }}>
-        <BackIcon
-          onClick={() => {
-            history.goBack();
-          }}
-          icon={faChevronLeft}
-        />
-        <span>찜 목록</span>
-      </Header>
-      {/* 찜 리스트*/}
-      <ShowItemFn item={basketList} pad={true} />
+      {/* 찜 리스트 */}
+      {userPosts ? (
+        <>
+          {/* 찜목록 헤더 */}
+          <Header style={{ position: "fixed", top: "0" }}>
+            <BackIcon
+              onClick={() => {
+                history.goBack();
+              }}
+              icon={faChevronLeft}
+            />
+            <span>찜 목록</span>
+          </Header>
+          <ShowItemFn item={userPosts} pad={true} />
+        </>
+      ) : (
+        <h1>loading...</h1>
+      )}
     </Container>
   );
 }

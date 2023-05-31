@@ -73,6 +73,7 @@ function MProfileReview() {
   // const [shareItem, setShareItem] = useState();
   const [user, setUser] = useState();
   const [userPost, setUserPosts] = useState();
+  const [reviews, setReviews] = useState();
 
   const { response, loading, error, executeGet } = useAxios({
     method: "get",
@@ -93,6 +94,7 @@ function MProfileReview() {
       console.log("share:", response);
       setUser(response.user);
       setUserPosts(response.posts);
+      setReviews(response.reviews);
       // console.log("postItem:", postItem);
     }
     console.log(loading);
@@ -129,7 +131,7 @@ function MProfileReview() {
           />
           <span>프로필</span>
         </DHeader>
-        {userPost ? (
+        {userPost && reviews ? (
           <>
             <User
               img={user.profile}
@@ -142,11 +144,21 @@ function MProfileReview() {
             <ItemBox>
               <Link to={`/share/${user.user_id}`}>
                 <ItemHeader>
-                  <h1>나눔물품</h1>
+                  <h1>나눔물품 profile</h1>
                   <ItemIcon icon={faChevronRight} />
                 </ItemHeader>
-                <ShowItemFn item={userPost} profile="true" />
               </Link>
+              <ShowItemFn item={userPost} profile="true" />
+            </ItemBox>
+
+            <ItemBox style={{ marginBottom: "100px" }}>
+              <Link to={`/review/${user.user_id}`}>
+                <ItemHeader>
+                  <h1>나눔후기</h1>
+                  <ItemIcon icon={faChevronRight} />
+                </ItemHeader>
+              </Link>
+              <ShowReview reviews={reviews} profile="true" />
             </ItemBox>
           </>
         ) : (
