@@ -97,8 +97,9 @@ export const ProductDetail = styled.span`
 
 const More = (props) => {
   const location = useLocation();
+  const newItem = useRecoilValue(postData);
+  const [data, setData] = useState(); // 최신순
 
-  const [data, setData] = useState(useRecoilValue(postData));
   //const searchItem = location.state?.object; //new or hot의 object item 저장
   const searchParams = new URLSearchParams(location.search);
   const typeValue = searchParams.get("type"); // type이  new or hot 인지 확인
@@ -109,17 +110,17 @@ const More = (props) => {
   });
   useEffect(() => {
     if (typeValue === "hot") {
-      console.log(typeValue);
       executeGet();
       // hot일 경우 -> 조회순 rank top 20 -> 서버 (정렬 요청)
+    } else if (typeValue === "new") {
+      setData(newItem);
     }
     // else (new) 최신순 -> app.js에서 recoil로 저장한 최신순 데이터 그대로
   }, []);
 
   useEffect(() => {
     if (response && !error) {
-      setData(data);
-      console.log(data);
+      setData(response);
     }
   }, [loading]);
 
@@ -131,7 +132,7 @@ const More = (props) => {
           : "실시간 베스트 상품!"}
       </MoreTitle>
       <ProductsBox as="ul">
-        <ShowItem item={data.slice(0, 12)} responsive={true} />
+        {data && <ShowItem item={data.slice(0, 12)} responsive={true} />}
       </ProductsBox>
     </Container>
   );

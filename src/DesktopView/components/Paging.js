@@ -52,32 +52,29 @@ const ArrowIcon = styled(FontAwesomeIcon)`
   font-size: 15px;
   color: gray;
 `;
-export function SetPage(searchParams, searchItem) {
-  const pageValue = searchParams.get("page"); // id( = main category)
-  const [count, setCount] = useState(searchItem.length); // 전체 아이템 개수
-  const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
-  return { pageValue, count, setCount, currentPage, setCurrentPage };
-}
+// export function SetPage(searchParams, searchItem) {
+//   const pageValue = searchParams.get("page"); // id( = main category)
+//   console.log(searchItem);
+//   const [count, setCount] = useState(searchItem); // 전체 아이템 개
+//   const [currentPage, setCurrentPage] = useState(Number(pageValue)); // 현재 페이지 번호
+//   return { pageValue, count, setCount, currentPage, setCurrentPage };
+// }
 
-const Paging = ({ page, count, setCurrentPage, postPerPage }) => {
+const Paging = ({ currentPage, count, setCurrentPage, postPerPage }) => {
   const location = useLocation();
   const history = useHistory();
   const setPage = (page) => {
-    // 페이지 별 url query string
     setCurrentPage(page);
     const queryParams = new URLSearchParams(location.search);
     queryParams.set("page", page);
     history.push({ search: queryParams.toString() });
-  };
-  useEffect(() => {
-    //페이지 이동마다 스크롤 초기화
     window.scrollTo(0, 0);
-  }, [page]);
+  };
 
   return (
     <PaginationDiv>
       <PageNationItem
-        activePage={page}
+        activePage={currentPage}
         itemsCountPerPage={postPerPage}
         totalItemsCount={count}
         pageRangeDisplayed={5}

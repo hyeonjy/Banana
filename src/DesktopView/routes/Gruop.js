@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { Container } from "./Home";
 import NoItem from "../components/NoItem";
 import SideNav from "../components/SideNav";
 
-import Paging, { SetPage } from "../components/Paging";
+import Paging from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
+import useAxios from "../../useAxio";
 
 export const WrapDiv = styled(Container)`
   justify-content: space-evenly;
@@ -107,6 +108,7 @@ export const QueryLi = styled.li`
     font-weight: 700;
   }
   cursor: pointer;
+  font-weight: ${(props) => (props.isActive ? "800" : "500")};
 `;
 
 //--------Item List-------//
@@ -147,20 +149,45 @@ function Group() {
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
   //현재 cate에 해당하는 item
-  const cateItem = data.filter((item) => item.main_category === Group.main);
-
-  //페이지네이션
-  const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
-    searchParams,
-    cateItem
+  const [cateItem, setCateItem] = useState(
+    data.filter((item) => item.main_category === Group.main)
   );
+  //페이지네이션
+  const pageValue = searchParams.get("page");
+  const [currentPage, setCurrentPage] = useState(Number(pageValue));
+  const [count, setCount] = useState();
+
   const postPerPage = 12; // 한 페이지 아이템 수
+
+  const history = useHistory();
+  const [currentQuery, setCurrentQuery] = useState(0);
+  function changeQuery(index) {
+    const searchParams = new URLSearchParams(location.search);
+    setCurrentQuery(index);
+    searchParams.set("query", index);
+    history.push({ search: searchParams.toString() });
+  }
+  const { response, loading, error, executeGet } = useAxios({
+    method: "get",
+    url: `http://localhost:8080/main/${Group.main}/${currentQuery}`,
+  });
 
   //강제 렌더링
   useEffect(() => {
     setCurrentPage(Number(pageValue));
     setCount(cateItem.length);
   }, [categoryValue]);
+
+  useEffect(() => {
+    executeGet();
+  }, [currentQuery]);
+
+  useEffect(() => {
+    if (!loading && !error) {
+      console.log(response);
+      setCateItem(response);
+    }
+  }, [response, loading, error]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -197,7 +224,15 @@ function Group() {
                 {/*Query*/}
                 <QueryUl>
                   {queryArray.map((query, index) => (
-                    <QueryLi key={index}>{query}</QueryLi>
+                    <QueryLi
+                      key={index}
+                      onClick={() => {
+                        changeQuery(index);
+                      }}
+                      isActive={index === currentQuery}
+                    >
+                      {query}
+                    </QueryLi>
                   ))}
                 </QueryUl>
               </CurrentCateAndQuery>
