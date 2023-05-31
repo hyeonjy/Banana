@@ -33,6 +33,7 @@ const useAxios = ({
 
   const executeGet = useCallback(async () => {
     console.log("executeGet!!");
+    console.log("url:", url);
     try {
       setResponse(null);
       setError(null);
