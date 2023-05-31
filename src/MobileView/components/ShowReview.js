@@ -56,10 +56,10 @@ function ShowReview({ pad, reviews, profile = "false" }) {
             return (
               <ReviewBox key={index}>
                 <Header>
-                  <img src={require(`../../Img/${review.src}`)} />
-                  <h1>{review.id}</h1>
+                  <img src={require(`../../Img/${review.profile}`)} />
+                  <h1>{review.nickname}</h1>
                 </Header>
-                <Content>{review.content}</Content>
+                <Content>{review.review_content}</Content>
               </ReviewBox>
             );
           })}

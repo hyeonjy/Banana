@@ -145,12 +145,14 @@ function Mmypage() {
               <MainSpan>나눔목록</MainSpan>
             </MainDiv>
           </Link>
-          <MainDiv>
-            <MainCircle>
-              <MainIcon icon={faCartShopping} />,
-            </MainCircle>
-            <MainSpan>찜목록</MainSpan>
-          </MainDiv>
+          <Link to={`/mypage/basket/${1}`}>
+            <MainDiv>
+              <MainCircle>
+                <MainIcon icon={faCartShopping} />,
+              </MainCircle>
+              <MainSpan>찜목록</MainSpan>
+            </MainDiv>
+          </Link>
           <MainDiv
             onClick={() => {
               history.push("/login");
