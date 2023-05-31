@@ -76,6 +76,7 @@ function App() {
 
   useEffect(() => {
     executeGet();
+    console.log("app.js");
   }, []);
   useEffect(() => {
     console.log(response, loading, error);

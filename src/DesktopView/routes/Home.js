@@ -1,11 +1,7 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import Nav from "../components/Nav";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFire, faN } from "@fortawesome/free-solid-svg-icons";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Banner from "../components/Banner";
-
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { ItemObj } from "../../Data/ItemObj";
@@ -140,33 +136,12 @@ function mergeObjects(left, right, key) {
 
 function Home() {
   const history = useHistory();
-  const [newList, setNewList] = useState([...ItemObj]);
-  const [hotList, setHotList] = useState([...ItemObj]);
-
-  //최신상품과 인기상품 List 저장
-  useEffect(() => {
-    let length = ItemObj.length > 25 ? 25 : ItemObj.length;
-
-    /**New는 최신순으로 slice만 진행 */
-    setNewList(newList.slice(0, length));
-    /**hot은 heart 순으로 정렬 */
-    setHotList(
-      hotList
-        .sort(function (a, b) {
-          return Number(b.meta.heart) - Number(a.meta.heart);
-        })
-        .slice(0, length)
-    );
-  }, []);
 
   const handleImageClick = (type, object) => {
     const searchParams = new URLSearchParams();
     searchParams.append("type", type);
     history.push({
       pathname: "/more",
-      state: {
-        object,
-      },
       search: "?" + searchParams.toString(),
     });
   };
@@ -204,9 +179,7 @@ function Home() {
           <ProductsBox>
             <ShowItem item={lastItem} />
           </ProductsBox>
-          <MoreBtn onClick={() => handleImageClick("new", newList)}>
-            더보기
-          </MoreBtn>
+          <MoreBtn onClick={() => handleImageClick("new")}>더보기</MoreBtn>
         </Products>
 
         {/* Hot 상품 리스트 */}
@@ -215,9 +188,7 @@ function Home() {
           <ProductsBox>
             <ShowItem item={sortedItemByHits} />
           </ProductsBox>
-          <MoreBtn onClick={() => handleImageClick("hot", hotList)}>
-            더보기
-          </MoreBtn>
+          <MoreBtn onClick={() => handleImageClick("hot")}>더보기</MoreBtn>
         </Products>
       </Container>
     </>

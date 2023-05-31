@@ -135,10 +135,12 @@ function MyPage() {
   // 패치
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
+  const [heartPosts, setHeartPosts] = useState();
   const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/1`,
   });
+
   useEffect(() => {
     executeGet();
   }, []);
@@ -221,7 +223,7 @@ function MyPage() {
 
               <Switch>
                 <Route path="/mypage/heart">
-                  <HeartList item={userPosts} />
+                  <HeartList />
                 </Route>
                 <Route path="/mypage/share">
                   <ShareList item={userPosts} />
