@@ -1,7 +1,8 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { ShowItem } from "./ShowItem";
 import { useLocation } from "react-router-dom";
-import Paging, { SetPage } from "./Paging";
+import Paging from "./Paging";
 
 export const PageContainer = styled.div`
   background-color: #f5f5f594;
@@ -33,15 +34,20 @@ export const NavTitle = styled.h4`
   font-size: 17px;
 `;
 
-function MypageContents({ item }) {
+function MypageContents({ item, cate }) {
   //페이지네이션
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const { currentPage, setCurrentPage, count } = SetPage(searchParams, item);
   const postPerPage = 8; // 한 페이지 아이템 수
+  const pageValue = searchParams.get("page");
+  const [currentPage, setCurrentPage] = useState(Number(pageValue));
+  const [count, setCount] = useState(item.length);
+
   return (
     <PageContainer>
-      <NavTitle>찜 목록 ({item.length})</NavTitle>
+      <NavTitle>
+        {cate} 목록 ({item.length})
+      </NavTitle>
       <div style={{ minHeight: "430px" }}>
         <ItemWrap>
           {item ? (
@@ -59,7 +65,7 @@ function MypageContents({ item }) {
       </div>
 
       <Paging
-        page={currentPage}
+        currentPage={currentPage}
         count={count}
         setCurrentPage={setCurrentPage}
         postPerPage={postPerPage}
