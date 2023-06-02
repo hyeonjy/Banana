@@ -125,6 +125,30 @@ const queryItem = ["최신등록순", "조회순", "관심순"];
 // query : query block 존재 여부
 
 // const [postItem, setPostItem] = useState();
+export function calcTimeAgo(item) {
+  const datetime = new Date(item.post_date);
+  const now = new Date();
+  const diffInMs = now - datetime;
+  const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+  let timeago = null;
+  if (diffInMinutes < 60) {
+    timeago = `${diffInMinutes}분 전`;
+  } else if (diffInMinutes < 60 * 24) {
+    timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
+  } else if (diffInMinutes < 60 * 24 * 365) {
+    let time = Math.floor(diffInMinutes / (60 * 24));
+    if (time >= 30) {
+      time = time / 30;
+      timeago = `${Math.floor(time)}달 전`;
+    } else {
+      timeago = `${time}일 전`;
+    }
+  } else {
+    timeago = `${Math.floor(diffInMinutes / (60 * 24 * 365))}년 전`;
+  }
+
+  return timeago;
+}
 
 export function ShowItemFn({
   item,
@@ -179,18 +203,7 @@ export function ShowItemFn({
           )}
 
           {item.map((item, index) => {
-            const datetime = new Date(item.post_date);
-            const now = new Date();
-            const diffInMs = now - datetime;
-            const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-            let timeago = null;
-            if (diffInMinutes < 60) {
-              timeago = `${diffInMinutes}분 전`;
-            } else if (diffInMinutes < 60 * 24) {
-              timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
-            } else {
-              timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
-            }
+            const timeAgo = calcTimeAgo(item);
             return (
               <Link to={`/post/${item.post_id}`} key={index}>
                 <Item>
@@ -218,7 +231,7 @@ export function ShowItemFn({
                     >
                       <div>
                         <ItemArea>{item.area}</ItemArea>
-                        <ItemTimeAgo>{timeago}</ItemTimeAgo>
+                        <ItemTimeAgo>{timeAgo}</ItemTimeAgo>
                       </div>
                     </div>
                   </ItemText>
