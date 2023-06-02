@@ -193,7 +193,13 @@ export function calcTimeAgo(item) {
   } else if (diffInMinutes < 60 * 24) {
     timeago = `${Math.floor(diffInMinutes / 60)}시간 전`;
   } else if (diffInMinutes < 60 * 24 * 365) {
-    timeago = `${Math.floor(diffInMinutes / (60 * 24))}일 전`;
+    let time = Math.floor(diffInMinutes / (60 * 24));
+    if (time >= 30) {
+      time = time / 30;
+      timeago = `${Math.floor(time)}달 전`;
+    } else {
+      timeago = `${time}일 전`;
+    }
   } else {
     timeago = `${Math.floor(diffInMinutes / (60 * 24 * 365))}년 전`;
   }
@@ -285,10 +291,10 @@ export function ShowReview({ reviews }) {
       {reviews.map((item, index) => (
         <EachReview as="div" key={index}>
           <ReviewUserInfo>
-            <UserImg src={require(`../../Img/${item.src}`)} />
-            <span>{item.id}</span>
+            <UserImg src={require(`../../Img/${item.profile}`)} />
+            <span>{item.nickname}</span>
           </ReviewUserInfo>
-          <ReviewContent>{item.content}</ReviewContent>
+          <ReviewContent>{item.review_content}</ReviewContent>
         </EachReview>
       ))}
     </>
