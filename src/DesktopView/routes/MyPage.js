@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSeedling } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -7,12 +6,6 @@ import Modal, { GradeIcon, gradeList } from "../../Modal";
 import Review from "./Review";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
-import { LoginId, UserObj } from "../../Data/UserObj";
-
-import nuts from "../../Img/nuts.png";
-import sprout from "../../Img/sprout.png";
-import treeGrade from "../../Img/tree-grade.png";
-import bananaGrade from "../../Img/banana-grade.png";
 import useAxios from "../../useAxio";
 
 const Container = styled.div`
@@ -135,7 +128,8 @@ function MyPage() {
   // 패치
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
-  const [heartPosts, setHeartPosts] = useState();
+
+  const [reviews, setReviews] = useState();
   const { response, loading, error, refetch, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/1`,
@@ -148,6 +142,7 @@ function MyPage() {
     if (!loading) {
       setUser(response.user);
       setUserPosts(response.posts);
+      setReviews(response.reviews);
     } else {
       if (error) {
         console.log("error:", error);
@@ -229,7 +224,7 @@ function MyPage() {
                   <ShareList item={userPosts} />
                 </Route>
                 <Route path="/mypage/review">
-                  <Review />
+                  <Review reviews={reviews} />
                 </Route>
               </Switch>
             </ContentDiv>
