@@ -163,19 +163,31 @@ const PostRightContents = ({
   heart,
   setHeart,
 }) => {
+  const { executePost: executeChangeState } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/stateChange`,
+  });
+
+  const { executePost } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/heartclick`,
+  });
+
   const history = useHistory();
   const { postId } = useParams();
   //나눔 상태 변경
   const [SelectedState, setSelected] = useState(item.state);
   const handleChangeSelect = (e) => {
+    executeChangeState({
+      url: `http://localhost:8080/stateChange`,
+      data: { postId, state: e.target.value },
+    });
     setSelected(e.target.value);
     item.state = SelectedState; //DB의 state 값 update
+
     alert("상태가 변경되었습니다");
   };
-  const { executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/heartclick`,
-  });
+
   //채팅으로 이동
   // const handleChatClick = (postWriter, postId) => {
   //   const searchParams = new URLSearchParams();

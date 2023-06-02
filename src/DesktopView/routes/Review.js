@@ -6,7 +6,6 @@ import {
   PageContainer,
   NoItemPage,
 } from "../components/MypageContents";
-import { LoginId, UserObj } from "../../Data/UserObj";
 import styled from "styled-components";
 import { ShowReview } from "../components/ShowItem";
 import { useState } from "react";
@@ -17,16 +16,16 @@ export const ReviewWrap = styled(ItemWrap)`
   padding-left: 10px;
 `;
 
-function Review() {
-  const currentUserObj = UserObj.find((user) => user.id === LoginId);
-  const reviews = currentUserObj.reviews;
+function Review({ reviews }) {
+  // const currentUserObj = UserObj.find((user) => user.id === LoginId);
+  // const reviews = currentUserObj.reviews;
 
   //페이지네이션
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(reviews.length);
 
   const postPerPage = 5; // 한 페이지 아이템 수
   return (
