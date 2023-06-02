@@ -90,57 +90,59 @@ function Search() {
 
   return (
     <>
-      {searchItem && (
-        <SearchContainer>
-          <SearchHeader>
-            <span>
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-              <span className="border">"{searchValue}"</span>에 대한 검색결과 -
-              ({searchItem.length})
-            </span>
-          </SearchHeader>
-          <QueryDiv style={{ marginBottom: "10px" }}>
-            <SearchQueryUl as="div">
-              {queryArray.map((query, index) => (
-                <SearchQueryLi
-                  onClick={() => {
-                    changeQuery(index);
-                  }}
-                  as="div"
-                  key={index}
-                  isActive={index === currentQuery}
-                >
-                  {query}
-                </SearchQueryLi>
-              ))}
-            </SearchQueryUl>
-          </QueryDiv>
-          {searchItem && count ? (
-            searchItem.length > 0 ? (
-              <div>
-                <ProductsBox as="ul" style={{ minHeight: "450px" }}>
-                  <ShowItem
-                    item={searchItem.slice(
-                      postPerPage * (currentPage - 1),
-                      postPerPage * (currentPage - 1) + postPerPage
-                    )}
-                    responsive={true}
+      {!loading ? (
+        <>
+          {searchItem && (
+            <SearchContainer>
+              <SearchHeader>
+                <span>
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                  <span className="border">"{searchValue}"</span>에 대한
+                  검색결과 - ({searchItem.length})
+                </span>
+              </SearchHeader>
+              <QueryDiv style={{ marginBottom: "10px" }}>
+                <SearchQueryUl as="div">
+                  {queryArray.map((query, index) => (
+                    <SearchQueryLi
+                      onClick={() => {
+                        changeQuery(index);
+                      }}
+                      as="div"
+                      key={index}
+                      isActive={index === currentQuery}
+                    >
+                      {query}
+                    </SearchQueryLi>
+                  ))}
+                </SearchQueryUl>
+              </QueryDiv>
+              {searchItem.length > 0 ? (
+                <div>
+                  <ProductsBox as="ul" style={{ minHeight: "450px" }}>
+                    <ShowItem
+                      item={searchItem.slice(
+                        postPerPage * (currentPage - 1),
+                        postPerPage * (currentPage - 1) + postPerPage
+                      )}
+                      responsive={true}
+                    />
+                  </ProductsBox>
+                  <Paging
+                    currentPage={currentPage}
+                    count={count}
+                    setCurrentPage={setCurrentPage}
+                    postPerPage={postPerPage}
                   />
-                </ProductsBox>
-                <Paging
-                  currentPage={currentPage}
-                  count={count}
-                  setCurrentPage={setCurrentPage}
-                  postPerPage={postPerPage}
-                />
-              </div>
-            ) : (
-              <NoItem />
-            )
-          ) : (
-            <span>loading..</span>
+                </div>
+              ) : (
+                <NoItem />
+              )}
+            </SearchContainer>
           )}
-        </SearchContainer>
+        </>
+      ) : (
+        <span>loading..</span>
       )}
     </>
   );
