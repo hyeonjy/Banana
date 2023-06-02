@@ -26,6 +26,7 @@ import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
 import useAxios from "../../useAxio";
 import Mimages from "./Mimages";
+import { calcTimeAgo } from "../components/ShowItem";
 
 const Container = styled.div`
   background-color: white;
@@ -202,6 +203,17 @@ function MDetailpost() {
     url: `http://localhost:8080/heartclick`,
   });
 
+  const {
+    response: stateChageResponse,
+    loading: stateChageLoading,
+    error: stateChageError,
+    refetch: stateChageRefetch,
+    executePost: stateChageExecutePost,
+  } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/stateChange`,
+  });
+
   useEffect(() => {
     //refetch();
     postDataExecuteGet();
@@ -215,24 +227,14 @@ function MDetailpost() {
     if (!postDataLoading) {
       console.log("res:", postDataResponse);
       setPostItem(postDataResponse.post);
-      setIsWriter(postDataResponse.post.userId === LoginId);
+      setIsWriter(postDataResponse.post.nickname === LoginId);
       setSelected(postDataResponse.post.state);
       setHeart(postDataResponse.heart);
+      setTimeago(calcTimeAgo(postDataResponse.post));
       console.log("postItem:", postItem);
-
-      const datetime = new Date(postDataResponse.post.post_date);
-      const now = new Date();
-      const diffInMs = now - datetime;
-      const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-      if (diffInMinutes < 60) {
-        setTimeago(`${diffInMinutes}분 전`);
-      } else if (diffInMinutes < 60 * 24) {
-        setTimeago(`${Math.floor(diffInMinutes / 60)}시간 전`);
-      } else {
-        setTimeago(`${Math.floor(diffInMinutes / (60 * 24))}일 전`);
-      }
     }
     console.log(postDataLoading);
+    console.log("resonse: ", postDataResponse);
     //console.log(error);
   }, [postDataResponse, postDataLoading, postDataError, postItem]);
 
@@ -261,6 +263,10 @@ function MDetailpost() {
   // }, [SelectedState]);
 
   const handleChangeSelect = (e) => {
+    stateChageExecutePost({
+      url: "http://localhost:8080/stateChange",
+      data: { state: e.target.value, postId },
+    });
     setSelected(e.target.value);
   };
 
