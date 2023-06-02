@@ -9,6 +9,7 @@ import { itemsGroup } from "../../Data/ItemGroup";
 import area from "../../Data/Area";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import useAxios from "../../useAxio";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -201,7 +202,6 @@ function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
   const imgRef = useRef();
-  const [object, setObject] = useState({}); /**제출시 등록되는 item-object */
 
   // option 값이 바뀌면 실행되는 함수
   const optionChange = (e) => {
@@ -221,8 +221,8 @@ function Upload() {
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
+      console.log(currentImageUrl);
     }
-
     if (imageUrlLists.length > 5) {
       alert("최대 5장까지만 업로드 합니다.");
       imageUrlLists = imageUrlLists.slice(0, 5);
@@ -234,33 +234,48 @@ function Upload() {
   const handleDelete = (index) => {
     setImgFile(imgFile.filter((itme, idx) => idx !== index));
   };
-
-  // 폼 제출시 실행되는 함수 (object를 저장)
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   setObject({
-  //     imgUrl: [...imgFile],
-  //     title: event.target.title.value,
-  //     detail: event.target.area.value,
-  //     view: "0",
-  //     main: event.target.major.value,
-  //     sub: event.target.minor.value,
-  //     id: "77777",
-  //     content: event.target.content.value,
-  //   });
-  // };
-  const history = useHistory();
   const { watch, register, handleSubmit } = useForm();
+
+  const { response, loading, error, refetch, executePost } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/postwrite`,
+  });
   //form 유효할 때 실행
   const onValid = (data) => {
     console.log("onValid");
     console.log(data); // form 데이터
+
+    //data: title, content, major, minor
     console.log(imgFile); //img url 데이터
+    const formdata = new FormData();
+    formdata.append("title", data.title);
+    formdata.append("contents", data.contents);
+    formdata.append("area", data.area);
+    formdata.append("major", data.major);
+    formdata.append("minor", data.minor);
+
+    imgFile.forEach((image, index) => {
+      formdata.append(`imgFile[${index}]`, image);
+    });
+    const user = { userId: 1 };
+    formdata.append("userId", 1);
+    for (const entry of formdata.entries()) {
+      console.log(entry);
+    }
+    executePost({
+      data: formdata,
+      url: `http://localhost:8080/postwrite`,
+      config: {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    });
     alert("등록되었습니다"); // 따로 cumstom ????
     //해당 post 페이지로 이동
     //history.push("");
   };
-
+  console.log(watch("content"));
   // 이미지 썸네일 가로 스크롤
   const previewBox = useRef();
   useEffect(() => {
@@ -285,7 +300,10 @@ function Upload() {
       <Container>
         <KeySubject>게시글</KeySubject>
         {/* 폼 시작 */}
-        <CreateForm onSubmit={handleSubmit(onValid)}>
+        <CreateForm
+          encType="multipart/form-data"
+          onSubmit={handleSubmit(onValid)}
+        >
           <Box>
             {/* 카테고리 SELECT */}
             <CategoryBox>
@@ -363,13 +381,15 @@ function Upload() {
               placeholder="내용을 입력해주세요."
               maxLength={300}
               required
-              name="content"
-              {...register("content", {
+              name="contents"
+              {...register("contents", {
                 required: "내용을 작성하세요",
               })}
               style={{ position: "relative" }}
             />
-            <LetterCount>{watch("content").length} / 300</LetterCount>
+            {watch("content") && (
+              <LetterCount>{watch("content").length} / 300</LetterCount>
+            )}
           </div>
 
           {/* 카메라 아이콘과 등록 버튼 */}
