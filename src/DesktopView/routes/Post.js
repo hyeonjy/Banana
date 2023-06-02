@@ -103,7 +103,8 @@ function Post() {
     if (!loading) {
       setItem(response.post);
       setHeart(response.heart);
-      if (response.nickname === LoginId) {
+      console.log(response.post.nickname);
+      if (response.post.nickname === LoginId) {
         setIsWriter(true);
       } else {
         setIsWriter(false);

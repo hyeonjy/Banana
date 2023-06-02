@@ -54,11 +54,18 @@ const useAxios = ({
     }
   }, [method, url, axiosInstance]);
 
+  config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
   const executePost = useCallback(
-    async ({ url, data }) => {
+    async ({ url, data, config }) => {
       console.log("executePost");
       console.log("data:", data);
       console.log("url:", url);
+      console.log("config:", config);
       try {
         //setState({ data: null, loading: true, error: null });
         setResponse(null);
@@ -68,9 +75,7 @@ const useAxios = ({
           url,
           method: "post",
           options: {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            config,
           },
           data,
         });

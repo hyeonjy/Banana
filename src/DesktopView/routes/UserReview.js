@@ -69,7 +69,8 @@ function UserInfo() {
   // 패치
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
-  const { response, loading, error, refetch, executeGet } = useAxios({
+  const [reviews, setReviews] = useState();
+  const { response, loading, error, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/userpage/data/${userId}`,
   });
@@ -77,14 +78,10 @@ function UserInfo() {
     executeGet();
   }, []);
   useEffect(() => {
-    executeGet();
     if (!loading) {
       setUser(response.user);
       setUserPosts(response.posts);
-    } else {
-      if (error) {
-        console.log("error:", error);
-      }
+      setReviews(response.reviews);
     }
   }, [response, loading, error]);
 
@@ -125,10 +122,9 @@ function UserInfo() {
             </CateDiv>
             <ItemDiv>
               {/* 유저 나눔 목록 & 후기 목록 */}
-              {/*                <ShowReview reviews={reviews} /> */}
               {reviewPage ? (
-                [0, 1].length > 0 ? (
-                  <span>리뷰</span>
+                reviews ? (
+                  <ShowReview reviews={reviews} />
                 ) : (
                   <NoItem content={"후기가"}>후기가 없습니다</NoItem>
                 )
