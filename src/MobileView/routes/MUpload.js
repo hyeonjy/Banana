@@ -15,6 +15,7 @@ import { itemsGroup } from "../../Data/ItemGroup";
 import { useState } from "react";
 import ImgUpload from "../components/ImgUpload";
 import { useEffect } from "react";
+import useAxios from "../../useAxio";
 const UploadContainer = styled.div`
   font-size: 14px;
 `;
@@ -121,6 +122,11 @@ function MUpload() {
     clearErrors,
   } = useForm();
 
+  const { response, loading, error, refetch, executePost } = useAxios({
+    method: "post",
+    url: `http://localhost:8080/postwrite`,
+  });
+
   const [currentCate, setCurrentCate] = useState();
   const [showImages, setShowImages] = useState([]); // 업로드 이미지 url 배열 - react-hook-formr과 분리(추가 업로드 문제)
   const [btnClick, setBtnClick] = useState(false); // 등록 버튼을 누른 후에 error 출력
@@ -140,6 +146,10 @@ function MUpload() {
     console.log(showImages); //img url 데이터
     alert("등록되었습니다"); // 따로 cumstom ????
     //해당 post 페이지로 이동
+    executePost({
+      url: "http://localhost:8080/postwrite",
+      data: { data, imgs: showImages, userId: 1 },
+    });
   };
 
   return (
@@ -168,7 +178,7 @@ function MUpload() {
           {/* 메인 카테고리 */}
           <div style={{ display: "flex" }}>
             <SelectCategory
-              {...register("categoryMain", {
+              {...register("major", {
                 required: "카테고리를 선택은 필수입니다",
               })}
               onChange={(e) => {
@@ -186,7 +196,7 @@ function MUpload() {
 
             {/* 서브 카테고리 */}
             <SelectCategory
-              {...register("categorySub", {
+              {...register("minor", {
                 required: "하위 카테고리를 선택해주세요",
               })}
               defaultValue=""

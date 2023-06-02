@@ -1,7 +1,7 @@
 // const HOST_IP = "172.30.72.97"; //스벅
 //const HOST_IP = "172.30.1.46"; //커나
 const HOST_IP = "172.16.61.69"; //세종
-
+// const HOST_IP = "localhost";
 /*서버 연동 */
 const express = require("express");
 const path = require("path");
@@ -11,6 +11,12 @@ const router = express.Router();
 app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 
 require("dotenv").config();
+
+//이미지 업로드
+const crypto = require("crypto");
+const fs = require("fs");
+const multer = require("multer");
+app.use("/upload", express.static("upload"));
 
 // body 접근하기 위해
 app.use(express.urlencoded({ extended: true }));
@@ -425,7 +431,7 @@ app.post("/stateChange", (req, res) => {
   const { state, postId } = req.body;
   // console.log("state:", state);
   const stateUpdateQuery = `UPDATE post
-  SET state = ${state}
+  SET state = '${state}'
   WHERE post_id = ${postId};`;
   if (state !== null) {
     connection.query(stateUpdateQuery, (error, result) => {
@@ -438,6 +444,109 @@ app.post("/stateChange", (req, res) => {
   } else {
     res.sendStatus(500);
   }
+});
+function currentTime() {
+  // 현재 시간 가져오기
+  var currentDate = new Date();
+
+  // 대한민국 서울 시간으로 변환
+  var options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Seoul",
+  };
+  var seoulTime = currentDate.toLocaleString("en-US", options);
+
+  // 날짜와 시간을 원하는 형식으로 분리
+  var datePart = seoulTime.split(",")[0];
+  var timePart = seoulTime.split(",")[1].trim();
+
+  // 연도, 월, 일을 추출
+  var [month, day, year] = datePart.split("/");
+
+  // 날짜를 '0000-00-00' 형식으로 변경
+  var formattedDate = year + "-" + month + "-" + day;
+
+  // 출력
+  console.log(formattedDate + " " + timePart);
+  return formattedDate + " " + timePart;
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./upload");
+  },
+  filename: function (req, file, cb) {
+    console.log("file" + file);
+    const extension = path.extname(file.originalname);
+    const filename = `${Date.now()}${extension}`;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/postwrite", upload.array("imgFile[]", 12), (req, res) => {
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  console.log(req.files);
+  // const { data } = req.body;
+
+  // console.log(data);
+  // const filenames = [];
+
+  // for (const file of imgs) {
+  //   // const randomFilename = crypto.randomBytes(16).toString("hex") + ".jpg";
+  //   // + file.mimetype.split("/")[1];
+  //   const extension = path.extname(file.originalname);
+  //   const filename = `${Date.now()}${extension}`;
+  //   // const newFilePath = "upload/" + filename;
+  //   // fs.renameSync(file.path, newFilePath);
+  //   filenames.push(filename);
+  // }
+  // const values = filenames.map((filename) => [filename]);
+  // console.log(values);
+  // const postIdQuery = `SELECT COUNT(*) AS CNT FROM post;`;
+  // let postId = -1;
+  // connection.query(postIdQuery, (error, result) => {
+  //   if (error) throw error;
+  //   else {
+  //     postId = result[0].CNT + 1;
+  //     console.log("postIdQuery: " + result[0].CNT);
+  //   }
+  // });
+
+  const time = currentTime();
+  // const writeSQL = `
+  //   INSERT INTO mydatabase.post VALUES ('${data.title}', '${data.contents}', ${userId}, '${time}', '${data.area}', '${data.major}', '${data.minor}', 'wait', 0, 0);
+  //   `;
+  // const imgSQL = `
+  //   INSERT INTO mydatabase.post_img VALUES (${postId}, ?);
+  // `;
+
+  // connection.query(writeSQL, (error, result) => {
+  //   if (error) throw error;
+  //   else {
+  //     res.sendStatus(200);
+  //   }
+  // });
+  // connection.query(imgSQL, [values], (error, result) => {
+  //   if (error) throw error;
+  //   else {
+  //     res.sendStatus(200);
+  //   }
+  //   connection.end();
+  // });
 });
 
 app.get("*", function (request, response) {
