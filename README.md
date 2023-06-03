@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+## BANANA : 바로 나누고 나눔받자
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+(대표 이미지)
 
-## Available Scripts
+🍌 BANANA는 사용하지 않지만 가치가 있는 패션 제품을 나누는 커뮤니티 웹사이트입니다.
 
-In the project directory, you can run:
+## 0. 프로젝트 동기
+> 옷은 우리 생활에서 필수적인 요소 중 하나이지만, 옷 산업은 많은 환경 문제를 야기합니다. 
+> 섬유 제조 과정에서 발생하는 대량의 물 사용과 화학 물질 배출, 옷 생산과 소비로 인한 폐기물의 증가는 환경에 심각한 영향을 미치고 있습니다. 
+>  이에 대한 해결책 중 하나는 "재활용"과 "재사용"입니다. 
+> 입지 않은 옷을 다른 사람들과 공유하고 나눔하는 것은 환경 친화적인 소비 문화를 조성하고, 자원의 효율적인 사용을 촉진할 수 있는 좋은 방법입니다.
+> 
+> BANANA 나눔 커뮤니티로 활용함으로써 환경에 대한 인식과 관심을 높일 수 있습니다. 
+> 누구나 자신이 입지 않은 옷을 기부하고, 필요로 하는 사람들에게 나눔할 수 있는 플랫폼을 제공합니다.
 
-### `npm start`
+## 1. Contributor
+|황지나|김현지|
+|:---:|:---:|
+|<img alt="황지나" src="https://avatars.githubusercontent.com/u/101038390?v=4" height="100" width="100">|<img alt="김현지" src="https://avatars.githubusercontent.com/u/86361624?v=4" height="100" width="100">|
+|[@hwangJN](https://github.com/hwangJN)|[@hyeonjy](https://github.com/hyeonjy)|
+|wlsk401@gmail.com|hg024246@gmail.com|
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 2. 사용 기술 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<div style="display:flex">
+  <img alt="React" src="https://img.shields.io/badge/React-61DAFB.svg?&style=for-the-badge&logo=React&logoColor=black"/>
+  <img alt="styledcomponents" src="https://img.shields.io/badge/styledcomponents-DB7093.svg?&style=for-the-badge&logo=styledcomponents&logoColor=black"/>
+  <img alt="reacthookform" src="https://img.shields.io/badge/reacthookform-EC5990.svg?&style=for-the-badge&logo=reacthookform&logoColor=black"/>
+ 
+</div>
 
-### `npm test`
+<div style="display:flex">
+  <img alt="nodedotjs" src="https://img.shields.io/badge/nodedotjs-339933.svg?&style=for-the-badge&logo=nodedotjs&logoColor=black"/>
+  <img alt="mysql" src="https://img.shields.io/badge/mysql-4479A1.svg?&style=for-the-badge&logo=mysql&logoColor=black"/> 
+</div>
+<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ (예정) 
+<div style="display:flex">
+   <img alt="reactquery" src="https://img.shields.io/badge/reactquery-FF4154.svg?&style=for-the-badge&logo=reactquery&logoColor=black"/>
+  <img alt="socketdotio" src="https://img.shields.io/badge/socketdotio-010101.svg?&style=for-the-badge&logo=socketdotio&logoColor=black"/>
+<br/> 
+ <br/> 
+  
+  
+- (예정) WebSocket을 이용한 채팅 기능 구현
+- (예정) React Query & Recoil를 통한 상태관리
+- Styled-components 을 활용 컴포넌트 기반 스타일링
+- Custom Hook(useAxios)을 통한 API 구현
+- react-device-detect Libaray 통해 BrowserView 와 MobileView 로 나누어 분업
 
-### `npm run build`
+## 3. 구현 기능
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 4. 파일 구조
+  
+## 5. 개발 기록
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
