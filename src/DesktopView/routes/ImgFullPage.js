@@ -95,7 +95,12 @@ const ImgFullPage = ({ item, index, setImgFullModal }) => {
       >
         {item.imgs.map((item, index) => (
           <ImgSlide key={index}>
-            <EachImg key={index} src={require(`../../Data/Img/${item}`)} />
+            <EachImg
+              key={index}
+              // src={require(`../../Data/Img/${item}`)}
+              alt={item.filename}
+              src={`data:image/jpeg;base64,${item.data}`}
+            />
           </ImgSlide>
         ))}
         <GoBackBtn

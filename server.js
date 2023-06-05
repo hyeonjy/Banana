@@ -1,22 +1,23 @@
 // const HOST_IP = "172.30.72.97"; //스벅
 //const HOST_IP = "172.30.1.46"; //커나
-const HOST_IP = "172.16.61.69"; //세종
-// const HOST_IP = "localhost";
+// const HOST_IP = "172.16.61.69"; //세종
+const HOST_IP = "localhost";
 /*서버 연동 */
 const express = require("express");
 const path = require("path");
 const app = express();
 const cors = require("cors");
+
 const router = express.Router();
 app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
 
 require("dotenv").config();
 
 //이미지 업로드
-const crypto = require("crypto");
-const fs = require("fs");
 const multer = require("multer");
 app.use("/upload", express.static("upload"));
+const fs = require("fs");
+const imageDir = path.join(__dirname, "upload");
 
 // body 접근하기 위해
 app.use(express.urlencoded({ extended: true }));
@@ -55,6 +56,7 @@ app.get("/data/:sort", function (request, response) {
     database: "mydatabase",
   });
   //connection.connect();
+
   connection.query(
     `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
   FROM post p
@@ -70,7 +72,19 @@ app.get("/data/:sort", function (request, response) {
     (error, result) => {
       if (error) throw error;
       else {
-        //console.log("SQL: ", result);
+        // const images = [];
+        for (let i = 0; i < result.length; i++) {
+          const imagePath = path.join(imageDir, result[i].img_src);
+          if (fs.existsSync(imagePath)) {
+            const imageData = fs.readFileSync(imagePath);
+            const imageBase64 = imageData.toString("base64");
+            result[i].img_src = {
+              filename: result[i].img_src,
+              data: imageBase64,
+            };
+          }
+        }
+
         response.json(result);
       }
       connection.end();
@@ -119,7 +133,18 @@ app.get("/searchdata/:searchkey/:sort", function (req, res) {
     (error, result) => {
       if (error) throw error;
       else {
-        //console.log("SQL: ", result);
+        for (let i = 0; i < result.length; i++) {
+          const imagePath = path.join(imageDir, result[i].img_src);
+
+          if (fs.existsSync(imagePath)) {
+            const imageData = fs.readFileSync(imagePath);
+            const imageBase64 = imageData.toString("base64");
+            result[i].img_src = {
+              filename: result[i].img_src,
+              data: imageBase64,
+            };
+          }
+        }
         res.json(result);
       }
       connection.end();
@@ -168,6 +193,18 @@ app.get("/main/:main/:sort", function (req, res) {
   connection.query(mainSQL, (error, result) => {
     if (error) throw error;
     else {
+      for (let i = 0; i < result.length; i++) {
+        const imagePath = path.join(imageDir, result[i].img_src);
+
+        if (fs.existsSync(imagePath)) {
+          const imageData = fs.readFileSync(imagePath);
+          const imageBase64 = imageData.toString("base64");
+          result[i].img_src = {
+            filename: result[i].img_src,
+            data: imageBase64,
+          };
+        }
+      }
       res.json(result);
     }
     connection.end();
@@ -215,6 +252,18 @@ app.get("/sub/:sub/:sort", function (req, res) {
   connection.query(mainSQL, (error, result) => {
     if (error) throw error;
     else {
+      for (let i = 0; i < result.length; i++) {
+        const imagePath = path.join(imageDir, result[i].img_src);
+
+        if (fs.existsSync(imagePath)) {
+          const imageData = fs.readFileSync(imagePath);
+          const imageBase64 = imageData.toString("base64");
+          result[i].img_src = {
+            filename: result[i].img_src,
+            data: imageBase64,
+          };
+        }
+      }
       res.json(result);
     }
     connection.end();
@@ -272,6 +321,16 @@ app.get("/postdata/:postId", function (req, res) {
 
           for (let i = 0; i < results[1].length; i++) {
             if (results[1][i].img_src) {
+              const imagePath = path.join(imageDir, results[1][i].img_src);
+              if (fs.existsSync(imagePath)) {
+                const imageData = fs.readFileSync(imagePath);
+                const imageBase64 = imageData.toString("base64");
+                results[1][i].img_src = {
+                  filename: results[i].img_src,
+                  data: imageBase64,
+                };
+              }
+
               post.imgs.push(results[1][i].img_src);
             }
           }
@@ -328,7 +387,19 @@ app.get("/userpage/data/:userId", function (req, res) {
           const user = results[0][0];
           const posts = results[1];
           const reviews = results[2];
-          // console.log("reviews :", reviews);
+
+          for (let i = 0; i < posts.length; i++) {
+            const imagePath = path.join(imageDir, posts[i].img_src);
+
+            if (fs.existsSync(imagePath)) {
+              const imageData = fs.readFileSync(imagePath);
+              const imageBase64 = imageData.toString("base64");
+              posts[i].img_src = {
+                filename: posts[i].img_src,
+                data: imageBase64,
+              };
+            }
+          }
           resolve({ user, posts, reviews });
         }
       });
@@ -372,6 +443,18 @@ app.get("/userpage/heartdata/:userId", function (req, res) {
           reject(error);
         } else {
           const posts = results;
+          for (let i = 0; i < posts.length; i++) {
+            const imagePath = path.join(imageDir, posts[i].img_src);
+
+            if (fs.existsSync(imagePath)) {
+              const imageData = fs.readFileSync(imagePath);
+              const imageBase64 = imageData.toString("base64");
+              posts[i].img_src = {
+                filename: posts[i].img_src,
+                data: imageBase64,
+              };
+            }
+          }
           resolve({ posts });
         }
       });
@@ -472,26 +555,23 @@ function currentTime() {
   // 날짜를 '0000-00-00' 형식으로 변경
   var formattedDate = year + "-" + month + "-" + day;
 
-  // 출력
-  console.log(formattedDate + " " + timePart);
   return formattedDate + " " + timePart;
 }
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./upload");
+    cb(null, "upload/");
   },
   filename: function (req, file, cb) {
-    console.log("file" + file);
     const extension = path.extname(file.originalname);
     const filename = `${Date.now()}${extension}`;
     cb(null, filename);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 10000000 } });
 
-app.post("/postwrite", upload.array("imgFile[]", 12), (req, res) => {
+app.post("/postwrite", upload.array("images"), (req, res) => {
   const connection = mysql.createConnection({
     host: HOST_IP,
     user: "banana",
@@ -499,54 +579,43 @@ app.post("/postwrite", upload.array("imgFile[]", 12), (req, res) => {
     database: "mydatabase",
     multipleStatements: true,
   });
-  console.log(req.files);
-  // const { data } = req.body;
-
-  // console.log(data);
-  // const filenames = [];
-
-  // for (const file of imgs) {
-  //   // const randomFilename = crypto.randomBytes(16).toString("hex") + ".jpg";
-  //   // + file.mimetype.split("/")[1];
-  //   const extension = path.extname(file.originalname);
-  //   const filename = `${Date.now()}${extension}`;
-  //   // const newFilePath = "upload/" + filename;
-  //   // fs.renameSync(file.path, newFilePath);
-  //   filenames.push(filename);
-  // }
-  // const values = filenames.map((filename) => [filename]);
-  // console.log(values);
-  // const postIdQuery = `SELECT COUNT(*) AS CNT FROM post;`;
-  // let postId = -1;
-  // connection.query(postIdQuery, (error, result) => {
-  //   if (error) throw error;
-  //   else {
-  //     postId = result[0].CNT + 1;
-  //     console.log("postIdQuery: " + result[0].CNT);
-  //   }
-  // });
-
+  const { title, contents, major, minor, area, userId } = req.body;
   const time = currentTime();
-  // const writeSQL = `
-  //   INSERT INTO mydatabase.post VALUES ('${data.title}', '${data.contents}', ${userId}, '${time}', '${data.area}', '${data.major}', '${data.minor}', 'wait', 0, 0);
-  //   `;
-  // const imgSQL = `
-  //   INSERT INTO mydatabase.post_img VALUES (${postId}, ?);
-  // `;
+  const imgFiles = req.files;
+  const filenames = [];
 
-  // connection.query(writeSQL, (error, result) => {
-  //   if (error) throw error;
-  //   else {
-  //     res.sendStatus(200);
-  //   }
-  // });
-  // connection.query(imgSQL, [values], (error, result) => {
-  //   if (error) throw error;
-  //   else {
-  //     res.sendStatus(200);
-  //   }
-  //   connection.end();
-  // });
+  for (const file of imgFiles) {
+    filenames.push(file.filename);
+  }
+  const values = filenames.map((filename) => [filename]);
+
+  const postIdQuery = `SELECT COUNT(*) AS CNT FROM post;`;
+  const writeSQL = `
+  INSERT INTO mydatabase.post (title, content, fk_user_id, post_date, area, main_category, sub_category, state, heart, hits) VALUES ('${title}', '${contents}', ${userId}, '${time}', '${area}', '${major}', '${minor}', 'wait', 0, 0);
+  `;
+  let postId = -1;
+  connection.query(postIdQuery, (error, result) => {
+    if (error) throw error;
+    else {
+      postId = result[0].CNT + 1;
+    }
+
+    connection.query(writeSQL, (error, result) => {
+      const imgSQL = `
+      INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?);
+    `;
+      if (error) throw error;
+      else {
+        values.forEach((filename) => {
+          connection.query(imgSQL, [filename], (error, result) => {
+            if (error) throw error;
+          });
+        });
+        connection.end();
+        res.sendStatus(200);
+      }
+    });
+  });
 });
 
 app.get("*", function (request, response) {

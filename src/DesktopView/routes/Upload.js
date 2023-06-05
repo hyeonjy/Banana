@@ -10,6 +10,7 @@ import area from "../../Data/Area";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useAxios from "../../useAxio";
+import axios from "axios";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -201,6 +202,7 @@ const LetterCount = styled.div`
 function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
+  const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
   const imgRef = useRef();
 
   // option 값이 바뀌면 실행되는 함수
@@ -216,37 +218,39 @@ function Upload() {
   // 이미지 저장 함수
   const saveImgFile = (e) => {
     const imageLists = e.target.files;
-    let imageUrlLists = [...imgFile];
+
+    let imageFileLists = [...imgFile, ...imageLists];
+    let imageUrlLists = [...imgURLs];
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
-      console.log(currentImageUrl);
     }
     if (imageUrlLists.length > 5) {
       alert("최대 5장까지만 업로드 합니다.");
       imageUrlLists = imageUrlLists.slice(0, 5);
     }
-    setImgFile(imageUrlLists);
+    setImgFile(imageFileLists);
+    setImgURLs(imageUrlLists);
   };
 
   // 이미지 삭제시 실행되는 함수
   const handleDelete = (index) => {
     setImgFile(imgFile.filter((itme, idx) => idx !== index));
+    setImgURLs(imgURLs.filter((itme, idx) => idx !== index));
   };
   const { watch, register, handleSubmit } = useForm();
 
-  const { response, loading, error, refetch, executePost } = useAxios({
+  const { executePost } = useAxios({
     method: "post",
     url: `http://localhost:8080/postwrite`,
   });
   //form 유효할 때 실행
-  const onValid = (data) => {
+  const onValid = async (data) => {
     console.log("onValid");
     console.log(data); // form 데이터
 
     //data: title, content, major, minor
-    console.log(imgFile); //img url 데이터
     const formdata = new FormData();
     formdata.append("title", data.title);
     formdata.append("contents", data.contents);
@@ -255,13 +259,10 @@ function Upload() {
     formdata.append("minor", data.minor);
 
     imgFile.forEach((image, index) => {
-      formdata.append(`imgFile[${index}]`, image);
+      formdata.append(`images`, image);
     });
-    const user = { userId: 1 };
     formdata.append("userId", 1);
-    for (const entry of formdata.entries()) {
-      console.log(entry);
-    }
+
     executePost({
       data: formdata,
       url: `http://localhost:8080/postwrite`,
@@ -271,11 +272,12 @@ function Upload() {
         },
       },
     });
+
     alert("등록되었습니다"); // 따로 cumstom ????
     //해당 post 페이지로 이동
     //history.push("");
   };
-  console.log(watch("content"));
+
   // 이미지 썸네일 가로 스크롤
   const previewBox = useRef();
   useEffect(() => {
@@ -301,7 +303,7 @@ function Upload() {
         <KeySubject>게시글</KeySubject>
         {/* 폼 시작 */}
         <CreateForm
-          encType="multipart/form-data"
+          // encType="multipart/form-data"
           onSubmit={handleSubmit(onValid)}
         >
           <Box>
@@ -412,12 +414,12 @@ function Upload() {
 
           {/* 사진 미리보기 */}
           <PreviewBox ref={previewBox}>
-            {imgFile.map((item, index) => {
+            {imgURLs.map((item, index) => {
               return (
                 <ImgBox key={index}>
                   {index === 0 && <span>대표</span>}
                   <ImgPreview
-                    src={imgFile ? item : `../../Img/banana.png`}
+                    src={imgURLs ? item : `../../Img/banana.png`}
                     alt="프로필 이미지"
                   />
                   <Xbtn
