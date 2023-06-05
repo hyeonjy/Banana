@@ -142,6 +142,7 @@ export const BackGround = styled.div`
 export const queryArray = ["최신등록순", "조회순", "관심순"];
 function Group() {
   const data = useRecoilValue(postData);
+
   //url - 현재 카테고리 정보
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -174,17 +175,17 @@ function Group() {
 
   //강제 렌더링
   useEffect(() => {
+    executeGet();
     setCurrentPage(Number(pageValue));
     setCount(cateItem.length);
-  }, [categoryValue]);
+  }, [categoryValue]); // 상위 카테고리 변경 시
 
   useEffect(() => {
     executeGet();
-  }, [currentQuery]);
+  }, [currentQuery]); // 쿼리 변경 시
 
   useEffect(() => {
     if (!loading && !error) {
-      console.log(response);
       setCateItem(response);
     }
   }, [response, loading, error]);

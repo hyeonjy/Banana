@@ -11,7 +11,7 @@ import { calcTimeAgo } from "./ShowItem";
 import useAxios from "../../useAxio";
 
 //-----------오른쪽 컨테이너-----------//
-const PostRightDiv = styled.div`
+export const PostRightDiv = styled.div`
   width: 470px;
   height: 400px;
 `;
@@ -51,7 +51,7 @@ export const MembershipText = styled.span`
 `;
 
 //---------Post 정보--------//
-const PostContents = styled.div`
+export const PostContents = styled.div`
   padding: 17px 15px;
 `;
 const PostTitle = styled.div`
@@ -85,7 +85,7 @@ const PostDetail = styled.span`
   gap: 8px;
   align-items: end;
 `;
-const PostContent = styled.span`
+export const PostContent = styled.span`
   line-height: 24px;
 
   white-space: break-spaces;

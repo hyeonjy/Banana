@@ -18,11 +18,17 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Post.css";
 
-import PostRightContents from "../components/PostDatil";
+import PostRightContents, {
+  Header,
+  PostContent,
+  PostContents,
+  PostRightDiv,
+} from "../components/PostDatil";
 import { LoginId } from "../../Data/UserObj";
 import { useEffect } from "react";
 import useAxios from "../../useAxio";
 import ImgFullPage from "./ImgFullPage";
+import Skeleton from "react-loading-skeleton";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -90,7 +96,7 @@ function Post() {
   // 패치
   const [item, setItem] = useState();
   const [heart, setHeart] = useState();
-  const { response, loading, error, refetch, executeGet } = useAxios({
+  const { response, loading, error, executeGet } = useAxios({
     method: "get",
     url: `http://localhost:8080/postdata/${postId}`,
   });
@@ -138,7 +144,19 @@ function Post() {
         activeModal={activeGrade || imgFullModal}
       >
         {!item ? (
-          <span>Loading..</span>
+          <PostContainer>
+            <Skeleton height={"400px"} width={"400px"} />
+            <PostRightDiv>
+              <Header styled={{ paddingLeft: "30px" }}>
+                <Skeleton height={"55px"} width={440} />
+              </Header>
+              <PostContents>
+                <PostContent>
+                  <Skeleton height={"190px"} width={"100%"} />
+                </PostContent>
+              </PostContents>
+            </PostRightDiv>
+          </PostContainer>
         ) : (
           <PostContainer>
             <div>
@@ -175,7 +193,13 @@ function Post() {
                       setImgFullModal(true);
                     }}
                   >
-                    <PostImg src={require(`../../Data/Img/${src}`)} />
+                    <PostImg
+                      alt={src.filename}
+                      src={`data:image/jpeg;base64,${src.data}`}
+
+                      // src={require(`../../../upload/${src}`)}
+                      // src={require(`../../Data/Img/${src}`)}
+                    />
                   </ImgSlide>
                 ))}
                 {/* CustomNav */}
@@ -189,15 +213,13 @@ function Post() {
             </div>
 
             {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
-            {item && (
-              <PostRightContents
-                setActiveGrade={setActiveGrade}
-                item={item}
-                isWriter={isWriter}
-                heart={heart}
-                setHeart={setHeart}
-              />
-            )}
+            <PostRightContents
+              setActiveGrade={setActiveGrade}
+              item={item}
+              isWriter={isWriter}
+              heart={heart}
+              setHeart={setHeart}
+            />
           </PostContainer>
         )}
 

@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
 import { useLocation } from "react-router-dom";
-import { ShowItem } from "../components/ShowItem";
+import { ResProduct, ShowItem } from "../components/ShowItem";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
 import { useEffect, useState } from "react";
 import useAxios from "../../useAxio";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 export const Container = styled.div`
   padding: 120px 30px 60px;
   max-width: 1250px;
@@ -132,7 +133,19 @@ const More = (props) => {
           : "실시간 베스트 상품!"}
       </MoreTitle>
       <ProductsBox as="ul">
-        {data && <ShowItem item={data.slice(0, 12)} responsive={true} />}
+        {data ? (
+          <ShowItem item={data.slice(0, 12)} responsive={true} />
+        ) : (
+          <>
+            {Array(12)
+              .fill()
+              .map((_, index) => (
+                <ResProduct key={index} as="li">
+                  <Skeleton height={"200px"} width={"100%"} />
+                </ResProduct>
+              ))}
+          </>
+        )}
       </ProductsBox>
     </Container>
   );

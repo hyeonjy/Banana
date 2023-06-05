@@ -4,10 +4,11 @@ import { useHistory } from "react-router-dom";
 import Banner from "../components/Banner";
 import { useState } from "react";
 import { useEffect } from "react";
-import { ItemObj } from "../../Data/ItemObj";
 import { ShowItem } from "../components/ShowItem";
-import { useRecoilValue } from "recoil";
-import { postData } from "../../atom";
+import useAxios from "../../useAxio";
+
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
@@ -145,24 +146,27 @@ function Home() {
       search: "?" + searchParams.toString(),
     });
   };
-  // const { response, loading, error } = useAxios({
-  //   method: "get",
-  //   url: "http://localhost:8080/data",
-  // });
-  // useEffect(() => {
-  //   // axios
-  //   //   .get("http://localhost:8080/data")
-  //   //   .then((response) => console.log(response.data))
-  //   //   .catch((error) => console.error(error));
-  //   console.log(response);
-  //   console.log(loading);
-  //   //console.log(error);
-  // }, [response, loading, error]);
-  const response = useRecoilValue(postData);
+  const { response, loading, executeGet } = useAxios({
+    method: "get",
+    url: "http://localhost:8080/data/last",
+  });
 
-  const lastItem = response.slice(0, 8);
-
-  const sortedItemByHits = mergeSortObjects(response, "hits");
+  // const response = useRecoilValue(postData);
+  const [lastItem, setLastItem] = useState();
+  const [sortedItemByHits, setSortedItemByHits] = useState();
+  useEffect(() => {
+    executeGet();
+  }, []);
+  useEffect(() => {
+    if (!loading) {
+      setLastItem(response.slice(0, 8));
+    }
+  }, [loading]);
+  useEffect(() => {
+    if (lastItem) {
+      setSortedItemByHits(mergeSortObjects(lastItem, "hits"));
+    }
+  }, [lastItem]);
 
   return (
     <>
@@ -176,19 +180,47 @@ function Home() {
         {/* New 상품 리스트 */}
         <Products>
           <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
-          <ProductsBox>
-            <ShowItem item={lastItem} />
-          </ProductsBox>
-          <MoreBtn onClick={() => handleImageClick("new")}>더보기</MoreBtn>
+          {lastItem ? (
+            <>
+              <ProductsBox>
+                <ShowItem item={lastItem} />
+              </ProductsBox>
+              <MoreBtn onClick={() => handleImageClick("new")}>더보기</MoreBtn>
+            </>
+          ) : (
+            <ProductsBox>
+              {Array(8)
+                .fill()
+                .map((_, index) => (
+                  <Product key={index}>
+                    <Skeleton height={"200px"} width={"100%"} />
+                  </Product>
+                ))}
+            </ProductsBox>
+          )}
         </Products>
 
         {/* Hot 상품 리스트 */}
         <Products>
           <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
-          <ProductsBox>
-            <ShowItem item={sortedItemByHits} />
-          </ProductsBox>
-          <MoreBtn onClick={() => handleImageClick("hot")}>더보기</MoreBtn>
+          {sortedItemByHits ? (
+            <>
+              <ProductsBox>
+                <ShowItem item={sortedItemByHits} />
+              </ProductsBox>
+              <MoreBtn onClick={() => handleImageClick("hot")}>더보기</MoreBtn>
+            </>
+          ) : (
+            <ProductsBox>
+              {Array(8)
+                .fill()
+                .map((_, index) => (
+                  <Product key={index}>
+                    <Skeleton height={"200px"} width={"100%"} />
+                  </Product>
+                ))}
+            </ProductsBox>
+          )}
         </Products>
       </Container>
     </>

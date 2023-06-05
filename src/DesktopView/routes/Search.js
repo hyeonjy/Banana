@@ -7,9 +7,10 @@ import { QueryDiv, QueryLi, QueryUl, queryArray } from "./Gruop";
 import NoItem from "../components/NoItem";
 import Paging from "../components/Paging";
 import { useEffect } from "react";
-import { ShowItem } from "../components/ShowItem";
+import { ResProduct, ShowItem } from "../components/ShowItem";
 import { useState } from "react";
 import useAxios from "../../useAxio";
+import Skeleton from "react-loading-skeleton";
 
 const SearchContainer = styled(Container)`
   min-height: 750px;
@@ -47,7 +48,7 @@ function Search() {
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content"); // id( = main category)
 
-  const [searchItem, setSearchItem] = useState();
+  const [searchItem, setSearchItem] = useState([]);
   const [currentQuery, setCurrentQuery] = useState(0);
 
   const pageValue = searchParams.get("page");
@@ -90,60 +91,67 @@ function Search() {
 
   return (
     <>
-      {!loading ? (
-        <>
-          {searchItem && (
-            <SearchContainer>
-              <SearchHeader>
-                <span>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  <span className="border">"{searchValue}"</span>에 대한
-                  검색결과 - ({searchItem.length})
-                </span>
-              </SearchHeader>
-              <QueryDiv style={{ marginBottom: "10px" }}>
-                <SearchQueryUl as="div">
-                  {queryArray.map((query, index) => (
-                    <SearchQueryLi
-                      onClick={() => {
-                        changeQuery(index);
-                      }}
-                      as="div"
-                      key={index}
-                      isActive={index === currentQuery}
-                    >
-                      {query}
-                    </SearchQueryLi>
-                  ))}
-                </SearchQueryUl>
-              </QueryDiv>
-              {searchItem.length > 0 ? (
-                <div>
-                  <ProductsBox as="ul" style={{ minHeight: "450px" }}>
-                    <ShowItem
-                      item={searchItem.slice(
-                        postPerPage * (currentPage - 1),
-                        postPerPage * (currentPage - 1) + postPerPage
-                      )}
-                      responsive={true}
-                    />
-                  </ProductsBox>
-                  <Paging
-                    currentPage={currentPage}
-                    count={count}
-                    setCurrentPage={setCurrentPage}
-                    postPerPage={postPerPage}
-                  />
-                </div>
-              ) : (
-                <NoItem />
-              )}
-            </SearchContainer>
-          )}
-        </>
-      ) : (
-        <span>loading..</span>
-      )}
+      <SearchContainer>
+        <SearchHeader>
+          <span>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+            <span className="border">"{searchValue}"</span>에 대한 검색결과 - (
+            {searchItem.length})
+          </span>
+        </SearchHeader>
+        <QueryDiv style={{ marginBottom: "10px" }}>
+          <SearchQueryUl as="div">
+            {queryArray.map((query, index) => (
+              <SearchQueryLi
+                onClick={() => {
+                  changeQuery(index);
+                }}
+                as="div"
+                key={index}
+                isActive={index === currentQuery}
+              >
+                {query}
+              </SearchQueryLi>
+            ))}
+          </SearchQueryUl>
+        </QueryDiv>
+
+        {!loading ? (
+          searchItem.length > 0 ? (
+            <div>
+              <ProductsBox as="ul" style={{ minHeight: "450px" }}>
+                <ShowItem
+                  item={searchItem.slice(
+                    postPerPage * (currentPage - 1),
+                    postPerPage * (currentPage - 1) + postPerPage
+                  )}
+                  responsive={true}
+                />
+              </ProductsBox>
+              <Paging
+                currentPage={currentPage}
+                count={count}
+                setCurrentPage={setCurrentPage}
+                postPerPage={postPerPage}
+              />
+            </div>
+          ) : (
+            <NoItem />
+          )
+        ) : (
+          <div>
+            <ProductsBox as="ul" style={{ minHeight: "450px" }}>
+              {Array(15)
+                .fill()
+                .map((_, index) => (
+                  <ResProduct key={index} as="li">
+                    <Skeleton height={"200px"} width={"100%"} />
+                  </ResProduct>
+                ))}
+            </ProductsBox>
+          </div>
+        )}
+      </SearchContainer>
     </>
   );
 }

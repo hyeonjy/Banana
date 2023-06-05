@@ -7,6 +7,7 @@ import Review from "./Review";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
 import useAxios from "../../useAxio";
+import Skeleton from "react-loading-skeleton";
 
 const Container = styled.div`
   padding-top: 70px;
@@ -160,80 +161,91 @@ function MyPage() {
 
   return (
     <>
-      {user && userPosts ? (
-        <>
-          <Container activeGrade={activeGrade}>
-            <ProfileHeader>
-              <ProfileImg img={require(`../../Img/${user.profile}`)} />
-              <ProfileName>{user.nickname} 님</ProfileName>
-              <MembershipDiv>
-                <MembershipTitle>
-                  <span style={{ verticalAlign: "middle" }}>
-                    멤버십 등급 : {gradeList[user.grade].grade}
-                  </span>
-                  <ExplainBtn onClick={() => setActiveGrade(true)}>
-                    등급 상세
-                  </ExplainBtn>
-                </MembershipTitle>
-                <MembershipDetail>
-                  <span>
-                    노랑 멤버십 회원이 되시면 회원 일부에게 모바일 상품권 혜택을
-                    받으실 수 있습니다
-                  </span>
-                  <div
-                    style={{
-                      width: "15%",
-                      background: "white",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <GradeIcon src={gradeList[user.grade].icon} />
-                  </div>
-                </MembershipDetail>
-              </MembershipDiv>
-            </ProfileHeader>
-            <ContentDiv>
-              <SideNav>
-                <NavLiUl>
-                  {navItem.map((item, index) => (
-                    <Link
-                      key={index}
-                      to={{ pathname: `${item.path}`, search: `?page=${1}` }}
-                    >
-                      <NavLi
-                        onClick={() => {
-                          setCurrentPage(`${item.path}`);
-                        }}
-                        isActive={
-                          currentPage === `${item.path}` && currentPage !== ""
-                        }
-                      >
-                        {item.title}
-                      </NavLi>
-                    </Link>
-                  ))}
-                </NavLiUl>
-              </SideNav>
+      <Container activeGrade={activeGrade}>
+        {user ? (
+          <ProfileHeader>
+            <ProfileImg img={require(`../../Img/${user.profile}`)} />
+            <ProfileName>{user.nickname} 님</ProfileName>
+            <MembershipDiv>
+              <MembershipTitle>
+                <span style={{ verticalAlign: "middle" }}>
+                  멤버십 등급 : {gradeList[user.grade].grade}
+                </span>
+                <ExplainBtn onClick={() => setActiveGrade(true)}>
+                  등급 상세
+                </ExplainBtn>
+              </MembershipTitle>
+              <MembershipDetail>
+                <span>
+                  노랑 멤버십 회원이 되시면 회원 일부에게 모바일 상품권 혜택을
+                  받으실 수 있습니다
+                </span>
+                <div
+                  style={{
+                    width: "15%",
+                    background: "white",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <GradeIcon src={gradeList[user.grade].icon} />
+                </div>
+              </MembershipDetail>
+            </MembershipDiv>
+          </ProfileHeader>
+        ) : (
+          <ProfileHeader>
+            <Skeleton
+              style={{ borderRadius: "100%", marginRight: "15px" }}
+              height={70}
+              width={70}
+            />
+            <ProfileName>
+              <Skeleton style={{}} height={40} width={150} />
+            </ProfileName>
+            <MembershipDiv>
+              <Skeleton style={{}} height={70} width={250} />
+            </MembershipDiv>
+          </ProfileHeader>
+        )}
 
-              <Switch>
-                <Route path="/mypage/heart">
-                  <HeartList />
-                </Route>
-                <Route path="/mypage/share">
-                  <ShareList item={userPosts} />
-                </Route>
-                <Route path="/mypage/review">
-                  <Review reviews={reviews} />
-                </Route>
-              </Switch>
-            </ContentDiv>
-          </Container>
-          {activeGrade && <Modal setActiveGrade={setActiveGrade} />}
-        </>
-      ) : (
-        <span>loading..</span>
-      )}
+        <ContentDiv>
+          <SideNav>
+            <NavLiUl>
+              {navItem.map((item, index) => (
+                <Link
+                  key={index}
+                  to={{ pathname: `${item.path}`, search: `?page=${1}` }}
+                >
+                  <NavLi
+                    onClick={() => {
+                      setCurrentPage(`${item.path}`);
+                    }}
+                    isActive={
+                      currentPage === `${item.path}` && currentPage !== ""
+                    }
+                  >
+                    {item.title}
+                  </NavLi>
+                </Link>
+              ))}
+            </NavLiUl>
+          </SideNav>
+
+          <Switch>
+            <Route path="/mypage/heart">
+              <HeartList />
+            </Route>
+            <Route path="/mypage/share">
+              <ShareList item={userPosts ? userPosts : false} />
+            </Route>
+            <Route path="/mypage/review">
+              <Review reviews={reviews ? reviews : false} />
+            </Route>
+          </Switch>
+        </ContentDiv>
+      </Container>
+      {activeGrade && <Modal setActiveGrade={setActiveGrade} />}
     </>
   );
 }

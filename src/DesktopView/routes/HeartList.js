@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import MypageContents from "../components/MypageContents";
 import { useState } from "react";
 import useAxios from "../../useAxio";
+import SkeletonofMypage from "./SkeletonOfMypage";
 
 function HeartList() {
   const [heartPosts, setHeartPosts] = useState();
@@ -16,7 +17,6 @@ function HeartList() {
 
   useEffect(() => {
     if (!loading) {
-      console.log(response);
       setHeartPosts(response.posts);
     }
   }, [response, loading, error]);
@@ -24,7 +24,7 @@ function HeartList() {
   return heartPosts ? (
     <MypageContents item={heartPosts} cate="찜" />
   ) : (
-    <span>Loading...</span>
+    <SkeletonofMypage />
   );
 }
 

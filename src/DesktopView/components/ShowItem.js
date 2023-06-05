@@ -216,6 +216,7 @@ export function ShowItem({
       <>
         {item.map((item, index) => {
           const timeAgo = calcTimeAgo(item);
+
           return (
             <ResProduct key={index} as="li">
               <Link
@@ -227,7 +228,10 @@ export function ShowItem({
                 }}
               >
                 <ResProductImg
-                  src={require(`../../Data/Img/${item.img_src}`)}
+                  src={`data:image/jpeg;base64,${item.img_src.data}`}
+                  alt={item.img_src.filename}
+                  // src={require(`../../../upload/${item.img_src}`)}
+                  // src={require(`../../Data/Img/${item.img_src}`)}
                 />
                 <ResProductTitle>{item.title}</ResProductTitle>
                 <ResProductDetail>
@@ -257,7 +261,10 @@ export function ShowItem({
             >
               <ProductImg
                 layout={layout}
-                src={require(`../../Data/Img/${item.img_src}`)}
+                src={`data:image/jpeg;base64,${item.img_src.data}`}
+                alt={item.img_src.filename}
+                // src={require(`../../../upload/${item.img_src}`)}
+                // src={require(`../../Data/Img/${item.img_src}`)}
               />
               <ProductDatailDiv layout={layout}>
                 <ProductHeader>
