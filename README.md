@@ -42,12 +42,13 @@
 <br/>
 
 ✏️ 사용 라이브러리
-- React Query를 통한 상태관리 (useQuery, useMutation)
-- Styled-components 을 활용한 컴포넌트 기반 스타일링
-- react-device-detect 라이브러리를 통해 BrowserView 와 MobileView 로 나누어 작업  
-- React-hook-form 를 활용한 SignIn, SignUp, 글 작성 관련 form 을 구현 및 유효성 검사
-- React Swiper & Slick 라이브러리를 사용한 이미지 Slider 구현
-- React-loading-skeleton 라이브러리를 사용한 UI&UX 개선
+- React Query : 상태관리 (useQuery, useMutation)
+- Styled-components : 컴포넌트 기반 스타일링
+- react-device-detect : BrowserView 와 MobileView 로 나누어 작업  
+- React-hook-form : form 을 구현 및 유효성 검사
+- React Swiper & Slick : 이미지 Slider 구현
+- React-loading-skeleton : 로딩 UI&UX 개선
+- react-js-pagination : 페이지네이션
 
 ## 3. 구현 기능 
 1. 나눔 글 작성
@@ -74,7 +75,7 @@
 9. (예정) WebSocket을 이용한 채팅 기능 구현
 
 
-## 4. 파일 구조
+## 4. 개발 기록
   
-## 5. 개발 기록
+## 5. 파일 구조
 
