@@ -3,12 +3,13 @@ import styled, { css, keyframes } from "styled-components";
 import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BsFillShareFill } from "react-icons/bs";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { UserObj } from "../../Data/UserObj";
+import { Link, useParams } from "react-router-dom";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
-import useAxios from "../../useAxio";
+import { useEffect } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { heartChangeApi, postStateChangeApi } from "../../Api";
 
 //-----------오른쪽 컨테이너-----------//
 export const PostRightDiv = styled.div`
@@ -156,36 +157,54 @@ const FlexColumn = styled.div`
   flex-direction: column;
 `;
 
-const PostRightContents = ({
-  item,
-  setActiveGrade,
-  isWriter,
-  heart,
-  setHeart,
-}) => {
-  const { executePost: executeChangeState } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/stateChange`,
-  });
+const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
+  // const [heart, setHeart] = useState(initHeart);
 
-  const { executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/heartclick`,
-  });
-
-  const history = useHistory();
   const { postId } = useParams();
-  //나눔 상태 변경
-  const [SelectedState, setSelected] = useState(item.state);
-  const handleChangeSelect = (e) => {
-    executeChangeState({
-      url: `http://localhost:8080/stateChange`,
-      data: { postId, state: e.target.value },
-    });
-    setSelected(e.target.value);
-    item.state = SelectedState; //DB의 state 값 update
 
-    alert("상태가 변경되었습니다");
+  //나눔 상태 변경
+  const { mutate: mutateState } = useMutation(
+    (state) => postStateChangeApi(state),
+    {
+      onSuccess: (state) => {
+        alert("상태가 변경되었습니다");
+        queryClient.invalidateQueries(["postDatail", postId]);
+      },
+    }
+  );
+  //찜 상태 변경
+  const queryClient = useQueryClient();
+  const { mutate: mutateHeart } = useMutation(
+    (heart) => heartChangeApi(heart),
+    {
+      // onSuccess: () => {
+      //   queryClient.invalidateQueries(["postDatail", postId]);
+      // },
+
+      onMutate: async (newData) => {
+        // await queryClient.cancelQueries(["postDatail", postId]);
+        const previousHeartData = queryClient.getQueryData([
+          "postDatail",
+          postId,
+        ]);
+        queryClient.setQueryData(["postDatail", postId], (olddata) => {
+          return { ...olddata, heart: !newData.heart };
+        });
+        return previousHeartData;
+      },
+      onError: (rollback) => rollback(),
+      onSettled: () => {
+        // 요청 성공 or 실패 후
+        queryClient.invalidateQueries(["postDatail", postId]);
+      },
+    }
+  );
+
+  const handleChangeSelect = (e) => {
+    mutateState({ postId, state: e.target.value });
+  };
+  const handleHeart = () => {
+    mutateHeart({ heart: initHeart, userId: 1, postId });
   };
 
   //채팅으로 이동
@@ -199,14 +218,6 @@ const PostRightContents = ({
   //   });
   // };
   const timeAgo = calcTimeAgo(item);
-
-  const handleHeart = () => {
-    executePost({
-      url: "http://localhost:8080/heartclick",
-      data: { heart, userId: 1, postId },
-    });
-    setHeart(!heart);
-  };
 
   return (
     <PostRightDiv>
@@ -242,7 +253,7 @@ const PostRightContents = ({
           <FlexColumn style={{ gap: "15px" }}>
             {isWriter && (
               <StateSelect
-                value={SelectedState}
+                value={item.state}
                 onChange={(e) => handleChangeSelect(e)}
               >
                 <option value="wait">대기중</option>
@@ -260,11 +271,11 @@ const PostRightContents = ({
         <ButtomBtnDiv>
           <IconBtnDiv>
             <HeartSvg
-              heart={heart}
+              heart={initHeart}
               width="35"
               height="35"
               viewBox="12 10 30 40"
-              fill={heart ? "red" : "none"}
+              fill={initHeart ? "red" : "none"}
               stroke="black"
               strokeWidth="1.5"
               onClick={handleHeart}

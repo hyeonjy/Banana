@@ -11,6 +11,8 @@ import { ResProduct, ShowItem } from "../components/ShowItem";
 import { useState } from "react";
 import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { SearchDataApi } from "../../Api";
 
 const SearchContainer = styled(Container)`
   min-height: 750px;
@@ -48,36 +50,45 @@ function Search() {
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("content"); // id( = main category)
 
-  const [searchItem, setSearchItem] = useState([]);
-  const [currentQuery, setCurrentQuery] = useState(0);
-
+  //페이지네이션
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
-  const [count, setCount] = useState();
-
+  const [count, setCount] = useState(1);
   const postPerPage = 12; // 한 페이지 아이템 수
 
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/searchdata/${searchValue}/${currentQuery}`,
-  });
+  //Query
+  const [currentQuery, setCurrentQuery] = useState(0);
 
+  //api
+  // const [searchItem, setSearchItem] = useState([]);
+  const { refetch, data: searchItem } = useQuery(["search", searchValue], () =>
+    SearchDataApi(searchValue, currentQuery)
+  );
   useEffect(() => {
-    executeGet();
-  }, [searchValue, currentQuery]);
+    refetch();
+  }, [searchValue]);
 
-  useEffect(() => {
-    if (!loading && !error) {
-      setSearchItem(response);
-    }
-  }, [response, loading, error]);
+  // const { response, loading, error, executeGet } = useAxios({
+  //   method: "get",
+  //   url: `http://localhost:8080/searchdata/${searchValue}/${currentQuery}`,
+  // });
+
+  // useEffect(() => {
+  //   executeGet();
+  // }, [searchValue, currentQuery]);
+
+  // useEffect(() => {
+  //   if (!loading && !error) {
+  //     setSearchItem(response);
+  //   }
+  // }, [response, loading, error]);
 
   //강제 렌더링
-  useEffect(() => {
-    if (searchItem) {
-      setCount(searchItem.length);
-    }
-  }, [searchItem]);
+  // useEffect(() => {
+  //   if (searchItem) {
+  //     setCount(searchItem.length);
+  //   }
+  // }, [searchItem]);
 
   function changeQuery(index) {
     const searchParams = new URLSearchParams(location.search);
@@ -96,7 +107,7 @@ function Search() {
           <span>
             <FontAwesomeIcon icon={faMagnifyingGlass} />
             <span className="border">"{searchValue}"</span>에 대한 검색결과 - (
-            {searchItem.length})
+            {!searchItem ? 0 : searchItem.length})
           </span>
         </SearchHeader>
         <QueryDiv style={{ marginBottom: "10px" }}>
@@ -116,7 +127,7 @@ function Search() {
           </SearchQueryUl>
         </QueryDiv>
 
-        {!loading ? (
+        {searchItem ? (
           searchItem.length > 0 ? (
             <div>
               <ProductsBox as="ul" style={{ minHeight: "450px" }}>
@@ -130,7 +141,7 @@ function Search() {
               </ProductsBox>
               <Paging
                 currentPage={currentPage}
-                count={count}
+                count={searchItem.length}
                 setCurrentPage={setCurrentPage}
                 postPerPage={postPerPage}
               />

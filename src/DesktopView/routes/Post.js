@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,9 +26,10 @@ import PostRightContents, {
 } from "../components/PostDatil";
 import { LoginId } from "../../Data/UserObj";
 import { useEffect } from "react";
-import useAxios from "../../useAxio";
 import ImgFullPage from "./ImgFullPage";
 import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { postPageApi } from "../../Api";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -93,36 +94,21 @@ function Post() {
   // 수정 권한 - 본인 글인지 확인
   const [isWriter, setIsWriter] = useState(false); //item.userId === LoginId;
 
+  // const [heartChange, setHeart] = useState();
+
   // 패치
-  const [item, setItem] = useState();
-  const [heart, setHeart] = useState();
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/postdata/${postId}`,
-  });
+  const { data, refetch } = useQuery(["postDatail", postId], () =>
+    postPageApi(postId)
+  );
   useEffect(() => {
-    //refetch();
-    executeGet();
+    refetch();
   }, [postId]);
 
   useEffect(() => {
-    if (!loading) {
-      setItem(response.post);
-      setHeart(response.heart);
-      console.log(response.post.nickname);
-      if (response.post.nickname === LoginId) {
-        setIsWriter(true);
-      } else {
-        setIsWriter(false);
-      }
-    } else {
-      if (error) {
-        console.log("error:", error);
-      }
+    if (data) {
+      setIsWriter(LoginId === data.post.nickname);
     }
-  }, [response, loading, error, postId]);
-
-  //img 클릭 시 Fullscreen
+  }, [data]);
 
   // swiper onSlideChange 시 - 현재 img index 저장
   const handleSlideChange = (currentIndex) => {
@@ -143,7 +129,7 @@ function Post() {
         activeGrade={activeGrade}
         activeModal={activeGrade || imgFullModal}
       >
-        {!item ? (
+        {!data?.post ? (
           <PostContainer>
             <Skeleton height={"400px"} width={"400px"} />
             <PostRightDiv>
@@ -186,7 +172,7 @@ function Post() {
                 }}
               >
                 {/* PostImg */}
-                {item.imgs.map((src, index) => (
+                {data.post.imgs.map((src, index) => (
                   <ImgSlide
                     key={index}
                     onClick={() => {
@@ -215,10 +201,10 @@ function Post() {
             {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
             <PostRightContents
               setActiveGrade={setActiveGrade}
-              item={item}
+              item={data.post}
               isWriter={isWriter}
-              heart={heart}
-              setHeart={setHeart}
+              initHeart={data.heart}
+              // setHeart={setHeart}
             />
           </PostContainer>
         )}
@@ -232,7 +218,7 @@ function Post() {
       )}
       {imgFullModal && !activeGrade && (
         <ImgFullPage
-          item={item}
+          item={data.post}
           index={imgCurrentIdx}
           setImgFullModal={setImgFullModal}
         />

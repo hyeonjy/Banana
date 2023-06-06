@@ -8,6 +8,8 @@ import HeartList from "./HeartList";
 import ShareList from "./ShareList";
 import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { userPageHeartListaApi, userPageaApi } from "../../Api";
 
 const Container = styled.div`
   padding-top: 70px;
@@ -126,30 +128,8 @@ function MyPage() {
   const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
   const reviewPage = useRouteMatch("/mypage/review"); // .. 리뷰 페이지
 
-  // 패치
-  const [user, setUser] = useState();
-  const [userPosts, setUserPosts] = useState();
-
-  const [reviews, setReviews] = useState();
-  const { response, loading, error, refetch, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/userpage/data/1`,
-  });
-
-  useEffect(() => {
-    executeGet();
-  }, []);
-  useEffect(() => {
-    if (!loading) {
-      setUser(response.user);
-      setUserPosts(response.posts);
-      setReviews(response.reviews);
-    } else {
-      if (error) {
-        console.log("error:", error);
-      }
-    }
-  }, [response, loading, error]);
+  const { data } = useQuery("mypage", userPageaApi);
+  const { data: HeartPosts } = useQuery("heartPosts", userPageHeartListaApi);
 
   //페이지 이동
   useEffect(() => {
@@ -162,14 +142,14 @@ function MyPage() {
   return (
     <>
       <Container activeGrade={activeGrade}>
-        {user ? (
+        {data?.user ? (
           <ProfileHeader>
-            <ProfileImg img={require(`../../Img/${user.profile}`)} />
-            <ProfileName>{user.nickname} 님</ProfileName>
+            <ProfileImg img={require(`../../Img/${data.user.profile}`)} />
+            <ProfileName>{data.user.nickname} 님</ProfileName>
             <MembershipDiv>
               <MembershipTitle>
                 <span style={{ verticalAlign: "middle" }}>
-                  멤버십 등급 : {gradeList[user.grade].grade}
+                  멤버십 등급 : {gradeList[data.user.grade].grade}
                 </span>
                 <ExplainBtn onClick={() => setActiveGrade(true)}>
                   등급 상세
@@ -188,7 +168,7 @@ function MyPage() {
                     justifyContent: "center",
                   }}
                 >
-                  <GradeIcon src={gradeList[user.grade].icon} />
+                  <GradeIcon src={gradeList[data.user.grade].icon} />
                 </div>
               </MembershipDetail>
             </MembershipDiv>
@@ -234,13 +214,13 @@ function MyPage() {
 
           <Switch>
             <Route path="/mypage/heart">
-              <HeartList />
+              <HeartList item={HeartPosts ? HeartPosts : false} />
             </Route>
             <Route path="/mypage/share">
-              <ShareList item={userPosts ? userPosts : false} />
+              <ShareList item={data ? data.posts : false} />
             </Route>
             <Route path="/mypage/review">
-              <Review reviews={reviews ? reviews : false} />
+              <Review reviews={data ? data.reviews : false} />
             </Route>
           </Switch>
         </ContentDiv>

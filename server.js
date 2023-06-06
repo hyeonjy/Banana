@@ -9,7 +9,7 @@ const app = express();
 const cors = require("cors");
 
 const router = express.Router();
-app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 require("dotenv").config();
 
@@ -520,7 +520,7 @@ app.post("/stateChange", (req, res) => {
     connection.query(stateUpdateQuery, (error, result) => {
       if (error) throw error;
       else {
-        res.sendStatus(200);
+        res.json(state);
       }
       connection.end();
     });
@@ -612,7 +612,7 @@ app.post("/postwrite", upload.array("images"), (req, res) => {
           });
         });
         connection.end();
-        res.sendStatus(200);
+        res.json(postId);
       }
     });
   });

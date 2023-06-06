@@ -7,16 +7,18 @@ import {
 } from "../components/PostDatil";
 import { ProfileName } from "../routes/MyPage";
 import styled from "styled-components";
-import { Container, ProductsBox } from "./More";
+import { Container } from "./More";
 import { useEffect, useState } from "react";
 import Modal, { GradeIcon, gradeList } from "../../Modal";
-import { Product, ShowItem, ShowReview } from "../components/ShowItem";
+import { ShowItem, ShowReview } from "../components/ShowItem";
 import NoItem from "../components/NoItem";
 import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
 import { SkeletonReview } from "./SkeletonOfMypage";
 
 import { DotWave } from "@uiball/loaders";
+import { useQuery } from "react-query";
+import { userPageApi } from "../../Api";
 const UserContainer = styled(Container)`
   max-width: 800px;
   padding-top: 90px;
@@ -62,23 +64,7 @@ function UserInfo() {
   const userId = searchParams.get("id");
   const reviewPage = searchParams.get("review");
 
-  const [user, setUser] = useState();
-  const [userPosts, setUserPosts] = useState();
-  const [reviews, setReviews] = useState();
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/userpage/data/${userId}`,
-  });
-  useEffect(() => {
-    executeGet();
-  }, []);
-  useEffect(() => {
-    if (!loading) {
-      setUser(response.user);
-      setUserPosts(response.posts);
-      setReviews(response.reviews);
-    }
-  }, [response, loading, error]);
+  const { data } = useQuery("userpage", () => userPageApi(userId));
 
   //모달
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
@@ -87,19 +73,21 @@ function UserInfo() {
     <>
       <UserContainer activeGrade={activeGrade}>
         <UserWrap>
-          {user ? (
+          {data?.user ? (
             <>
               <Header as="div">
-                <ProfImg img={require(`../../Img/${user.profile}`)} />
+                <ProfImg img={require(`../../Img/${data.user.profile}`)} />
                 <ProfileName style={{ fontSize: "17px" }}>
-                  {user.nickname}
+                  {data.user.nickname}
                 </ProfileName>
                 <MembershipWrap>
                   <GradeIcon
                     onClick={() => setActiveGrade(true)}
-                    src={gradeList[user.grade].icon}
+                    src={gradeList[data.user.grade].icon}
                   />
-                  <MembershipText>{gradeList[user.grade].grade}</MembershipText>
+                  <MembershipText>
+                    {gradeList[data.user.grade].grade}
+                  </MembershipText>
                 </MembershipWrap>
               </Header>
               <CateDiv>
@@ -140,9 +128,9 @@ function UserInfo() {
           <ItemDiv>
             {/* 유저 나눔 목록 & 후기 목록 */}
             {reviewPage &&
-              (reviews ? (
-                reviews.length > 0 ? (
-                  <ShowReview reviews={reviews} />
+              (data?.reviews ? (
+                data?.reviews.length > 0 ? (
+                  <ShowReview reviews={data?.reviews} />
                 ) : (
                   <NoItem content={"후기가"}>없습니다</NoItem>
                 )
@@ -150,9 +138,9 @@ function UserInfo() {
                 <SkeletonReview />
               ))}
             {!reviewPage &&
-              (userPosts ? (
-                userPosts.length > 0 ? (
-                  <ShowItem item={userPosts} />
+              (data?.posts ? (
+                data?.posts.length > 0 ? (
+                  <ShowItem item={data?.posts} />
                 ) : (
                   <NoItem content={"나눔이"}>없습니다</NoItem>
                 )

@@ -11,6 +11,8 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useAxios from "../../useAxio";
 import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
+import { postWriteApi } from "../../Api";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -241,15 +243,26 @@ function Upload() {
   };
   const { watch, register, handleSubmit } = useForm();
 
-  const { executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/postwrite`,
+  // const { executePost } = useAxios({
+  //   method: "post",
+  //   url: `http://localhost:8080/postwrite`,
+  // });
+  const history = useHistory();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation((formdata) => postWriteApi(formdata), {
+    onSuccess: (postId) => {
+      queryClient.invalidateQueries("lastpost");
+      queryClient.invalidateQueries("mypage");
+      alert("등록되었습니다");
+      history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
+    },
+    onError: () => {
+      alert("Error!");
+    },
   });
-  //form 유효할 때 실행
-  const onValid = async (data) => {
-    console.log("onValid");
-    console.log(data); // form 데이터
 
+  //form 유효할 때 실행
+  const onValid = (data) => {
     //data: title, content, major, minor
     const formdata = new FormData();
     formdata.append("title", data.title);
@@ -258,24 +271,11 @@ function Upload() {
     formdata.append("major", data.major);
     formdata.append("minor", data.minor);
 
-    imgFile.forEach((image, index) => {
+    imgFile.forEach((image) => {
       formdata.append(`images`, image);
     });
     formdata.append("userId", 1);
-
-    executePost({
-      data: formdata,
-      url: `http://localhost:8080/postwrite`,
-      config: {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    });
-
-    alert("등록되었습니다"); // 따로 cumstom ????
-    //해당 post 페이지로 이동
-    //history.push("");
+    mutate(formdata);
   };
 
   // 이미지 썸네일 가로 스크롤

@@ -26,25 +26,23 @@ function SkeletonofMypage() {
           {Array(8)
             .fill()
             .map((_, index) => (
-              <>
-                <Product layout="row" key={index}>
-                  <Skeleton
-                    height={"80px"}
-                    width={"110px"}
-                    style={{ flexShrink: 0, marginRight: "10px" }}
-                  />
-                  <ProductDatailDiv>
-                    <ProductHeader>
-                      <ProductTitle layout="row">
-                        <Skeleton height={"40px"} width={"160px"} />
-                      </ProductTitle>
-                    </ProductHeader>
-                    <ProductDetail layout="row">
-                      <Skeleton height={"15px"} width={"160px"} />
-                    </ProductDetail>
-                  </ProductDatailDiv>
-                </Product>
-              </>
+              <Product as="div" layout="row" key={index}>
+                <Skeleton
+                  height={"80px"}
+                  width={"110px"}
+                  style={{ flexShrink: 0, marginRight: "10px" }}
+                />
+                <ProductDatailDiv>
+                  <ProductHeader>
+                    <ProductTitle layout="row">
+                      <Skeleton height={"40px"} width={"160px"} />
+                    </ProductTitle>
+                  </ProductHeader>
+                  <ProductDetail layout="row">
+                    <Skeleton height={"15px"} width={"160px"} />
+                  </ProductDetail>
+                </ProductDatailDiv>
+              </Product>
             ))}
         </ItemWrap>
       </div>

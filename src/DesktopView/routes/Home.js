@@ -9,6 +9,8 @@ import useAxios from "../../useAxio";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useQuery } from "react-query";
+import { HitsDataApi, LastDataApi } from "../../Api";
 
 export const Container = styled.div`
   padding-top: 140px; /**header와 nav의 fixed 때문에 겹치는 문제 해결 */
@@ -100,44 +102,11 @@ const MoreBtn = styled.div`
 
 /*상품 리스트 - 끝*/
 
-//Merge Sort 알고리즘 - hits 기준
-function mergeSortObjects(arr, key) {
-  if (arr.length === 1) {
-    return arr;
-  }
-
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
-
-  return mergeObjects(
-    mergeSortObjects(left, key),
-    mergeSortObjects(right, key),
-    key
-  );
-}
-
-function mergeObjects(left, right, key) {
-  let result = [];
-  let indexLeft = 0;
-  let indexRight = 0;
-
-  while (indexLeft < left.length && indexRight < right.length) {
-    if (left[indexLeft][key] > right[indexRight][key]) {
-      result.push(left[indexLeft]);
-      indexLeft++;
-    } else {
-      result.push(right[indexRight]);
-      indexRight++;
-    }
-  }
-
-  return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
-}
-
 function Home() {
-  const history = useHistory();
+  const { error: error1, data: lastItem } = useQuery("lastPost", LastDataApi);
+  const { error: error2, data: histItem } = useQuery("hitPost", HitsDataApi);
 
+  const history = useHistory();
   const handleImageClick = (type, object) => {
     const searchParams = new URLSearchParams();
     searchParams.append("type", type);
@@ -146,83 +115,90 @@ function Home() {
       search: "?" + searchParams.toString(),
     });
   };
-  const { response, loading, executeGet } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data/last",
-  });
+  // const { response, loading, executeGet } = useAxios({
+  //   method: "get",
+  //   url: "http://localhost:8080/data/last",
+  // });
+  // useEffect(() => {
+  //   executeGet();
+  // }, []);
 
-  // const response = useRecoilValue(postData);
-  const [lastItem, setLastItem] = useState();
-  const [sortedItemByHits, setSortedItemByHits] = useState();
-  useEffect(() => {
-    executeGet();
-  }, []);
-  useEffect(() => {
-    if (!loading) {
-      setLastItem(response.slice(0, 8));
-    }
-  }, [loading]);
-  useEffect(() => {
-    if (lastItem) {
-      setSortedItemByHits(mergeSortObjects(lastItem, "hits"));
-    }
-  }, [lastItem]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     setLastItem(response.slice(0, 8));
+  //   }
+  // }, [loading]);
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     setLastItem(data.slice(0, 8));
+  //   }
+  // }, [isLoading]);
 
   return (
     <>
-      <Nav />
-      <Container>
-        {/* 배너 3개 */}
-        <div style={{ minWidth: "1015px" }}>
-          <Banner />
-        </div>
+      {!error1 && !error2 ? (
+        <>
+          <Nav />
+          <Container>
+            {/* 배너 3개 */}
+            <div style={{ minWidth: "1015px" }}>
+              <Banner />
+            </div>
 
-        {/* New 상품 리스트 */}
-        <Products>
-          <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
-          {lastItem ? (
-            <>
-              <ProductsBox>
-                <ShowItem item={lastItem} />
-              </ProductsBox>
-              <MoreBtn onClick={() => handleImageClick("new")}>더보기</MoreBtn>
-            </>
-          ) : (
-            <ProductsBox>
-              {Array(8)
-                .fill()
-                .map((_, index) => (
-                  <Product key={index}>
-                    <Skeleton height={"200px"} width={"100%"} />
-                  </Product>
-                ))}
-            </ProductsBox>
-          )}
-        </Products>
+            {/* New 상품 리스트 */}
+            <Products>
+              <ProductsTitle>NEW! 나눔 물품</ProductsTitle>
+              {lastItem ? (
+                <>
+                  <ProductsBox>
+                    <ShowItem item={lastItem.slice(0, 8)} />
+                  </ProductsBox>
+                  <MoreBtn onClick={() => handleImageClick("new")}>
+                    더보기
+                  </MoreBtn>
+                </>
+              ) : (
+                <ProductsBox>
+                  {Array(8)
+                    .fill()
+                    .map((_, index) => (
+                      <Product key={index}>
+                        <Skeleton height={"200px"} width={"100%"} />
+                      </Product>
+                    ))}
+                </ProductsBox>
+              )}
+            </Products>
 
-        {/* Hot 상품 리스트 */}
-        <Products>
-          <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
-          {sortedItemByHits ? (
-            <>
-              <ProductsBox>
-                <ShowItem item={sortedItemByHits} />
-              </ProductsBox>
-              <MoreBtn onClick={() => handleImageClick("hot")}>더보기</MoreBtn>
-            </>
-          ) : (
-            <ProductsBox>
-              {Array(8)
-                .fill()
-                .map((_, index) => (
-                  <Product key={index}>
-                    <Skeleton height={"200px"} width={"100%"} />
-                  </Product>
-                ))}
-            </ProductsBox>
-          )}
-        </Products>
-      </Container>
+            {/* Hot 상품 리스트 */}
+            <Products>
+              <ProductsTitle>HOT! 주목받는 물품</ProductsTitle>
+              {histItem ? (
+                <>
+                  <ProductsBox>
+                    <ShowItem item={histItem.slice(0, 8)} />
+                  </ProductsBox>
+                  <MoreBtn onClick={() => handleImageClick("hot")}>
+                    더보기
+                  </MoreBtn>
+                </>
+              ) : (
+                <ProductsBox>
+                  {Array(8)
+                    .fill()
+                    .map((_, index) => (
+                      <Product key={index}>
+                        <Skeleton height={"200px"} width={"100%"} />
+                      </Product>
+                    ))}
+                </ProductsBox>
+              )}
+            </Products>
+          </Container>
+        </>
+      ) : (
+        <span>Sever ERROR!</span>
+      )}
     </>
   );
 }

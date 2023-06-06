@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import useAxios from "./useAxio";
 import { DotWave } from "@uiball/loaders";
 import { Pulsar } from "@uiball/loaders";
-
 const GlobalStyle = createGlobalStyle`
 
   html, body, div, span, applet, object, iframe,
@@ -88,7 +87,6 @@ function App() {
     console.log("app.js");
   }, []);
   useEffect(() => {
-    console.log(response);
     if (!loading && !error && response) {
       console.log(response);
       setPosts(response);
@@ -105,7 +103,9 @@ function App() {
             {/* <DotWave size={60} speed={1} color="#fae100" /> */}
           </div>
         ) : (
-          <DeskTopRouter />
+          <>
+            <DeskTopRouter />
+          </>
         )}
       </BrowserView>
       <MobileView>

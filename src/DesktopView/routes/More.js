@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useQuery } from "react-query";
+import { HitsDataApi, LastDataApi } from "../../Api";
 export const Container = styled.div`
   padding: 120px 30px 60px;
   max-width: 1250px;
@@ -97,56 +99,74 @@ export const ProductDetail = styled.span`
 `;
 
 const More = (props) => {
+  // const newItem = useRecoilValue(postData);
   const location = useLocation();
-  const newItem = useRecoilValue(postData);
-  const [data, setData] = useState(); // 최신순
-
-  //const searchItem = location.state?.object; //new or hot의 object item 저장
   const searchParams = new URLSearchParams(location.search);
   const typeValue = searchParams.get("type"); // type이  new or hot 인지 확인
 
-  const { loading, error, response, executeGet } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data/hits",
-  });
-  useEffect(() => {
-    if (typeValue === "hot") {
-      executeGet();
-      // hot일 경우 -> 조회순 rank top 20 -> 서버 (정렬 요청)
-    } else if (typeValue === "new") {
-      setData(newItem);
-    }
-    // else (new) 최신순 -> app.js에서 recoil로 저장한 최신순 데이터 그대로
-  }, []);
+  const { error: error1, data } = useQuery(
+    typeValue === "hot" ? "hitPost" : "lastPost",
+    typeValue === "hot" ? HitsDataApi : LastDataApi
+  );
+  // const { error: error2, data: histItem } = useQuery("hitPost", HitsDataApi);
+  // const [data, setData] = useState(); // 최신순
 
-  useEffect(() => {
-    if (response && !error) {
-      setData(response);
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (typeValue === "hot") {
+  //     setData(histItem);
+  //   } else {
+  //     setData(lastItem);
+  //   }
+  // }, []);
+
+  // const { loading, error, response, executeGet } = useAxios({
+  //   method: "get",
+  //   url: "http://localhost:8080/data/hits",
+  // });
+  // useEffect(() => {
+  //   if (typeValue === "hot") {
+  //     executeGet();
+  //     // hot일 경우 -> 조회순 rank top 20 -> 서버 (정렬 요청)
+  //   } else if (typeValue === "new") {
+  //     setData(newItem);
+  //   }
+  //   // else (new) 최신순 -> app.js에서 recoil로 저장한 최신순 데이터 그대로
+  // }, []);
+
+  // useEffect(() => {
+  //   if (response && !error) {
+  //     setData(response);
+  //   }
+  // }, [loading]);
 
   return (
     <Container>
-      <MoreTitle>
-        {typeValue === "new"
-          ? "바나나 농장의 최신목록!"
-          : "실시간 베스트 상품!"}
-      </MoreTitle>
-      <ProductsBox as="ul">
-        {data ? (
-          <ShowItem item={data.slice(0, 12)} responsive={true} />
-        ) : (
-          <>
-            {Array(12)
-              .fill()
-              .map((_, index) => (
-                <ResProduct key={index} as="li">
-                  <Skeleton height={"200px"} width={"100%"} />
-                </ResProduct>
-              ))}
-          </>
-        )}
-      </ProductsBox>
+      {error1 ? (
+        <span>Sever ERROR</span>
+      ) : (
+        <>
+          <MoreTitle>
+            {typeValue === "new"
+              ? "바나나 농장의 최신목록!"
+              : "실시간 베스트 상품!"}
+          </MoreTitle>
+          <ProductsBox as="ul">
+            {data ? (
+              <ShowItem item={data.slice(0, 12)} responsive={true} />
+            ) : (
+              <>
+                {Array(12)
+                  .fill()
+                  .map((_, index) => (
+                    <ResProduct key={index} as="li">
+                      <Skeleton height={"200px"} width={"100%"} />
+                    </ResProduct>
+                  ))}
+              </>
+            )}
+          </ProductsBox>
+        </>
+      )}
     </Container>
   );
 };

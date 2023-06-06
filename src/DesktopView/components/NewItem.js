@@ -9,12 +9,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ItemObj } from "../../Data/ItemObj";
-import { useRecoilValue } from "recoil";
-import { postData } from "../../atom";
+
 import { calcTimeAgo } from "./ShowItem";
 import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { LastDataApi } from "../../Api";
 
 const NewContainer = styled.div`
   width: 96%;
@@ -88,23 +88,7 @@ const EachDetail = styled.span`
 //------------------------------//
 
 function NewItem() {
-  // const data = useRecoilValue(postData);
-  // const NewtList = data.slice(0, 8);
-
-  const { response, loading, executeGet } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data/last",
-  });
-  const [lastItem, setLastItem] = useState();
-  useEffect(() => {
-    executeGet();
-  }, []);
-  useEffect(() => {
-    if (!loading) {
-      setLastItem(response.slice(0, 8));
-    }
-  }, [loading]);
-
+  const { data: lastItem } = useQuery("lastPost", LastDataApi);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
@@ -173,7 +157,7 @@ function NewItem() {
               {Array(4)
                 .fill()
                 .map((_, index) => (
-                  <EachItem key={index}>
+                  <EachItem as="div" key={index}>
                     <Skeleton height={"150px"} width={"190px"} />
                   </EachItem>
                 ))}
