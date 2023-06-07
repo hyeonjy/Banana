@@ -173,13 +173,13 @@
   const { mutate: mutateHeart } = useMutation(
     (heart) => heartChangeApi(heart),
     {
-			// 서버 요청 완료 후 업데이트 완료된 최신 정보를 화면에 그리는 경우
-			// onSuccess: () => {
-      //   queryClient.invalidateQueries(["postDatail", postI);
+	// 서버 요청 완료 후 업데이트 완료된 최신 정보를 화면에 그리는 경우
+	// onSuccess: () => {
+      //   queryClient.invalidateQueries(["postDatail", postId);
       // },
 
-			// 옵티미스틱 업데이트
-			onMutate: async (newData) => {
+	// 옵티미스틱 업데이트
+	onMutate: async (newData) => {
         const previousHeartData = queryClient.getQueryData([
           "postDatail",
           postId,
@@ -189,12 +189,8 @@
         });
         return previousHeartData; //요청 실패할 경우 기존 데이터를 사용
       },
-			//요청이 실패할 경우 다시 원래대로
+	//요청이 실패할 경우 이전상태 유지
       onError: (rollback) => rollback(),
-      onSettled: () => {
-        // 요청 성공 or 실패 후 - 쿼리 무효화 = 데이터 최신상태 유지
-        queryClient.invalidateQueries(["postDatail", postId]);
-      },
 
     }
   );
