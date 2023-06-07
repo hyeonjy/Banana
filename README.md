@@ -122,28 +122,9 @@
 
 
 ## 4. 개발 기록
-📋 React-Swiper currentIdx 버그 해결
-```javascript
-  // swiper onSlideChange 시 - 현재 이미지의 인덱스 저장 함수
-  const handleSlideChange = (swiper) => {
-    setImgCurrentIdx(swiper.realIndex);
-  };
-  
-  //...
-  
-   <StyledSwiper
-      loop={true}
-      onSlideChange={handleSlideChange}
-   >
-   </StyledSwiper>
-
-```
-- 기존에 사용했던 swiper.activeIndex는 Swiper 컴포넌트가 loop 모드일 경우에 정확한 인덱스를 반환하지 못함
-- swiper.realIndex로 대체
-
-<br/>
 
 ---
+
 📋 Modal 관련 버그 해결
 ```javascript
   useEffect(() => {
@@ -158,8 +139,71 @@
 
 ```
 - 모달 사용 시 스크롤 방지
-- 언마운트시(return) 스크롤 방지를 제거해 주지 않을 경우, 모달이 있는 상태에서 다른 페이지로 이동 시 여전히 스크롤이 막혀있는 상황이 발생 
+- 언마운트시(return) 스크롤 방지를 제거해 주지 않을 경우, 모달 active 상태에서 다른 페이지로 이동 시 여전히 스크롤이 막혀있는 상황이 발생 
+
+  ---
   
+  📋 React-Swiper currentIdx 버그 해결
+```javascript
+  // swiper onSlideChange 시 - 현재 이미지의 인덱스 저장 함수
+  const handleSlideChange = (swiper) => {
+    setImgCurrentIdx(swiper.realIndex);
+  };
   
+  //...
+  
+   <StyledSwiper
+      //...
+      loop={true}
+      onSlideChange={handleSlideChange}
+   >
+   </StyledSwiper>
+
+```
+- 기존에 사용했던 swiper.activeIndex는 Swiper 컴포넌트가 loop 모드일 경우에 정확한 인덱스를 반환하지 못함
+- swiper.realIndex로 대체
+
+---
+
+📋 useMutation - 찜(아이콘) 상태 변경
+
+```javascript
+
+	const queryClient = useQueryClient();
+  const { mutate: mutateHeart } = useMutation(
+    (heart) => heartChangeApi(heart),
+    {
+			// 서버 요청 완료 후 업데이트 완료된 최신 정보를 화면에 그리는 경우
+			// onSuccess: () => {
+      //   queryClient.invalidateQueries(["postDatail", postI);
+      // },
+
+			// 옵티미스틱 업데이트
+			onMutate: async (newData) => {
+        const previousHeartData = queryClient.getQueryData([
+          "postDatail",
+          postId,
+        ]);
+        queryClient.setQueryData(["postDatail", postId], (olddata) => {
+          return { ...olddata, heart: !newData.heart };
+        });
+        return previousHeartData; //요청 실패할 경우 기존 데이터를 사용
+      },
+			//요청이 실패할 경우 다시 원래대로
+      onError: (rollback) => rollback(),
+      onSettled: () => {
+        // 요청 성공 or 실패 후 - 쿼리 무효화 = 데이터 최신상태 유지
+        queryClient.invalidateQueries(["postDatail", postId]);
+      },
+
+    }
+  );
+
+```
+- mutation 성공 후 쿼리를 업데이트 하는 방법에서 옵티미스틱 업데이트로 변경함에 따라 빠른 반응속도 
+
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/de5d5016-d9d3-422f-ae68-76dd31d50c7a" width="500" height="375" />
+
+
 ## 5. 파일 구조
 
