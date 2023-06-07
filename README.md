@@ -63,7 +63,8 @@
 <br/>
  
 ### 2. 나눔 글 페이지 & 이미지 슬라이더
-
+- React-Swiper & Slick Library를 사용하였습니다.
+- 이미지를 크게 보는 경우 modal 형태로 나타나도록 구현했습니다.
  <div style="display:flex; gap:10px; ">
    <img src="https://github.com/hyeonjy/Banana/assets/101038390/f56ad33c-a7c2-4cf6-b92f-17b79362a504" width="500" height="375" />
    <img src="https://github.com/hyeonjy/Banana/assets/101038390/3193c73f-7572-43aa-946c-56e64bb952c4" width="500" height="375" />
@@ -72,7 +73,8 @@
 <br/>
 
 ### 3. 위시리스트 추가 &  목록 확인
--
+- React Query 와 Optimistic Update를 활용하였습니다
+- 서버 요청 완료 전 UI를 업데이트를 통해 빠른 반응속도를 느낄 수 있습니다.
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/e4381f0d-a574-4f73-9ab5-5e79b67823d3" width="500" height="375" />
 </div>
@@ -80,7 +82,8 @@
 <br/>
 
 ### 4. 나의 나눔목록 & 스켈레톤 컴포넌트
--
+- 로그인 유저의 마이페이지에서 나눔 목록을 확인합니다.
+- React-loading-skeleton library를 통해 스켈레톤 컴포넌트를 구현했습니다.
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/e44d0052-5d85-4c7a-8c30-270f09ad78f6" width="500" height="375" />
 </div>
@@ -88,7 +91,7 @@
 <br/>
 
 ### 5. 글 작성자의 프로필 확인 
--
+- 다른 유저의 나눔 목록, 유저가 받은 후기를 확인할 수 있습니다.
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/abcd1425-5183-4d59-a29a-3948022ddbf1" width="500" height="375" />
 </div>
@@ -96,7 +99,8 @@
 <br/>
 
 ### 6. 게시물 검색 기능
--
+- 검색 키워드가 제목 혹은 내용에 포함되는 게시물을 검색할 수 있습니다.
+
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/e8bafa0a-5351-429d-beb4-47870bd4d4e9" width="700" height="375" />
 </div>
@@ -104,7 +108,7 @@
 <br/>
 
 ### 7. 최신순, 조회순 등 게시물 정렬 기능 (카테고리)
--
+- 등록순, 조회순 등 게시물을 정렬할 수 있습니다. 
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/59a14fee-4e56-47b6-a781-e5230d7d09d9" width="500" height="375" />
 </div>
