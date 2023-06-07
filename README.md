@@ -122,6 +122,44 @@
 
 
 ## 4. 개발 기록
+📋 React-Swiper currentIdx 버그 해결
+```javascript
+  // swiper onSlideChange 시 - 현재 이미지의 인덱스 저장 함수
+  const handleSlideChange = (swiper) => {
+    setImgCurrentIdx(swiper.realIndex);
+  };
+  
+  //...
+  
+   <StyledSwiper
+      loop={true}
+      onSlideChange={handleSlideChange}
+   >
+   </StyledSwiper>
+
+```
+- 기존에 사용했던 swiper.activeIndex는 Swiper 컴포넌트가 loop 모드일 경우에 정확한 인덱스를 반환하지 못함
+- swiper.realIndex로 대체
+
+<br/>
+
+---
+📋 Modal 관련 버그 해결
+```javascript
+  useEffect(() => {
+    const body = document.querySelector("body");
+    if (imgFullModal || activeGrade) {
+      body.classList.add("no-scroll");
+    } else if (!imgFullModal && !activeGrade) {
+      body.classList.remove("no-scroll");
+    }
+    return body.classList.remove("no-scroll");
+  }, [imgFullModal, activeGrade]);
+
+```
+- 모달 사용 시 스크롤 방지
+- 언마운트시(return) 스크롤 방지를 제거해 주지 않을 경우, 모달이 있는 상태에서 다른 페이지로 이동 시 여전히 스크롤이 막혀있는 상황이 발생 
+  
   
 ## 5. 파일 구조
 
