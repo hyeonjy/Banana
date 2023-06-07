@@ -51,28 +51,67 @@
 - react-js-pagination : 페이지네이션
 
 ## 3. 구현 기능 
-1. 나눔 글 작성
+### 1. 나눔 글 작성
  -  React-hook-form 라이브러리를 활용한 유효성 검사 후 에러 메세지가 표시됩니다.
+ -  이미지 파일 추가 & 삭제 & 대표사진을 확인할 수 있습니다.
  
-2. 나눔 글 페이지 & 이미지 슬라이더
- - 
+ <div style="display:flex; gap:10px;">
+   <img src="https://github.com/hyeonjy/Banana/assets/101038390/0c30f7e6-7ef1-4ddc-a42c-a431575a6ab9" width="500" height="375" />
+   <img src="https://github.com/hyeonjy/Banana/assets/101038390/503e4f8b-00c9-4cca-b07f-2c90dddb1bce" width="500" height="375" />
+ </div>
+<br/>
+<br/>
+ 
+### 2. 나눔 글 페이지 & 이미지 슬라이더
 
-3. 위시리스트 추가 &  목록 확인
+ <div style="display:flex; gap:10px; ">
+   <img src="https://github.com/hyeonjy/Banana/assets/101038390/f56ad33c-a7c2-4cf6-b92f-17b79362a504" width="500" height="375" />
+   <img src="https://github.com/hyeonjy/Banana/assets/101038390/3193c73f-7572-43aa-946c-56e64bb952c4" width="500" height="375" />
+</div>
+<br/>
+<br/>
 
-
-4. 나의 나눔목록 & 스켈레톤 컴포넌트
+### 3. 위시리스트 추가 &  목록 확인
 -
+ <div style="display:flex; gap:10px; ">
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/e4381f0d-a574-4f73-9ab5-5e79b67823d3" width="500" height="375" />
+</div>
+<br/>
+<br/>
 
-5. 글 작성자의 프로필 확인 
-- 
-
-7. 게시물 검색 기능
+### 4. 나의 나눔목록 & 스켈레톤 컴포넌트
 -
+ <div style="display:flex; gap:10px; ">
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/e44d0052-5d85-4c7a-8c30-270f09ad78f6" width="500" height="375" />
+</div>
+<br/>
+<br/>
 
-8. 최신순, 조회순 등 게시물 정렬 기능 (카테고리)
+### 5. 글 작성자의 프로필 확인 
 -
+ <div style="display:flex; gap:10px; ">
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/abcd1425-5183-4d59-a29a-3948022ddbf1" width="500" height="375" />
+</div>
+<br/>
+<br/>
 
-9. (예정) WebSocket을 이용한 채팅 기능 구현
+### 6. 게시물 검색 기능
+-
+ <div style="display:flex; gap:10px; ">
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/e8bafa0a-5351-429d-beb4-47870bd4d4e9" width="700" height="375" />
+</div>
+<br/>
+<br/>
+
+### 7. 최신순, 조회순 등 게시물 정렬 기능 (카테고리)
+-
+ <div style="display:flex; gap:10px; ">
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/59a14fee-4e56-47b6-a781-e5230d7d09d9" width="500" height="375" />
+</div>
+<br/>
+<br/>
+
+### 8. (예정) WebSocket을 이용한 채팅 기능 구현
 
 
 ## 4. 개발 기록
