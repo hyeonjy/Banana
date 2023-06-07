@@ -1,7 +1,10 @@
 ## BANANA : 바로 나누고 나눔받자
 
-(대표 이미지)
-
+<div>
+  <img src="https://github.com/hyeonjy/Banana/assets/101038390/39b025c1-f291-4cf7-8897-a7aa1fa4e717" />
+ </div>
+ <br/>
+<br/>
 🍌 BANANA는 사용하지 않지만 가치가 있는 패션 제품을 나누는 커뮤니티 웹사이트입니다.
 
 ## 0. 프로젝트 소개
