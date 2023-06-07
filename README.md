@@ -69,7 +69,7 @@
 - React-Swiper & Slick Library를 사용하였습니다.
 - 이미지를 크게 보는 경우 modal 형태로 나타나도록 구현했습니다.
  <div style="display:flex; gap:10px; ">
-   <img src="https://github.com/hyeonjy/Banana/assets/101038390/f56ad33c-a7c2-4cf6-b92f-17b79362a504" width="500" height="375" />
+   <img src="https://github.com/hyeonjy/Banana/assets/101038390/8c5aafa0-21b2-4513-ac35-08868685d6eb" width="500" height="375" />
    <img src="https://github.com/hyeonjy/Banana/assets/101038390/3193c73f-7572-43aa-946c-56e64bb952c4" width="500" height="375" />
 </div>
 <br/>
