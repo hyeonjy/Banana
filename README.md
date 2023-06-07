@@ -1,7 +1,7 @@
 ## BANANA : 바로 나누고 나눔받자
 
-<div>
-  <img src="https://github.com/hyeonjy/Banana/assets/101038390/39b025c1-f291-4cf7-8897-a7aa1fa4e717" />
+<div style="display:flex; width:100%; justifyContent:center;">
+  <img width="700" height="350" src="https://github.com/hyeonjy/Banana/assets/101038390/39b025c1-f291-4cf7-8897-a7aa1fa4e717" />
  </div>
  <br/>
 <br/>
