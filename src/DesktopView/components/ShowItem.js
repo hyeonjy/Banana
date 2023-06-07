@@ -23,6 +23,7 @@ export const Product = styled(Link)`
       flex-direction: column;
       justify-content: center;
       width: 21%;
+      height: fit-content;
       &:not(:nth-of-type(4n + 1)) {
         margin-left: 4%;
       }
@@ -30,20 +31,35 @@ export const Product = styled(Link)`
     `}
 `;
 
+export const Thum = styled.span`
+  ${(props) =>
+    props.layout === "col" &&
+    css`
+      height: 0;
+      width: 100%;
+      padding-bottom: 100%;
+      position: relative;
+    `}
+`;
+
 export const ProductImg = styled.img`
   ${(props) =>
     props.layout === "col" &&
     css`
-      height: 200px;
+      height: 100% !important;
       width: 100%;
       object-fit: cover;
       border-radius: 8px;
+      position: absolute;
+      top: 0;
+      left: 0;
     `}
   ${(props) =>
     props.layout === "row" &&
     css`
       width: 110px;
       height: 80px;
+      border-radius: 5px;
       object-fit: cover;
       flex-shrink: 0;
       margin-right: 10px;
@@ -157,6 +173,7 @@ export const EachReview = styled.div`
   width: 100%;
   border-top: 1px solid #a8a8a869;
   padding: 15px 0 20px 10px;
+  max-height: 100px;
   &:first-of-type {
     padding-top: 5px;
     border-top: 0;
@@ -259,13 +276,16 @@ export function ShowItem({
                 },
               }}
             >
-              <ProductImg
-                layout={layout}
-                src={`data:image/jpeg;base64,${item.img_src.data}`}
-                alt={item.img_src.filename}
-                // src={require(`../../../upload/${item.img_src}`)}
-                // src={require(`../../Data/Img/${item.img_src}`)}
-              />
+              <Thum layout={layout}>
+                <ProductImg
+                  layout={layout}
+                  src={`data:image/jpeg;base64,${item.img_src.data}`}
+                  alt={item.img_src.filename}
+                  // src={require(`../../../upload/${item.img_src}`)}
+                  // src={require(`../../Data/Img/${item.img_src}`)}
+                />
+              </Thum>
+
               <ProductDatailDiv layout={layout}>
                 <ProductHeader>
                   <ProductTitle layout={layout}>{item.title}</ProductTitle>

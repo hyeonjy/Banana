@@ -6,8 +6,8 @@ import {
   MembershipWrap,
 } from "../components/PostDatil";
 import { ProfileName } from "../routes/MyPage";
-import styled from "styled-components";
-import { Container } from "./More";
+import styled, { css } from "styled-components";
+import { Container, ProductsBox } from "./More";
 import { useEffect, useState } from "react";
 import Modal, { GradeIcon, gradeList } from "../../Modal";
 import { ShowItem, ShowReview } from "../components/ShowItem";
@@ -55,6 +55,13 @@ const ItemDiv = styled.div`
   gap: 5px;
   margin-top: 20px;
   width: 100%;
+  min-height: 380px;
+  ${(props) =>
+    props.reviewPage &&
+    css`
+      flex-wrap: unset;
+      flex-direction: column;
+    `}
 `;
 
 function UserInfo() {
@@ -125,7 +132,7 @@ function UserInfo() {
               </CateDiv>
             </>
           )}
-          <ItemDiv>
+          <ItemDiv reviewPage={reviewPage}>
             {/* 유저 나눔 목록 & 후기 목록 */}
             {reviewPage &&
               (data?.reviews ? (
