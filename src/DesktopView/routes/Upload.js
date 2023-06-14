@@ -9,7 +9,8 @@ import { itemsGroup } from "../../Data/ItemGroup";
 import area from "../../Data/Area";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import useAxios from "../../useAxio";
+import { useMutation, useQueryClient } from "react-query";
+import { postWriteApi } from "../../Api";
 
 const Container = styled.div`
   margin: 157px auto;
@@ -25,11 +26,12 @@ const Container = styled.div`
     rgba(0, 0, 0, 0.3) 0px 25px 60px -30px;
   margin-bottom: 100px;
   padding: 50px;
+  min-height: 500px;
 `;
 
 // 게시글 (메인 글씨)
 const KeySubject = styled.h1`
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 600;
   border-bottom: 1px solid #e9ecef;
   padding: 10px;
@@ -70,19 +72,25 @@ const SelectTitle = styled.h1`
   color: gray;
 `;
 
-const Select = styled.select.attrs({ required: true })`
-  height: 30px;
-  width: 100px;
+const Select = styled.select`
+  height: 40px;
+  width: 120px;
   border-radius: 8px;
   margin-left: 5px;
+  /* border: 1px solid ; */
+  background-color: rgb(255 248 202);
+  padding: 5px;
+  cursor: pointer;
 `;
 
 const Option = styled.option`
-  font-size: 15px;
+  font-size: 150x;
+  height: 20px;
+  margin-top: 10px;
 `;
 
 // 제목과 내용 input
-const TextInput = styled.textarea.attrs({ required: true })`
+const TextInput = styled.textarea`
   font-size: 15px;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -103,6 +111,7 @@ const TextInput = styled.textarea.attrs({ required: true })`
 `;
 
 const CameraLabel = styled.label`
+  cursor: pointer;
   width: 50px;
   display: flex;
   flex-direction: column;
@@ -117,12 +126,15 @@ const CameraLabel = styled.label`
 const CameraIcon = styled(FontAwesomeIcon)`
   font-size: 25px;
   margin-bottom: 3px;
+  cursor: pointer;
 `;
 
 const ImgInput = styled.input.attrs({ required: true })`
+  cursor: pointer;
   opacity: 0;
   position: absolute;
   left: 60px;
+  /* width: 10px; */
 `;
 
 // 미리보기 이미지 전체 div
@@ -177,6 +189,12 @@ const SubmitBtn = styled.button`
   font-weight: 700;
   cursor: pointer;
 `;
+const ErrorSpan = styled.span`
+  margin-right: 10px;
+  font-size: 17px;
+  color: red;
+  font-weight: 600;
+`;
 
 const Xbtn = styled(FontAwesomeIcon)`
   font-size: 12px;
@@ -187,6 +205,7 @@ const Xbtn = styled(FontAwesomeIcon)`
   z-index: 5;
   color: white;
   background: black;
+  cursor: pointer;
 `;
 const LetterCount = styled.div`
   float: right;
@@ -201,52 +220,69 @@ const LetterCount = styled.div`
 function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
+  const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
   const imgRef = useRef();
 
-  // option 값이 바뀌면 실행되는 함수
+  //React Hook Form
+  const {
+    watch,
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  // option 값이 바뀌면 실행
   const optionChange = (e) => {
-    const searchItem = itemsGroup.find((item) => e.target.value === item.main);
-    if (e.target.value === "") {
-      setMinor(["선택하세요"]);
-    } else {
-      setMinor(searchItem.sub);
-    }
+    const item = itemsGroup.find((item) => e.target.value === item.main);
+    setMinor(item.sub);
+    setValue("minor", item.sub[0]);
   };
 
   // 이미지 저장 함수
   const saveImgFile = (e) => {
     const imageLists = e.target.files;
-    let imageUrlLists = [...imgFile];
+
+    let imageFileLists = [...imgFile, ...imageLists];
+    let imageUrlLists = [...imgURLs];
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
-      console.log(currentImageUrl);
     }
     if (imageUrlLists.length > 5) {
       alert("최대 5장까지만 업로드 합니다.");
       imageUrlLists = imageUrlLists.slice(0, 5);
     }
-    setImgFile(imageUrlLists);
+    setImgFile(imageFileLists);
+    setImgURLs(imageUrlLists);
   };
 
   // 이미지 삭제시 실행되는 함수
   const handleDelete = (index) => {
     setImgFile(imgFile.filter((itme, idx) => idx !== index));
+    setImgURLs(imgURLs.filter((itme, idx) => idx !== index));
   };
-  const { watch, register, handleSubmit } = useForm();
 
-  const { response, loading, error, refetch, executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/postwrite`,
+  const history = useHistory();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation((formdata) => postWriteApi(formdata), {
+    onSuccess: (postId) => {
+      queryClient.invalidateQueries("lastpost");
+      queryClient.invalidateQueries("mypage");
+      alert("등록되었습니다");
+      history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
+    },
+    onError: () => {
+      alert("Error!");
+    },
   });
+
   //form 유효할 때 실행
   const onValid = (data) => {
-    console.log("onValid");
-    console.log(data); // form 데이터
+    console.log(data);
 
     //data: title, content, major, minor
-    console.log(imgFile); //img url 데이터
     const formdata = new FormData();
     formdata.append("title", data.title);
     formdata.append("contents", data.contents);
@@ -254,28 +290,13 @@ function Upload() {
     formdata.append("major", data.major);
     formdata.append("minor", data.minor);
 
-    imgFile.forEach((image, index) => {
-      formdata.append(`imgFile[${index}]`, image);
+    imgFile.forEach((image) => {
+      formdata.append(`images`, image);
     });
-    const user = { userId: 1 };
     formdata.append("userId", 1);
-    for (const entry of formdata.entries()) {
-      console.log(entry);
-    }
-    executePost({
-      data: formdata,
-      url: `http://localhost:8080/postwrite`,
-      config: {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      },
-    });
-    alert("등록되었습니다"); // 따로 cumstom ????
-    //해당 post 페이지로 이동
-    //history.push("");
+    mutate(formdata);
   };
-  console.log(watch("content"));
+
   // 이미지 썸네일 가로 스크롤
   const previewBox = useRef();
   useEffect(() => {
@@ -292,16 +313,17 @@ function Upload() {
     el.addEventListener("wheel", onWheel);
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
+
   return (
     <div style={{ position: "relative" }}>
       {/* 노란색 그라데이션 배경 */}
       <BackGround />
 
       <Container>
-        <KeySubject>게시글</KeySubject>
+        <KeySubject>✏️ 글쓰기</KeySubject>
         {/* 폼 시작 */}
         <CreateForm
-          encType="multipart/form-data"
+          // encType="multipart/form-data"
           onSubmit={handleSubmit(onValid)}
         >
           <Box>
@@ -326,12 +348,7 @@ function Upload() {
                 })}
               </Select>
               {/* 옷 소분류 */}
-              <Select
-                name="minor"
-                {...register("minor", {
-                  required: "하위 카테고리를 선택해주세요",
-                })}
-              >
+              <Select name="minor" {...register("minor")}>
                 {minor.map((item, index) => {
                   return (
                     <Option key={index} value={item}>
@@ -349,7 +366,8 @@ function Upload() {
                 name="area"
                 {...register("area", { required: "지역을 선택해주세요" })}
               >
-                {area.map((item, index) => {
+                <Option value="">선택하세요</Option>
+                {area.slice(1).map((item, index) => {
                   return (
                     <Option key={index} value={item}>
                       {item}
@@ -365,7 +383,6 @@ function Upload() {
             type="text"
             placeholder="제목을 입력해주세요."
             name="title"
-            required
             titletext={"true"}
             {...register("title", {
               required: "제목을 작성해주세요",
@@ -380,7 +397,6 @@ function Upload() {
               type="text"
               placeholder="내용을 입력해주세요."
               maxLength={300}
-              required
               name="contents"
               {...register("contents", {
                 required: "내용을 작성하세요",
@@ -407,17 +423,30 @@ function Upload() {
               multiple
               required
             />
-            <SubmitBtn type="submit">등록</SubmitBtn>
+            <div>
+              {errors.major ? (
+                <ErrorSpan>{errors.major.message}</ErrorSpan>
+              ) : errors.minor ? (
+                <ErrorSpan>{errors.minor.message}</ErrorSpan>
+              ) : errors.area ? (
+                <ErrorSpan>{errors.area.message}</ErrorSpan>
+              ) : errors.title ? (
+                <ErrorSpan>{errors.title.message}</ErrorSpan>
+              ) : errors.contents ? (
+                <ErrorSpan>{errors.contents.message}</ErrorSpan>
+              ) : null}
+              <SubmitBtn type="submit">등록</SubmitBtn>
+            </div>
           </Box>
 
           {/* 사진 미리보기 */}
           <PreviewBox ref={previewBox}>
-            {imgFile.map((item, index) => {
+            {imgURLs.map((item, index) => {
               return (
                 <ImgBox key={index}>
                   {index === 0 && <span>대표</span>}
                   <ImgPreview
-                    src={imgFile ? item : `../../Img/banana.png`}
+                    src={imgURLs ? item : `../../Img/banana.png`}
                     alt="프로필 이미지"
                   />
                   <Xbtn

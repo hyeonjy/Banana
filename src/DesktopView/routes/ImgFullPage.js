@@ -1,4 +1,3 @@
-import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
@@ -9,7 +8,6 @@ import "swiper/css/pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./ImgFullPage.css";
-import { ItemObj } from "../../Data/ItemObj";
 const ImgContainer = styled.div`
   position: absolute;
   z-index: 500;
@@ -95,7 +93,12 @@ const ImgFullPage = ({ item, index, setImgFullModal }) => {
       >
         {item.imgs.map((item, index) => (
           <ImgSlide key={index}>
-            <EachImg key={index} src={require(`../../Data/Img/${item}`)} />
+            <EachImg
+              key={index}
+              // src={require(`../../Data/Img/${item}`)}
+              alt={item.filename}
+              src={`data:image/jpeg;base64,${item.data}`}
+            />
           </ImgSlide>
         ))}
         <GoBackBtn

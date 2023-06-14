@@ -7,12 +7,14 @@ import "swiper/css/pagination";
 import "./NewItem.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ItemObj } from "../../Data/ItemObj";
-import { useRecoilValue } from "recoil";
-import { postData } from "../../atom";
+
 import { calcTimeAgo } from "./ShowItem";
+import useAxios from "../../useAxio";
+import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { LastDataApi } from "../../Api";
 
 const NewContainer = styled.div`
   width: 96%;
@@ -86,8 +88,7 @@ const EachDetail = styled.span`
 //------------------------------//
 
 function NewItem() {
-  const data = useRecoilValue(postData);
-  const NewtList = data.slice(0, 8);
+  const { data: lastItem } = useQuery("lastPost", LastDataApi);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
   return (
     <>
@@ -96,54 +97,73 @@ function NewItem() {
           <Newtitle>
             <span>N</span>EW
           </Newtitle>
-
-          <NavWrap>
-            <FontAwesomeIcon
-              onClick={() => {
-                if (currentPage > 1) setCurrentPage(currentPage - 1);
-              }}
-              className="prev"
-              icon={faAngleLeft}
-            />
-            <NavSpan>
-              {currentPage}/{Math.ceil(NewtList.length / 4)}
-            </NavSpan>
-            <FontAwesomeIcon
-              onClick={() => {
-                if (currentPage < Math.ceil(NewtList.length / 4))
-                  setCurrentPage(currentPage + 1);
-              }}
-              className="next"
-              icon={faAngleRight}
-            />
-          </NavWrap>
+          {lastItem && (
+            <NavWrap>
+              <FontAwesomeIcon
+                onClick={() => {
+                  if (currentPage > 1) setCurrentPage(currentPage - 1);
+                }}
+                className="prev"
+                icon={faAngleLeft}
+              />
+              <NavSpan>
+                {currentPage}/{Math.ceil(lastItem.length / 4)}
+              </NavSpan>
+              <FontAwesomeIcon
+                onClick={() => {
+                  if (currentPage < Math.ceil(lastItem.length / 4))
+                    setCurrentPage(currentPage + 1);
+                }}
+                className="next"
+                icon={faAngleRight}
+              />
+            </NavWrap>
+          )}
         </Header>
-        <ItemDiv
-          modules={[Navigation]}
-          spaceBetween={20}
-          slidesPerView={4}
-          slidesPerGroup={4}
-          navigation={{
-            nextEl: ".next",
-            prevEl: ".prev",
-            onlyInViewport: true,
-          }}
-        >
-          {NewtList.map((item, index) => {
-            const timeAgo = calcTimeAgo(item);
-            return (
-              <SwiperSlide key={index}>
-                <EachItem to={`/post/${item.post_id}`}>
-                  <EachThum src={require(`../../Data/Img/${item.img_src}`)} />
-                  <EachTitle>{item.title}</EachTitle>
-                  <EachDetail>
-                    {item.area} | {timeAgo}
-                  </EachDetail>
-                </EachItem>
-              </SwiperSlide>
-            );
-          })}
-        </ItemDiv>
+        {lastItem ? (
+          <ItemDiv
+            modules={[Navigation]}
+            spaceBetween={20}
+            slidesPerView={4}
+            slidesPerGroup={4}
+            navigation={{
+              nextEl: ".next",
+              prevEl: ".prev",
+              onlyInViewport: true,
+            }}
+          >
+            {lastItem.map((item, index) => {
+              const timeAgo = calcTimeAgo(item);
+              return (
+                <SwiperSlide key={index}>
+                  <EachItem to={`/post/${item.post_id}`}>
+                    <EachThum
+                      // src={require(`../../Data/Img/${item.img_src}`)}
+                      alt={item.img_src.filename}
+                      src={`data:image/jpeg;base64,${item.img_src.data}`}
+                    />
+                    <EachTitle>{item.title}</EachTitle>
+                    <EachDetail>
+                      {item.area} | {timeAgo}
+                    </EachDetail>
+                  </EachItem>
+                </SwiperSlide>
+              );
+            })}
+          </ItemDiv>
+        ) : (
+          <>
+            <div style={{ display: "flex", gap: "20px" }}>
+              {Array(4)
+                .fill()
+                .map((_, index) => (
+                  <EachItem as="div" key={index}>
+                    <Skeleton height={"150px"} width={"190px"} />
+                  </EachItem>
+                ))}
+            </div>
+          </>
+        )}
       </NewContainer>
     </>
   );
