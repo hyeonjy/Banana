@@ -1,7 +1,7 @@
 // const HOST_IP = "172.30.72.97"; //스벅
-//const HOST_IP = "172.30.1.46"; //커나
+const HOST_IP = "172.30.1.48"; //커나
 // const HOST_IP = "172.16.61.69"; //세종
-const HOST_IP = "localhost";
+// const HOST_IP = "localhost";
 /*서버 연동 */
 const express = require("express");
 const path = require("path");

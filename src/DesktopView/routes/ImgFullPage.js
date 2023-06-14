@@ -1,4 +1,3 @@
-import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
@@ -9,7 +8,6 @@ import "swiper/css/pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./ImgFullPage.css";
-import { ItemObj } from "../../Data/ItemObj";
 const ImgContainer = styled.div`
   position: absolute;
   z-index: 500;
