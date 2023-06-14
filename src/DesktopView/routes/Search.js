@@ -66,7 +66,7 @@ function Search() {
   );
   useEffect(() => {
     refetch();
-  }, [searchValue]);
+  }, [searchValue, currentQuery]);
 
   // const { response, loading, error, executeGet } = useAxios({
   //   method: "get",
