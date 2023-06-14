@@ -134,7 +134,7 @@
     } else if (!imgFullModal && !activeGrade) {
       body.classList.remove("no-scroll");
     }
-    return body.classList.remove("no-scroll");
+    return ()=>body.classList.remove("no-scroll");
   }, [imgFullModal, activeGrade]);
 
 ```
