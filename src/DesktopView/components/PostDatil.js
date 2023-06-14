@@ -1,15 +1,15 @@
-import { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { BsFillShareFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
-import { useEffect } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { heartChangeApi, postStateChangeApi } from "../../Api";
+import { useState } from "react";
 
 //-----------오른쪽 컨테이너-----------//
 export const PostRightDiv = styled.div`
@@ -157,6 +157,30 @@ const FlexColumn = styled.div`
   flex-direction: column;
 `;
 
+const EllipsisDiv = styled.div`
+  border-radius: 10px;
+  background-color: rgb(255, 248, 202);
+  width: 80px;
+  height: 45px;
+  display: flex;
+  flex-direction: column;
+  display: ${(prop) => (prop.EllipsisToggle ? "block" : "none")};
+  position: absolute;
+  top: -40px;
+  left: -50px;
+`;
+
+const EllipsisOption = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  font-size: 13px;
+`;
+
+const EllipsisIcon = styled(FontAwesomeIcon)`
+  font-size: 30px;
+  cursor: pointer;
+`;
+
 const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
   // const [heart, setHeart] = useState(initHeart);
 
@@ -193,10 +217,10 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
         return previousHeartData;
       },
       onError: (rollback) => rollback(),
-      onSettled: () => {
-        // 요청 성공 or 실패 후
-        queryClient.invalidateQueries(["postDatail", postId]);
-      },
+      // onSettled: () => {
+      //   // 요청 성공 or 실패 후
+      //   queryClient.invalidateQueries(["postDatail", postId]);
+      // },
     }
   );
 
@@ -218,6 +242,8 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
   //   });
   // };
   const timeAgo = calcTimeAgo(item);
+
+  const [EllipsisToggle, setEllipsisToggle] = useState(false);
 
   return (
     <PostRightDiv>
@@ -285,8 +311,22 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
             <ShareIcon size="25" />
           </IconBtnDiv>
           {isWriter ? (
-            <GoChatBtn>삭제하기</GoChatBtn>
+            <>
+              <div style={{ position: "relative" }}>
+                <EllipsisDiv EllipsisToggle={EllipsisToggle}>
+                  <EllipsisOption>수정하기</EllipsisOption>
+                  <EllipsisOption>삭제하기</EllipsisOption>
+                </EllipsisDiv>
+                <EllipsisIcon
+                  onClick={() => {
+                    setEllipsisToggle((prev) => !prev);
+                  }}
+                  icon={faEllipsis}
+                />
+              </div>
+            </>
           ) : (
+            // <GoChatBtn>삭제하기</GoChatBtn>
             <GoChatBtn
               onClick={() => {
                 //handleChatClick(postWriter, postId);
