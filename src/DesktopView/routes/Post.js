@@ -85,6 +85,7 @@ const PostImg = styled.img`
 function Post() {
   const { postId } = useParams();
   const [imgCurrentIdx, setImgCurrentIdx] = useState(0); // 현재 img 페이지 index
+  const [loopIdx, setLoopIdx] = useState(0);
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
 
   //img 1개 -> Navigation hidden
@@ -93,8 +94,6 @@ function Post() {
 
   // 수정 권한 - 본인 글인지 확인
   const [isWriter, setIsWriter] = useState(false); //item.userId === LoginId;
-
-  // const [heartChange, setHeart] = useState();
 
   // 패치
   const { data, refetch } = useQuery(["postDatail", postId], () =>
@@ -111,8 +110,8 @@ function Post() {
   }, [data]);
 
   // swiper onSlideChange 시 - 현재 img index 저장
-  const handleSlideChange = (currentIndex) => {
-    setImgCurrentIdx(currentIndex.activeIndex);
+  const handleSlideChange = (swiper) => {
+    setImgCurrentIdx(swiper.realIndex);
   };
 
   useEffect(() => {
@@ -122,7 +121,9 @@ function Post() {
     } else if (!imgFullModal && !activeGrade) {
       body.classList.remove("no-scroll");
     }
+    return () => body.classList.remove("no-scroll");
   }, [imgFullModal, activeGrade]);
+
   return (
     <>
       <PageContainer
