@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,11 +18,18 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Post.css";
 
-import PostRightContents from "../components/PostDatil";
+import PostRightContents, {
+  Header,
+  PostContent,
+  PostContents,
+  PostRightDiv,
+} from "../components/PostDatil";
 import { LoginId } from "../../Data/UserObj";
 import { useEffect } from "react";
-import useAxios from "../../useAxio";
 import ImgFullPage from "./ImgFullPage";
+import Skeleton from "react-loading-skeleton";
+import { useQuery } from "react-query";
+import { postPageApi } from "../../Api";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -78,6 +85,7 @@ const PostImg = styled.img`
 function Post() {
   const { postId } = useParams();
   const [imgCurrentIdx, setImgCurrentIdx] = useState(0); // 현재 img 페이지 index
+  const [loopIdx, setLoopIdx] = useState(0);
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
 
   //img 1개 -> Navigation hidden
@@ -88,39 +96,22 @@ function Post() {
   const [isWriter, setIsWriter] = useState(false); //item.userId === LoginId;
 
   // 패치
-  const [item, setItem] = useState();
-  const [heart, setHeart] = useState();
-  const { response, loading, error, refetch, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/postdata/${postId}`,
-  });
+  const { data, refetch } = useQuery(["postDatail", postId], () =>
+    postPageApi(postId)
+  );
   useEffect(() => {
-    //refetch();
-    executeGet();
+    refetch();
   }, [postId]);
 
   useEffect(() => {
-    if (!loading) {
-      setItem(response.post);
-      setHeart(response.heart);
-      console.log(response.post.nickname);
-      if (response.post.nickname === LoginId) {
-        setIsWriter(true);
-      } else {
-        setIsWriter(false);
-      }
-    } else {
-      if (error) {
-        console.log("error:", error);
-      }
+    if (data) {
+      setIsWriter(LoginId === data.post.nickname);
     }
-  }, [response, loading, error, postId]);
-
-  //img 클릭 시 Fullscreen
+  }, [data]);
 
   // swiper onSlideChange 시 - 현재 img index 저장
-  const handleSlideChange = (currentIndex) => {
-    setImgCurrentIdx(currentIndex.activeIndex);
+  const handleSlideChange = (swiper) => {
+    setImgCurrentIdx(swiper.realIndex);
   };
 
   useEffect(() => {
@@ -130,15 +121,29 @@ function Post() {
     } else if (!imgFullModal && !activeGrade) {
       body.classList.remove("no-scroll");
     }
+    return () => body.classList.remove("no-scroll");
   }, [imgFullModal, activeGrade]);
+
   return (
     <>
       <PageContainer
         activeGrade={activeGrade}
         activeModal={activeGrade || imgFullModal}
       >
-        {!item ? (
-          <span>Loading..</span>
+        {!data?.post ? (
+          <PostContainer>
+            <Skeleton height={"400px"} width={"400px"} />
+            <PostRightDiv>
+              <Header styled={{ paddingLeft: "30px" }}>
+                <Skeleton height={"55px"} width={440} />
+              </Header>
+              <PostContents>
+                <PostContent>
+                  <Skeleton height={"190px"} width={"100%"} />
+                </PostContent>
+              </PostContents>
+            </PostRightDiv>
+          </PostContainer>
         ) : (
           <PostContainer>
             <div>
@@ -168,14 +173,20 @@ function Post() {
                 }}
               >
                 {/* PostImg */}
-                {item.imgs.map((src, index) => (
+                {data.post.imgs.map((src, index) => (
                   <ImgSlide
                     key={index}
                     onClick={() => {
                       setImgFullModal(true);
                     }}
                   >
-                    <PostImg src={require(`../../Data/Img/${src}`)} />
+                    <PostImg
+                      alt={src.filename}
+                      src={`data:image/jpeg;base64,${src.data}`}
+
+                      // src={require(`../../../upload/${src}`)}
+                      // src={require(`../../Data/Img/${src}`)}
+                    />
                   </ImgSlide>
                 ))}
                 {/* CustomNav */}
@@ -189,15 +200,13 @@ function Post() {
             </div>
 
             {/* 오른쪽 Post Info + 공유/찜/채팅하기 */}
-            {item && (
-              <PostRightContents
-                setActiveGrade={setActiveGrade}
-                item={item}
-                isWriter={isWriter}
-                heart={heart}
-                setHeart={setHeart}
-              />
-            )}
+            <PostRightContents
+              setActiveGrade={setActiveGrade}
+              item={data.post}
+              isWriter={isWriter}
+              initHeart={data.heart}
+              // setHeart={setHeart}
+            />
           </PostContainer>
         )}
 
@@ -210,7 +219,7 @@ function Post() {
       )}
       {imgFullModal && !activeGrade && (
         <ImgFullPage
-          item={item}
+          item={data.post}
           index={imgCurrentIdx}
           setImgFullModal={setImgFullModal}
         />

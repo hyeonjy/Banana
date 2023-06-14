@@ -1,12 +1,13 @@
 import { BrowserView, MobileView } from "react-device-detect";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { MobileRouter } from "./Mrouter";
 import { DeskTopRouter } from "./Router";
 import { useRecoilState } from "recoil";
 import { postData } from "./atom";
 import { useEffect } from "react";
 import useAxios from "./useAxio";
-
+import { DotWave } from "@uiball/loaders";
+import { Pulsar } from "@uiball/loaders";
 const GlobalStyle = createGlobalStyle`
 
   html, body, div, span, applet, object, iframe,
@@ -67,6 +68,13 @@ button{
   font-family: Pretendard;
 }
 `;
+const Banana = styled.span`
+  color: #fae100;
+  font-size: 40px;
+  font-family: yg-jalnan;
+  margin-bottom: 20px;
+`;
+
 function App() {
   const [posts, setPosts] = useRecoilState(postData);
   const { response, loading, error, executeGet } = useAxios({
@@ -79,7 +87,6 @@ function App() {
     console.log("app.js");
   }, []);
   useEffect(() => {
-    console.log(response, loading, error);
     if (!loading && !error && response) {
       console.log(response);
       setPosts(response);
@@ -90,14 +97,24 @@ function App() {
       <GlobalStyle />
       <BrowserView>
         {loading || error || posts.length === 0 ? (
-          <span>loading...</span>
+          <div className="loadingWrap">
+            <Banana>BANANA</Banana>
+            <Pulsar size={60} speed={1.75} color="#fae100" />
+            {/* <DotWave size={60} speed={1} color="#fae100" /> */}
+          </div>
         ) : (
-          <DeskTopRouter />
+          <>
+            <DeskTopRouter />
+          </>
         )}
       </BrowserView>
       <MobileView>
         {loading || error || posts.length === 0 ? (
-          <span>loading...</span>
+          <div className="loadingWrap">
+            <Banana>BANANA</Banana>
+            <Pulsar size={60} speed={1.75} color="#fae100" />
+            {/* <DotWave size={60} speed={1} color="#fae100" /> */}
+          </div>
         ) : (
           <MobileRouter />
         )}

@@ -1,17 +1,18 @@
-import { useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { BsFillShareFill } from "react-icons/bs";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { UserObj } from "../../Data/UserObj";
+import { Link, useParams } from "react-router-dom";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
-import useAxios from "../../useAxio";
+import { useMutation, useQueryClient } from "react-query";
+import { heartChangeApi, postStateChangeApi } from "../../Api";
+import { useState } from "react";
 
 //-----------오른쪽 컨테이너-----------//
-const PostRightDiv = styled.div`
+export const PostRightDiv = styled.div`
   width: 470px;
   height: 400px;
 `;
@@ -51,7 +52,7 @@ export const MembershipText = styled.span`
 `;
 
 //---------Post 정보--------//
-const PostContents = styled.div`
+export const PostContents = styled.div`
   padding: 17px 15px;
 `;
 const PostTitle = styled.div`
@@ -85,7 +86,7 @@ const PostDetail = styled.span`
   gap: 8px;
   align-items: end;
 `;
-const PostContent = styled.span`
+export const PostContent = styled.span`
   line-height: 24px;
 
   white-space: break-spaces;
@@ -156,36 +157,78 @@ const FlexColumn = styled.div`
   flex-direction: column;
 `;
 
-const PostRightContents = ({
-  item,
-  setActiveGrade,
-  isWriter,
-  heart,
-  setHeart,
-}) => {
-  const { executePost: executeChangeState } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/stateChange`,
-  });
+const EllipsisDiv = styled.div`
+  border-radius: 10px;
+  background-color: rgb(255, 248, 202);
+  width: 80px;
+  height: 45px;
+  display: flex;
+  flex-direction: column;
+  display: ${(prop) => (prop.EllipsisToggle ? "block" : "none")};
+  position: absolute;
+  top: -40px;
+  left: -50px;
+`;
 
-  const { executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/heartclick`,
-  });
+const EllipsisOption = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  font-size: 13px;
+`;
 
-  const history = useHistory();
+const EllipsisIcon = styled(FontAwesomeIcon)`
+  font-size: 30px;
+  cursor: pointer;
+`;
+
+const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
+  // const [heart, setHeart] = useState(initHeart);
+
   const { postId } = useParams();
-  //나눔 상태 변경
-  const [SelectedState, setSelected] = useState(item.state);
-  const handleChangeSelect = (e) => {
-    executeChangeState({
-      url: `http://localhost:8080/stateChange`,
-      data: { postId, state: e.target.value },
-    });
-    setSelected(e.target.value);
-    item.state = SelectedState; //DB의 state 값 update
 
-    alert("상태가 변경되었습니다");
+  //나눔 상태 변경
+  const { mutate: mutateState } = useMutation(
+    (state) => postStateChangeApi(state),
+    {
+      onSuccess: (state) => {
+        alert("상태가 변경되었습니다");
+        queryClient.invalidateQueries(["postDatail", postId]);
+      },
+    }
+  );
+  //찜 상태 변경
+  const queryClient = useQueryClient();
+  const { mutate: mutateHeart } = useMutation(
+    (heart) => heartChangeApi(heart),
+    {
+      // onSuccess: () => {
+      //   queryClient.invalidateQueries(["postDatail", postId]);
+      // },
+
+      onMutate: async (newData) => {
+        // await queryClient.cancelQueries(["postDatail", postId]);
+        const previousHeartData = queryClient.getQueryData([
+          "postDatail",
+          postId,
+        ]);
+        queryClient.setQueryData(["postDatail", postId], (olddata) => {
+          return { ...olddata, heart: !newData.heart };
+        });
+        return previousHeartData;
+      },
+      onError: (rollback) => rollback(),
+      // onSettled: () => {
+      //   // 요청 성공 or 실패 후
+      //   queryClient.invalidateQueries(["postDatail", postId]);
+      // },
+    }
+  );
+
+  const handleChangeSelect = (e) => {
+    mutateState({ postId, state: e.target.value });
+  };
+  const handleHeart = () => {
+    mutateHeart({ heart: initHeart, userId: 1, postId });
   };
 
   //채팅으로 이동
@@ -200,13 +243,7 @@ const PostRightContents = ({
   // };
   const timeAgo = calcTimeAgo(item);
 
-  const handleHeart = () => {
-    executePost({
-      url: "http://localhost:8080/heartclick",
-      data: { heart, userId: 1, postId },
-    });
-    setHeart(!heart);
-  };
+  const [EllipsisToggle, setEllipsisToggle] = useState(false);
 
   return (
     <PostRightDiv>
@@ -242,7 +279,7 @@ const PostRightContents = ({
           <FlexColumn style={{ gap: "15px" }}>
             {isWriter && (
               <StateSelect
-                value={SelectedState}
+                value={item.state}
                 onChange={(e) => handleChangeSelect(e)}
               >
                 <option value="wait">대기중</option>
@@ -260,11 +297,11 @@ const PostRightContents = ({
         <ButtomBtnDiv>
           <IconBtnDiv>
             <HeartSvg
-              heart={heart}
+              heart={initHeart}
               width="35"
               height="35"
               viewBox="12 10 30 40"
-              fill={heart ? "red" : "none"}
+              fill={initHeart ? "red" : "none"}
               stroke="black"
               strokeWidth="1.5"
               onClick={handleHeart}
@@ -274,8 +311,22 @@ const PostRightContents = ({
             <ShareIcon size="25" />
           </IconBtnDiv>
           {isWriter ? (
-            <GoChatBtn>삭제하기</GoChatBtn>
+            <>
+              <div style={{ position: "relative" }}>
+                <EllipsisDiv EllipsisToggle={EllipsisToggle}>
+                  <EllipsisOption>수정하기</EllipsisOption>
+                  <EllipsisOption>삭제하기</EllipsisOption>
+                </EllipsisDiv>
+                <EllipsisIcon
+                  onClick={() => {
+                    setEllipsisToggle((prev) => !prev);
+                  }}
+                  icon={faEllipsis}
+                />
+              </div>
+            </>
           ) : (
+            // <GoChatBtn>삭제하기</GoChatBtn>
             <GoChatBtn
               onClick={() => {
                 //handleChatClick(postWriter, postId);

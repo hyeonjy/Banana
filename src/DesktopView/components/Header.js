@@ -157,6 +157,7 @@ function Header() {
       <SearchBox onSubmit={handleSubmit(onValid)}>
         <Search
           placeholder="어떤 옷을 찾으시나요?"
+          autoComplete="off"
           {...register("searchContent", { required: "검색어를 입력해주세요" })}
         />
         <SearchInput type="submit">
