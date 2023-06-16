@@ -5,13 +5,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { ProductHeader } from "../../DesktopView/routes/Gruop";
 import useAxios from "../../useAxio";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { postData } from "../../atom";
+import { LastDataApi, categoryPostApi } from "../../Api";
+import { useQuery } from "react-query";
+import NoItem from "../../DesktopView/components/NoItem";
 const ItemDiv = styled.div`
   width: 100%;
   height: auto;
   font-family: "Pretendard";
-  min-height: calc(100vh - 360px - 160px);
+  min-height: calc(100vh - 750px);
+  /* min-height: calc(100vh - 360px - 160px); */
 
   padding-top: ${(props) => (props.pad ? "60px" : "0px")};
   padding-bottom: ${(props) => (props.padBottom ? "60px" : "0px")};
@@ -183,85 +187,99 @@ export function ShowItemFn({
 
   return (
     <div>
-      {item.length > 0 ? (
-        <ItemDiv pad={pad} padBottom={padBottom}>
-          {query && (
-            <QueryDiv>
-              {queryItem.map((item, index) => (
-                <QueryLi
-                  onClick={() => {
-                    querySelect(index);
-                    setIndex(index);
-                  }}
-                  isActive={currentQuery === index ? true : false}
-                  key={index}
-                >
-                  {item}
-                </QueryLi>
-              ))}
-            </QueryDiv>
-          )}
-
-          {item.map((item, index) => {
-            const timeAgo = calcTimeAgo(item);
-            return (
-              <Link to={`/post/${item.post_id}`} key={index}>
-                <Item>
-                  <ItemText>
-                    <ProductHeader>
-                      <ItemTitle>{item.title}</ItemTitle>
-                      {item.state === "complete" && (
-                        <ItemState color="gray">
-                          <span>나눔완료</span>
-                        </ItemState>
-                      )}
-                      {item.state === "reservate" && (
-                        <ItemState color="orange">
-                          <span>예약중</span>
-                        </ItemState>
-                      )}
-                    </ProductHeader>
-                    <ItemContent>{item.content}</ItemContent>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div>
-                        <ItemArea>{item.area}</ItemArea>
-                        <ItemTimeAgo>{timeAgo}</ItemTimeAgo>
+      <ItemDiv pad={pad} padBottom={padBottom}>
+        {query && (
+          <QueryDiv>
+            {queryItem.map((item, index) => (
+              <QueryLi
+                onClick={() => {
+                  querySelect(index);
+                  setIndex(index);
+                }}
+                isActive={currentQuery === index ? true : false}
+                key={index}
+              >
+                {item}
+              </QueryLi>
+            ))}
+          </QueryDiv>
+        )}
+        {item.length > 0 ? (
+          <>
+            {item.map((item, index) => {
+              const timeAgo = calcTimeAgo(item);
+              return (
+                <Link to={`/post/${item.post_id}`} key={index}>
+                  <Item>
+                    <ItemText>
+                      <ProductHeader>
+                        <ItemTitle>{item.title}</ItemTitle>
+                        {item.state === "complete" && (
+                          <ItemState color="gray">
+                            <span>나눔완료</span>
+                          </ItemState>
+                        )}
+                        {item.state === "reservate" && (
+                          <ItemState color="orange">
+                            <span>예약중</span>
+                          </ItemState>
+                        )}
+                      </ProductHeader>
+                      <ItemContent>{item.content}</ItemContent>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          <ItemArea>{item.area}</ItemArea>
+                          <ItemTimeAgo>{timeAgo}</ItemTimeAgo>
+                        </div>
                       </div>
-                    </div>
-                  </ItemText>
-                  <ItemImg src={require(`../../Data/Img/${item.img_src}`)} />
-                </Item>
-              </Link>
-            );
-          })}
-        </ItemDiv>
-      ) : (
-        <EmptyPage profile={profile}>나눔물품이 없습니다</EmptyPage>
-      )}
+                    </ItemText>
+                    <ItemImg
+                      src={`data:image/jpeg;base64,${item.img_src.data}`}
+                      alt={item.img_src.filename}
+                    />
+                  </Item>
+                </Link>
+              );
+            })}
+          </>
+        ) : (
+          <EmptyPage>나눔물품이 없습니다.</EmptyPage>
+        )}
+      </ItemDiv>
     </div>
   );
 }
 
 function ShowItem({ main, sub }) {
-  const response = useRecoilValue(postData);
+  // const response = useRecoilValue(postData);
+  console.log("main: " + main + " sub: " + sub);
+  // 패치
+  const { data, refetch } = useQuery(["categoryPost", sub], () =>
+    categoryPostApi(main, sub)
+  );
+
   useEffect(() => {
-    response.filter(
-      (item) => item.main_category === main.main && item.sub_category === sub
-    );
-  }, [response]);
+    refetch();
+  }, [main, sub]);
 
   return (
-    <ShowItemFn
-      item={response.filter(
-        (item) => item.main_category === main.main && item.sub_category === sub
+    <>
+      {data ? (
+        data.length > 0 ? (
+          <ShowItemFn item={data} />
+        ) : (
+          <NoItem />
+        )
+      ) : (
+        <EmptyPage>loading...</EmptyPage>
       )}
-    />
+    </>
   );
 }
 export default ShowItem;

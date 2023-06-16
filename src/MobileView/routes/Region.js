@@ -14,6 +14,8 @@ import HomeMenu from "../components/HomeMenu";
 import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
+import { useQuery } from "react-query";
+import { LastDataApi, RegionDataApi } from "../../Api";
 
 const RegionContainer = styled.div``;
 const RegionCate = styled.div`
@@ -57,16 +59,17 @@ const RegionList = styled.div`
 `;
 function Region() {
   const [regionActive, setRegionActive] = useState(false);
-  const [currentRegion, setCurrentRegion] = useState();
+  const [currentRegion, setCurrentRegion] = useState("전체보기");
+  const [filterItem, setFilterItem] = useState();
   const history = useHistory();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const region = searchParams.get("region");
 
   //강제 렌더링
-  useEffect(() => {
-    setCurrentRegion(region);
-  }, [region]);
+  // useEffect(() => {
+  //   setCurrentRegion(region);
+  // }, [region]);
 
   const selectRegion = (area) => {
     //setCurrentRegion(area);
@@ -77,11 +80,25 @@ function Region() {
       search: `?${searchParams}`,
     });
   };
-  //지역 쿼리 추가
-  const response = useRecoilValue(postData);
-  const filterItem = response.filter(
-    (item) => item.area === currentRegion || currentRegion === "전체보기"
+
+  // 패치
+  const { data, refetch } = useQuery(["regionData", currentRegion], () =>
+    RegionDataApi(currentRegion)
   );
+
+  useEffect(() => {
+    setCurrentRegion(region);
+    refetch();
+    // if (data) {
+    //   setFilterItem(
+    //     data.filter(
+    //       (item) => item.area === currentRegion || currentRegion === "전체보기"
+    //     )
+    //   );
+    // }
+    // console.log(filterItem);
+    // refetch();
+  }, [region]);
 
   return (
     <RegionContainer>
@@ -121,7 +138,22 @@ function Region() {
           ))}
         </RegionList>
       ) : (
-        <ShowItemFn item={filterItem} pad={true} padBottom={true} />
+        <>
+          {data ? (
+            <ShowItemFn item={data} pad={true} padBottom={true} />
+          ) : (
+            // <h1>hello</h1>
+            <span>loading...</span>
+          )}
+          {/* <ShowItemFn
+          item={data.filter(
+            (item) =>
+              item.area === currentRegion || currentRegion === "전체보기"
+          )}
+          pad={true}
+          padBottom={true}
+        /> */}
+        </>
       )}
       <HomeMenu />
     </RegionContainer>

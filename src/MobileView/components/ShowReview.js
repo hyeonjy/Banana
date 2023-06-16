@@ -4,7 +4,8 @@ const Container = styled.div`
   width: 100%;
   height: auto;
   font-family: "Pretendard";
-  min-height: calc(100vh - 360px - 160px);
+  /* min-height: calc(100vh - 360px - 160px); */
+  min-height: calc(100vh - 750px);
   padding-top: ${(props) => (props.pad ? "55px" : "0px")};
 `;
 const ReviewBox = styled.div`
