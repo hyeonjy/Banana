@@ -1,15 +1,26 @@
 import styled, { css, keyframes } from "styled-components";
 import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsis,
+  faPen,
+  faPencil,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { BsFillShareFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
 import { useMutation, useQueryClient } from "react-query";
-import { heartChangeApi, postStateChangeApi } from "../../Api";
-import { useState } from "react";
+import {
+  deletePost,
+  deletePostApi,
+  heartChangeApi,
+  postStateChangeApi,
+} from "../../Api";
+import { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 //-----------오른쪽 컨테이너-----------//
 export const PostRightDiv = styled.div`
@@ -161,19 +172,46 @@ const EllipsisDiv = styled.div`
   border-radius: 10px;
   background-color: rgb(255, 248, 202);
   width: 80px;
-  height: 45px;
+  height: 65px;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
   display: flex;
+  visibility: hidden;
   flex-direction: column;
-  display: ${(prop) => (prop.EllipsisToggle ? "block" : "none")};
+  transform: scale(0.85);
+  opacity: 0;
+  ${(props) =>
+    props.EllipsisToggle &&
+    css`
+      visibility: visible;
+      transform: scale(1);
+      opacity: 1;
+    `}
+
   position: absolute;
-  top: -40px;
-  left: -50px;
+  top: -75px;
+  left: -55px;
+  padding: 5px;
 `;
 
 const EllipsisOption = styled.div`
+  border-radius: 5px;
   width: 100%;
-  flex-grow: 1;
   font-size: 13px;
+  flex-grow: 1;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #fff3a5;
+  }
+`;
+
+const OptionIcon = styled(FontAwesomeIcon)`
+  font-size: 14px;
 `;
 
 const EllipsisIcon = styled(FontAwesomeIcon)`
@@ -183,21 +221,22 @@ const EllipsisIcon = styled(FontAwesomeIcon)`
 
 const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
   // const [heart, setHeart] = useState(initHeart);
-
+  const history = useHistory();
   const { postId } = useParams();
+  const queryClient = useQueryClient();
 
   //나눔 상태 변경
   const { mutate: mutateState } = useMutation(
     (state) => postStateChangeApi(state),
     {
       onSuccess: (state) => {
-        alert("상태가 변경되었습니다");
         queryClient.invalidateQueries(["postDatail", postId]);
+        alert("상태가 변경되었습니다");
       },
     }
   );
   //찜 상태 변경
-  const queryClient = useQueryClient();
+
   const { mutate: mutateHeart } = useMutation(
     (heart) => heartChangeApi(heart),
     {
@@ -224,11 +263,35 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
     }
   );
 
+  //글 삭제
+  const { mutate: mutateDelete } = useMutation(() => deletePostApi(postId), {
+    onSuccess: () => {
+      /// alert("게시물을 삭제하였습니다");
+      queryClient.removeQueries(["postDatail", postId]);
+      queryClient.invalidateQueries({ exact: false });
+      history.push("/");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const handleChangeSelect = (e) => {
     mutateState({ postId, state: e.target.value });
   };
   const handleHeart = () => {
     mutateHeart({ heart: initHeart, userId: 1, postId });
+  };
+
+  const handleDeletePost = () => {
+    mutateDelete();
+  };
+
+  const handleUpdatePost = () => {
+    history.push({
+      pathname: "/upload",
+      state: { item: item, mode: "edit", postId: postId },
+    });
   };
 
   //채팅으로 이동
@@ -243,7 +306,24 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
   // };
   const timeAgo = calcTimeAgo(item);
 
+  const EllicomponentRef = useRef(null);
   const [EllipsisToggle, setEllipsisToggle] = useState(false);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        EllicomponentRef.current &&
+        !EllicomponentRef.current.contains(event.target)
+      ) {
+        setEllipsisToggle(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <PostRightDiv>
@@ -313,9 +393,18 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
           {isWriter ? (
             <>
               <div style={{ position: "relative" }}>
-                <EllipsisDiv EllipsisToggle={EllipsisToggle}>
-                  <EllipsisOption>수정하기</EllipsisOption>
-                  <EllipsisOption>삭제하기</EllipsisOption>
+                <EllipsisDiv
+                  ref={EllicomponentRef}
+                  EllipsisToggle={EllipsisToggle}
+                >
+                  <EllipsisOption onClick={handleUpdatePost}>
+                    <OptionIcon icon={faPencil} />
+                    수정하기
+                  </EllipsisOption>
+                  <EllipsisOption onClick={handleDeletePost}>
+                    <OptionIcon icon={faTrashCan} />
+                    삭제하기
+                  </EllipsisOption>
                 </EllipsisDiv>
                 <EllipsisIcon
                   onClick={() => {

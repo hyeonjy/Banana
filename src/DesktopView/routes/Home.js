@@ -9,7 +9,7 @@ import useAxios from "../../useAxio";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { HitsDataApi, LastDataApi } from "../../Api";
 
 export const Container = styled.div`
@@ -103,7 +103,9 @@ const MoreBtn = styled.div`
 /*상품 리스트 - 끝*/
 
 function Home() {
-  const { error: error1, data: lastItem } = useQuery("lastPost", LastDataApi);
+  const { error: error1, data: lastItem } = useQuery("lastPost", LastDataApi, {
+    // staleTime: 60000,
+  });
   const { error: error2, data: histItem } = useQuery("hitPost", HitsDataApi);
 
   const history = useHistory();
