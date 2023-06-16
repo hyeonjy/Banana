@@ -1,6 +1,6 @@
 // const HOST_IP = "172.30.72.97"; //스벅
-const HOST_IP = "172.30.1.48"; //커나
-// const HOST_IP = "172.16.61.69"; //세종
+// const HOST_IP = "172.30.1.48"; //커나
+const HOST_IP = "172.16.61.69"; //세종
 // const HOST_IP = "localhost";
 /*서버 연동 */
 const express = require("express");
@@ -315,6 +315,7 @@ app.get("/postdata/:postId", function (req, res) {
             post_date: results[1][0].post_date,
             profile: results[1][0].profile,
             state: results[1][0].state,
+            main_category: results[1][0].main_category,
             sub_category: results[1][0].sub_category,
             imgs: [],
           };
@@ -328,6 +329,7 @@ app.get("/postdata/:postId", function (req, res) {
                 results[1][i].img_src = {
                   filename: results[i].img_src,
                   data: imageBase64,
+                  file: imageData,
                 };
               }
 
@@ -349,6 +351,25 @@ app.get("/postdata/:postId", function (req, res) {
     .catch((error) => {
       throw error;
     });
+});
+app.delete("/posts/:postId", (req, res) => {
+  const postId = req.params.postId;
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+
+  const deleteSQL = `DELETE FROM mydatabase.post WHERE post_id=${postId}`;
+  connection.query(deleteSQL, (error, result) => {
+    if (error) throw error;
+    else {
+      res.sendStatus(200);
+    }
+    connection.end();
+  });
 });
 
 app.get("/userpage/data/:userId", function (req, res) {
@@ -589,32 +610,177 @@ app.post("/postwrite", upload.array("images"), (req, res) => {
   }
   const values = filenames.map((filename) => [filename]);
 
-  const postIdQuery = `SELECT COUNT(*) AS CNT FROM post;`;
   const writeSQL = `
   INSERT INTO mydatabase.post (title, content, fk_user_id, post_date, area, main_category, sub_category, state, heart, hits) VALUES ('${title}', '${contents}', ${userId}, '${time}', '${area}', '${major}', '${minor}', 'wait', 0, 0);
   `;
   let postId = -1;
-  connection.query(postIdQuery, (error, result) => {
+  connection.query(writeSQL, (error, result) => {
     if (error) throw error;
     else {
-      postId = result[0].CNT + 1;
-    }
-
-    connection.query(writeSQL, (error, result) => {
+      postId = result.insertId;
       const imgSQL = `
       INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?);
     `;
-      if (error) throw error;
-      else {
-        values.forEach((filename) => {
-          connection.query(imgSQL, [filename], (error, result) => {
-            if (error) throw error;
-          });
+      values.forEach((filename) => {
+        connection.query(imgSQL, [filename], (error, result) => {
+          if (error) throw error;
         });
-        connection.end();
-        res.json(postId);
+      });
+      connection.end();
+      res.json(postId);
+    }
+  });
+});
+
+app.post("/postUpdate", upload.array("images"), (req, res) => {
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const { title, contents, major, minor, area, postId } = req.body;
+
+  const imgFiles = req.files;
+  const filenames = [];
+
+  for (const file of imgFiles) {
+    filenames.push(file.filename);
+    console.log(file.filename);
+  }
+  const values = filenames.map((filename) => [filename]);
+
+  const UpdatePostSQL = `UPDATE mydatabase.post SET title='${title}', content='${contents}', main_category='${major}', sub_category='${minor}', area='${area}' WHERE post_id=${postId};`;
+  const DeletePostImgSql = `DELETE FROM mydatabase.post_img WHERE fk_post_id=${postId};`;
+  const imgSQL = `
+  INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?);
+`;
+
+  connection.query(UpdatePostSQL, (error, result) => {
+    if (error) throw error;
+    else {
+      connection.query(DeletePostImgSql, (error, result) => {
+        if (error) throw error;
+        else {
+          values.forEach((filename) => {
+            connection.query(imgSQL, [filename], (error, result) => {
+              if (error) throw error;
+            });
+          });
+          connection.end();
+          res.json(postId);
+        }
+      });
+    }
+  });
+});
+
+app.get("/categorydata/:main/:sub", function (req, res) {
+  const main = req.params.main;
+  const sub = req.params.sub;
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+
+  const query = `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+  FROM post p
+  LEFT JOIN (
+    SELECT t.img_id, t.fk_post_id, t.img_src
+    FROM post_img t
+    WHERE t.img_id = (
+      SELECT MIN(img_id)
+      FROM post_img
+      WHERE fk_post_id = t.fk_post_id
+    )
+  ) AS pi_id ON p.post_id = pi_id.fk_post_id
+  WHERE p.main_category ='${main}' AND p.sub_category ='${sub}' 
+  ORDER BY p.post_date DESC;`;
+
+  connection.query(query, (error, result) => {
+    if (error) throw error;
+    else {
+      for (let i = 0; i < result.length; i++) {
+        const imagePath = path.join(imageDir, result[i].img_src);
+
+        if (fs.existsSync(imagePath)) {
+          const imageData = fs.readFileSync(imagePath);
+          const imageBase64 = imageData.toString("base64");
+          result[i].img_src = {
+            filename: result[i].img_src,
+            data: imageBase64,
+          };
+        }
       }
-    });
+      res.json(result);
+    }
+    connection.end();
+  });
+});
+
+app.get("/regiondata/:region", function (req, res) {
+  const region = req.params.region;
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+
+  let query = ``;
+
+  if (region === "전체보기") {
+    query = `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+    FROM post p
+    LEFT JOIN (
+      SELECT t.img_id, t.fk_post_id, t.img_src
+      FROM post_img t
+      WHERE t.img_id = (
+        SELECT MIN(img_id)
+        FROM post_img
+        WHERE fk_post_id = t.fk_post_id
+      )
+    ) AS pi_id ON p.post_id = pi_id.fk_post_id
+    ORDER BY p.post_date DESC;`;
+  } else {
+    query = `SELECT p.post_id, p.title, p.content, p.post_date, p.area, pi_id.img_src, p.main_category, p.sub_category, p.state, p.hits, p.heart, p.fk_user_id
+    FROM post p
+    LEFT JOIN (
+      SELECT t.img_id, t.fk_post_id, t.img_src
+      FROM post_img t
+      WHERE t.img_id = (
+        SELECT MIN(img_id)
+        FROM post_img
+        WHERE fk_post_id = t.fk_post_id
+      )
+    ) AS pi_id ON p.post_id = pi_id.fk_post_id
+    WHERE p.area = '${region}'
+    ORDER BY p.post_date DESC;`;
+  }
+
+  connection.query(query, (error, result) => {
+    if (error) throw error;
+    else {
+      for (let i = 0; i < result.length; i++) {
+        const imagePath = path.join(imageDir, result[i].img_src);
+
+        if (fs.existsSync(imagePath)) {
+          const imageData = fs.readFileSync(imagePath);
+          const imageBase64 = imageData.toString("base64");
+          result[i].img_src = {
+            filename: result[i].img_src,
+            data: imageBase64,
+          };
+        }
+      }
+      res.json(result);
+    }
+    connection.end();
   });
 });
 

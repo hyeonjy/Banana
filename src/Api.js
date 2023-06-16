@@ -34,6 +34,12 @@ export function postPageApi(postId) {
     .then((response) => response.data);
 }
 
+export function deletePostApi(postId) {
+  return axios
+    .delete(`${BASE_URL}/posts/${postId}`)
+    .then((response) => response.data);
+}
+
 export function postStateChangeApi(state) {
   return axios
     .post(`${BASE_URL}/stateChange`, state)
@@ -53,5 +59,21 @@ export function userPageApi(userId) {
 export function postWriteApi(formdata) {
   return axios
     .post(`${BASE_URL}/postwrite`, formdata)
+    .then((response) => response.data);
+}
+
+export function postUpdateApi(formdata) {
+  return axios
+    .post(`${BASE_URL}/postupdate`, formdata)
+    .then((response) => response.data);
+}
+export function RegionDataApi(region) {
+  return axios
+    .get(`${BASE_URL}/regiondata/${region}`)
+    .then((response) => response.data);
+}
+export function categoryPostApi(main, sub) {
+  return axios
+    .get(`${BASE_URL}/categorydata/${main}/${sub}`)
     .then((response) => response.data);
 }

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import MUploadImgFull from "../routes/MUploadImgFull";
 import { useState } from "react";
+import { useRef } from "react";
 
 const ImgDiv = styled.div`
   padding-bottom: 10px;
@@ -120,26 +121,35 @@ const Represent = styled.div`
   font-weight: 800;
   border-radius: 0 0 7px 7px;
 `;
-function ImgUpload({ showImages, setShowImages }) {
-  //이미지 업로드 fn
-  const handleAddImages = (event) => {
-    const imageLists = event.target.files;
-    let imageUrlLists = [...showImages];
+
+//이미지 업로드 fn
+function ImgUpload({ imgFile, setImgFile }) {
+  // 이미지 저장 함수
+  const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
+  const imgRef = useRef();
+
+  const saveImgFile = (e) => {
+    const imageLists = e.target.files;
+
+    let imageFileLists = [...imgFile, ...imageLists];
+    let imageUrlLists = [...imgURLs];
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
     }
-
-    if (imageUrlLists.length > 10) {
-      imageUrlLists = imageUrlLists.slice(0, 10);
+    if (imageUrlLists.length > 5) {
+      alert("최대 5장까지만 업로드 합니다.");
+      imageUrlLists = imageUrlLists.slice(0, 5);
     }
-
-    setShowImages(imageUrlLists);
+    setImgFile(imageFileLists);
+    setImgURLs(imageUrlLists);
   };
-  // X버튼 클릭 시 이미지 삭제
-  const handleDeleteImage = (id) => {
-    setShowImages(showImages.filter((_, index) => index !== id));
+
+  // 이미지 삭제시 실행되는 함수
+  const handleDelete = (index) => {
+    setImgFile(imgFile.filter((itme, idx) => idx !== index));
+    setImgURLs(imgURLs.filter((itme, idx) => idx !== index));
   };
 
   const [imgFull, setImgFull] = useState(false); // 업로드 이미지 클릭 -> full screen(toggle)
@@ -156,20 +166,22 @@ function ImgUpload({ showImages, setShowImages }) {
             height: "78px",
           }}
         >
-          <ImgLabel htmlFor="input-file" onChange={handleAddImages}>
+          <ImgLabel htmlFor="input-file" onChange={saveImgFile}>
             <CameraIcon icon={faCamera} />
-            <span>{showImages.length} / 10</span>
+            <span>{imgFile.length} / 10</span>
             <ImgInput
-              type="file"
-              multiple
-              accept="image/*"
               id="input-file"
+              type="file"
+              accept="image/*"
+              onChange={saveImgFile}
+              ref={imgRef}
+              multiple
               required
             />
           </ImgLabel>
 
           <ImgList>
-            {showImages.map((image, id) => (
+            {imgURLs.map((image, id) => (
               <EachImgDiv key={id}>
                 <EachImg
                   onClick={() => {
@@ -180,7 +192,13 @@ function ImgUpload({ showImages, setShowImages }) {
                   alt={`${image}-${id}`}
                 />
                 {id === 0 && <Represent>대표사진</Represent>}
-                <XIcon icon={faX} onClick={() => handleDeleteImage(id)}></XIcon>
+                <XIcon
+                  icon={faX}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleDelete(id);
+                  }}
+                ></XIcon>
               </EachImgDiv>
             ))}
           </ImgList>
@@ -190,7 +208,7 @@ function ImgUpload({ showImages, setShowImages }) {
       {/* Full screen  */}
       {imgFull && (
         <MUploadImgFull
-          showImages={showImages}
+          showImages={imgURLs}
           setImgFull={setImgFull}
           idx={idx}
         />

@@ -16,6 +16,9 @@ import { useState } from "react";
 import ImgUpload from "../components/ImgUpload";
 import { useEffect } from "react";
 import useAxios from "../../useAxio";
+import { useMutation, useQueryClient } from "react-query";
+import { postWriteApi } from "../../Api";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 const UploadContainer = styled.div`
   font-size: 14px;
 `;
@@ -113,43 +116,81 @@ const Form = styled.form`
 `;
 
 function MUpload() {
-  const history = useHistory();
+  const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
+  const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
+  // const imgRef = useRef();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const titleValue = searchParams.get("title");
+  const contentValue = searchParams.get("content");
+  const mainValue = searchParams.get("main");
+  const subValue = searchParams.get("sub");
+
   const {
+    watch,
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
     setError,
     clearErrors,
   } = useForm();
 
-  const { response, loading, error, refetch, executePost } = useAxios({
-    method: "post",
-    url: `http://localhost:8080/postwrite`,
+  // option 값이 바뀌면 실행
+  const optionChange = (e) => {
+    const item = itemsGroup.find((item) => e.target.value === item.main);
+    setMinor(item.sub);
+    setValue("minor", item.sub[0]);
+  };
+
+  const history = useHistory();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation((formdata) => postWriteApi(formdata), {
+    onSuccess: (postId) => {
+      queryClient.invalidateQueries("lastpost");
+      queryClient.invalidateQueries("mypage");
+      alert("등록되었습니다");
+      history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
+    },
+    onError: () => {
+      alert("Error!");
+    },
   });
 
-  const [currentCate, setCurrentCate] = useState();
-  const [showImages, setShowImages] = useState([]); // 업로드 이미지 url 배열 - react-hook-formr과 분리(추가 업로드 문제)
   const [btnClick, setBtnClick] = useState(false); // 등록 버튼을 누른 후에 error 출력
 
   useEffect(() => {
-    if (showImages.length === 0 && btnClick) {
+    if (imgFile.length === 0 && btnClick) {
       setError("imgEmpty", { message: "이미지를 1장 이상 업로드 해주세요" });
     } else {
       clearErrors("imgEmpty");
     }
-  }, [showImages, btnClick]);
+  }, [imgFile, btnClick]);
+
+  useEffect(() => {
+    if (mainValue !== undefined && subValue !== undefined) {
+      setValue("major", mainValue);
+      setValue("minor", subValue);
+    }
+  }, []);
 
   //form 유효할 때 실행
   const onValid = (data) => {
-    console.log("onValid");
-    console.log(data); // form 데이터
-    console.log(showImages); //img url 데이터
-    alert("등록되었습니다"); // 따로 cumstom ????
-    //해당 post 페이지로 이동
-    executePost({
-      url: "http://localhost:8080/postwrite",
-      data: { data, imgs: showImages, userId: 1 },
+    console.log(data);
+
+    //data: title, content, major, minor
+    const formdata = new FormData();
+    formdata.append("title", data.title);
+    formdata.append("contents", data.contents);
+    formdata.append("area", data.area);
+    formdata.append("major", data.major);
+    formdata.append("minor", data.minor);
+
+    imgFile.forEach((image) => {
+      formdata.append(`images`, image);
     });
+    formdata.append("userId", 1);
+    mutate(formdata);
   };
 
   return (
@@ -174,17 +215,16 @@ function MUpload() {
                 message: "제목은 30자 이하로 작성해주세요",
               },
             })}
+            defaultValue={titleValue}
           />
           {/* 메인 카테고리 */}
           <div style={{ display: "flex" }}>
             <SelectCategory
+              name="major"
               {...register("major", {
                 required: "카테고리를 선택은 필수입니다",
               })}
-              onChange={(e) => {
-                setCurrentCate(itemsGroup[Number(e.target.selectedIndex) - 1]);
-              }}
-              defaultValue=""
+              onChange={optionChange}
             >
               <Option value="" disabled>
                 카테고리 선택
@@ -196,18 +236,16 @@ function MUpload() {
 
             {/* 서브 카테고리 */}
             <SelectCategory
+              name="minor"
               {...register("minor", {
                 required: "하위 카테고리를 선택해주세요",
               })}
-              defaultValue=""
             >
               <Option value="" disabled style={{ fontSize: "8px" }}>
                 하위 카테고리
               </Option>
-              {currentCate &&
-                currentCate.sub.map((sub, index) => (
-                  <Option key={index}>{sub}</Option>
-                ))}
+              {minor &&
+                minor.map((sub, index) => <Option key={index}>{sub}</Option>)}
             </SelectCategory>
           </div>
 
@@ -225,7 +263,7 @@ function MUpload() {
           </SelectArea>
 
           {/* 사진 업로드 */}
-          <ImgUpload showImages={showImages} setShowImages={setShowImages} />
+          <ImgUpload imgFile={imgFile} setImgFile={setImgFile} />
 
           {/* 글 내용 */}
           <Contents
@@ -237,6 +275,7 @@ function MUpload() {
                 message: "내용은 400자 이하로 작성해주세요",
               },
             })}
+            defaultValue={contentValue}
           ></Contents>
 
           {/*form valid ERROR 메세지 */}
