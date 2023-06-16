@@ -18,6 +18,8 @@ import ShowReview from "../components/ShowReview";
 import { BackIcon, Header } from "./MUpload";
 import useAxios from "../../useAxio";
 import { useEffect } from "react";
+import { useQuery } from "react-query";
+import { userPageApi } from "../../Api";
 
 const Container = styled.div`
   filter: ${(props) => (props.activeGrade ? "blur(2px)" : "unset")};
@@ -40,7 +42,6 @@ const ShareBox = styled.div``;
 
 const ItemBox = styled.div`
   margin-top: 25px;
-  height: 260px;
   &:last-child {
     margin-bottom: 150px;
   }
@@ -60,64 +61,18 @@ const ItemIcon = styled(FontAwesomeIcon)``;
 
 function MProfileReview() {
   const [activeGrade, setActiveGrade] = useState(false);
-
   const location = useLocation();
   const history = useHistory();
-
-  // url 파라미터를 통해 맞는 옷 상품과 사진 인덱스 가져오기
-  const searchParams = new URLSearchParams(location.search);
-  // const userIdValue = searchParams.get("userId");
   const { userId } = useParams();
-  const FilterUserObj = UserObj.find((user) => user.id === "바나나좋아");
-  const filterItemObj = ItemObj.filter((item) => item.userId === "바나나좋아");
-  // const [shareItem, setShareItem] = useState();
-  const [user, setUser] = useState();
-  const [userPost, setUserPosts] = useState();
-  const [reviews, setReviews] = useState();
 
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/userpage/data/${userId}`,
-  });
+  // 패치
+  const { data, refetch } = useQuery(["userpage", userId], () =>
+    userPageApi(userId)
+  );
 
   useEffect(() => {
-    //refetch();
-    executeGet();
-  }, []);
-
-  useEffect(() => {
-    // axios
-    //   .get("http://localhost:8080/data")
-    //   .then((response) => console.log(response.data))
-    //   .catch((error) => console.error(error));
-    if (!loading) {
-      console.log("share:", response);
-      setUser(response.user);
-      setUserPosts(response.posts);
-      setReviews(response.reviews);
-      // console.log("postItem:", postItem);
-    }
-    console.log(loading);
-    //console.log(error);
-  }, [response, loading, error]);
-
-  // const handleReviewClick = () => {
-  //   const searchParams = new URLSearchParams();
-  //   searchParams.append("userId", usernickname);
-  //   history.push({
-  //     pathname: "/review",
-  //     search: "?" + searchParams.toString(),
-  //   });
-  // };
-
-  // const handleShareClick = () => {
-  //   const searchParams = new URLSearchParams();
-  //   searchParams.append("userId", usernickname);
-  //   history.push({
-  //     pathname: "/share",
-  //     search: "?" + searchParams.toString(),
-  //   });
-  // };
+    refetch();
+  }, [userId]);
 
   return (
     <>
@@ -131,65 +86,39 @@ function MProfileReview() {
           />
           <span>프로필</span>
         </DHeader>
-        {userPost && reviews ? (
+        {data?.posts && data?.reviews ? (
           <>
             <User
-              img={user.profile}
-              grade={user.grade}
-              nickname={user.nickname}
-              userId={user.user_id}
+              img={data.user.profile}
+              grade={data.user.grade}
+              nickname={data.user.nickname}
+              userId={data.user.user_id}
               setActiveGrade={setActiveGrade}
               profile="true"
             />
             <ItemBox>
-              <Link to={`/share/${user.user_id}`}>
+              <Link to={`/share/${data.user.user_id}`}>
                 <ItemHeader>
                   <h1>나눔물품 profile</h1>
                   <ItemIcon icon={faChevronRight} />
                 </ItemHeader>
               </Link>
-              <ShowItemFn item={userPost} profile="true" />
+              <ShowItemFn item={data.posts} profile="true" />
             </ItemBox>
 
             <ItemBox style={{ marginBottom: "100px" }}>
-              <Link to={`/review/${user.user_id}`}>
+              <Link to={`/review/${data.user.user_id}`}>
                 <ItemHeader>
                   <h1>나눔후기</h1>
                   <ItemIcon icon={faChevronRight} />
                 </ItemHeader>
               </Link>
-              <ShowReview reviews={reviews} profile="true" />
+              <ShowReview reviews={data.reviews} profile="true" />
             </ItemBox>
           </>
         ) : (
           <h1>loading...</h1>
         )}
-        {/* <User
-          img={shareItem[0].profile}
-          grade={shareItem[0].grade}
-          userId={shareItem[0].nickname}
-          setActiveGrade={setActiveGrade}
-          profile="true"
-        /> */}
-
-        {/* <ItemBox>
-          <ItemHeader onClick={handleShareClick}>
-            <h1>나눔물품</h1>
-            <ItemIcon icon={faChevronRight} />
-          </ItemHeader>
-          <ShowItemFn item={shareItem} profile="true" />
-        </ItemBox> */}
-
-        {/* <ItemBox style={{ marginBottom: "100px" }}>
-          <ItemHeader onClick={handleReviewClick}>
-            <h1>나의나눔후기</h1>
-            <ItemIcon icon={faChevronRight} />
-          </ItemHeader>
-          <ShowReview
-            reviews={FilterUserObj.reviews.slice(0, 2)}
-            profile="true"
-          />
-        </ItemBox> */}
 
         <HomeMenu />
       </Container>

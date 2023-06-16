@@ -97,10 +97,13 @@ function Mimages(props) {
 
       {/* 이미지 슬라이더 */}
       <StyledSlider {...settings} initialSlide={props.index}>
-        {props.imgs.map((img, index) => {
+        {props.imgs.map((item, index) => {
           return (
             <PostImgDiv key={index}>
-              <PostImg src={require(`../../Data/Img/${img}`)} />
+              <PostImg
+                alt={item.filename}
+                src={`data:image/jpeg;base64,${item.data}`}
+              />
             </PostImgDiv>
           );
         })}

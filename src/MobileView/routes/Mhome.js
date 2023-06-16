@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import "../../App.css";
 import "../mobile.css";
-import ShowItem from "../components/ShowItem";
+import ShowItem, { ShowItemFn } from "../components/ShowItem";
 
 import HomeMenu from "../components/HomeMenu";
 import Footer from "../components/Footer";
@@ -20,6 +20,7 @@ import HeaderComponent from "../components/Header";
 import { Link } from "react-router-dom";
 import useAxios from "../../useAxio";
 import { useEffect } from "react";
+import { useQuery } from "react-query";
 
 const Container = styled.div``;
 
@@ -106,23 +107,22 @@ const WriteBtn = styled(Link)`
   color: white;
 `;
 
+const EmptyPage = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  margin-top: ${(props) => (props.profile ? "0" : "60px")};
+  height: ${(props) =>
+    props.profile ? "110px" : "calc(100vh - 360px - 160px)"};
+  /* background-color: orange; */
+  color: rgba(0, 0, 0, 0.3);
+`;
+
 function Mhome() {
   const [currentCate, setCurrentCate] = useState(categoryList[0]);
   const [currentSubCate, setCurrentSubCate] = useState(categoryList[0].sub[0]);
-
-  // const { response, loading, error } = useAxios({
-  //   method: "get",
-  //   url: "http://localhost:8080/data",
-  // });
-  // useEffect(() => {
-  //   // axios
-  //   //   .get("http://localhost:8080/data")
-  //   //   .then((response) => console.log(response.data))
-  //   //   .catch((error) => console.error(error));
-  //   console.log(response);
-  //   console.log(loading);
-  //   //console.log(error);
-  // }, [response, loading, error]);
 
   return (
     <Container>
@@ -155,7 +155,7 @@ function Mhome() {
             <CategoryLi
               key={categoryItem.id}
               onClick={() => {
-                setCurrentCate(categoryItem);
+                setCurrentCate(categoryItem.main);
                 setCurrentSubCate(categoryItem.sub[0]);
               }}
               isActive={categoryItem === currentCate}
@@ -178,10 +178,11 @@ function Mhome() {
           </SubCategory>
         )}
       </CategoryWrap>
-      <ShowItem main={currentCate} sub={currentSubCate} />
+      <ShowItem main={currentCate.main} sub={currentSubCate} />
       <HomeMenu />
       <WriteBtn to="/upload">+ 글쓰기</WriteBtn>
       <Footer />
+      {/* <ShowItem m ain={currentCate} sub={currentSubCate}/> */}
     </Container>
   );
 }
