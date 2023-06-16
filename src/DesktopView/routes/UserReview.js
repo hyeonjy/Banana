@@ -71,7 +71,7 @@ function UserInfo() {
   const userId = searchParams.get("id");
   const reviewPage = searchParams.get("review");
 
-  const { data } = useQuery("userpage", () => userPageApi(userId));
+  const { data } = useQuery(["userpage", userId], () => userPageApi(userId));
 
   //모달
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
