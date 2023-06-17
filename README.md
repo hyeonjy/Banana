@@ -129,7 +129,7 @@
 
 <br/>
 
-개선 이전 - 이미지가 뜨지 않음
+개선 이전 - 기존 이미지가 뜨지 않음
 ```javascript
    // 기존 이미지 미리보기 띄우기
    function base64ToImgUrl(base64) {
