@@ -1,7 +1,7 @@
 // const HOST_IP = "172.30.72.97"; //스벅
 // const HOST_IP = "172.30.1.48"; //커나
-const HOST_IP = "172.16.61.69"; //세종
-// const HOST_IP = "localhost";
+// const HOST_IP = "172.16.61.69"; //세종
+const HOST_IP = "localhost";
 /*서버 연동 */
 const express = require("express");
 const path = require("path");
@@ -327,7 +327,7 @@ app.get("/postdata/:postId", function (req, res) {
                 const imageData = fs.readFileSync(imagePath);
                 const imageBase64 = imageData.toString("base64");
                 results[1][i].img_src = {
-                  filename: results[i].img_src,
+                  filename: results[1][i].img_src,
                   data: imageBase64,
                   file: imageData,
                 };
@@ -640,38 +640,36 @@ app.post("/postUpdate", upload.array("images"), (req, res) => {
     database: "mydatabase",
     multipleStatements: true,
   });
-  const { title, contents, major, minor, area, postId } = req.body;
+  const { title, contents, major, minor, area, postId, deletePost } = req.body;
 
   const imgFiles = req.files;
   const filenames = [];
 
   for (const file of imgFiles) {
     filenames.push(file.filename);
-    console.log(file.filename);
   }
   const values = filenames.map((filename) => [filename]);
 
   const UpdatePostSQL = `UPDATE mydatabase.post SET title='${title}', content='${contents}', main_category='${major}', sub_category='${minor}', area='${area}' WHERE post_id=${postId};`;
-  const DeletePostImgSql = `DELETE FROM mydatabase.post_img WHERE fk_post_id=${postId};`;
-  const imgSQL = `
-  INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?);
-`;
+  const ImgAddSQL = `INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?); `;
+  const DeleteImgSQL = `DELETE FROM mydatabase.post_img WHERE img_src=? ;`;
 
   connection.query(UpdatePostSQL, (error, result) => {
     if (error) throw error;
     else {
-      connection.query(DeletePostImgSql, (error, result) => {
-        if (error) throw error;
-        else {
-          values.forEach((filename) => {
-            connection.query(imgSQL, [filename], (error, result) => {
-              if (error) throw error;
-            });
-          });
-          connection.end();
-          res.json(postId);
-        }
+      deletePost.forEach((filename) => {
+        connection.query(DeleteImgSQL, [filename], (error, result) => {
+          if (error) throw error;
+        });
       });
+      if (imgFiles.length > 0) {
+        values.forEach((filename) => {
+          connection.query(ImgAddSQL, [filename], (error, result) => {
+            if (error) throw error;
+          });
+        });
+      }
+      res.json(postId);
     }
   });
 });

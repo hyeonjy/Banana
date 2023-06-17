@@ -130,7 +130,7 @@ const CameraIcon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
-const ImgInput = styled.input.attrs({ required: true })`
+const ImgInput = styled.input`
   cursor: pointer;
   opacity: 0;
   position: absolute;
@@ -218,19 +218,31 @@ const LetterCount = styled.div`
   font-size: 15px;
 `;
 
+function base64ToImgUrl(base64) {
+  const blob = new Blob([base64], { type: "image/jpg" });
+  const url = URL.createObjectURL(blob);
+  return url;
+}
+
 function Upload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
   const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
+  const [imgFileName, setImgFileName] = useState(
+    []
+  ); /**이미지 파일name (수정) */
+  const [deleteFileList, setDeleteFileList] = useState([]);
+
   const imgRef = useRef();
-  console.log("imgFile:", imgFile);
-  console.log("imgURLs:", imgURLs);
+
   //React Hook Form
   const {
     watch,
     register,
     setValue,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
@@ -248,15 +260,14 @@ function Upload() {
       );
       setMinor(main.sub);
       let imgurls = [];
+      let imgfilesname = [];
       for (let i = 0; i < state.item.imgs.length; i++) {
         imgurls.push(state.item.imgs[i].data);
+        imgfilesname.push(state.item.imgs[i].filename);
+        // imgurls.push(base64ToImgUrl(state.item.imgs[i].data));
       }
       setImgURLs(imgurls);
-      let imgfiles = [];
-      for (let i = 0; i < state.item.imgs.length; i++) {
-        imgfiles.push(state.item.imgs[i].file);
-      }
-      setImgFile(imgfiles);
+      setImgFileName(imgfilesname);
     }
   }, [state]);
 
@@ -269,9 +280,8 @@ function Upload() {
 
   // option 값이 바뀌면 실행
   const optionChange = (e) => {
-    const item = itemsGroup.find((item) => e.target.value === item.main);
-    setMinor(item.sub);
-    setValue("minor", item.sub[0]);
+    const main = itemsGroup.find((item) => e.target.value === item.main);
+    setMinor(main.sub);
   };
 
   // 이미지 저장 함수
@@ -279,7 +289,6 @@ function Upload() {
     const imageLists = e.target.files;
 
     let imageFileLists = [...imgFile];
-    // let imageUrlLists = [...imgURLs];
 
     const readerArray = [];
     for (let i = 0; i < imageLists.length; i++) {
@@ -295,18 +304,26 @@ function Upload() {
         imageFileLists.push(imageLists[i]);
       } else {
         alert("최대 5장까지만 업로드 됩니다.");
+        break;
       }
       // const currentImageUrl = URL.createObjectURL(imageLists[i]);
       // imageUrlLists.push(currentImageUrl);
     }
-    console.log(imageFileLists);
+
     setImgFile(imageFileLists);
   };
 
   // 이미지 삭제시 실행되는 함수
   const handleDelete = (index) => {
-    setImgFile(imgFile.filter((itme, idx) => idx !== index));
-    setImgURLs(imgURLs.filter((itme, idx) => idx !== index));
+    setImgURLs(imgURLs.filter((_, idx) => idx !== index));
+    if (index < imgFileName.length) {
+      setDeleteFileList((prev) => [...prev, imgFileName[index]]);
+      setImgFileName(imgFileName.filter((_, idx) => idx !== index));
+    } else {
+      setImgFile(
+        imgFile.filter((_, idx) => idx + imgFileName.length !== index)
+      );
+    }
   };
 
   const history = useHistory();
@@ -329,8 +346,9 @@ function Upload() {
     (formdata) => postUpdateApi(formdata),
     {
       onSuccess: (postId) => {
-        queryClient.invalidateQueries({ exact: false });
         alert("수정되었습니다");
+        console.log("수정성공~!");
+        queryClient.invalidateQueries({ exact: false });
         history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
       },
       onError: () => {
@@ -339,10 +357,19 @@ function Upload() {
     }
   );
 
+  useEffect(() => {
+    if (imgURLs.length === 0) {
+      setError("noImg", { message: "사진 업로드는 필수입니다" });
+    } else {
+      clearErrors("noImg");
+    }
+  }, [imgURLs]);
+
   //form 유효할 때 실행
   const onValid = (data) => {
-    console.log(data);
-    console.log(imgFile);
+    // console.log("data:", data);
+    // console.log("imgFile:", imgFile);
+    // console.log("deleteFileList:", deleteFileList);
     //data: title, content, major, minor
     const formdata = new FormData();
     formdata.append("title", data.title);
@@ -359,6 +386,7 @@ function Upload() {
     formdata.append("userId", 1);
     if (state?.mode === "edit") {
       formdata.append("postId", state.postId);
+      formdata.append("deletePost[]", deleteFileList);
       updateMutate(formdata);
     } else writeMutate(formdata);
   };
@@ -487,7 +515,6 @@ function Upload() {
               onChange={saveImgFile}
               ref={imgRef}
               multiple
-              required
             />
             <div>
               {errors.major ? (
@@ -500,6 +527,8 @@ function Upload() {
                 <ErrorSpan>{errors.title.message}</ErrorSpan>
               ) : errors.contents ? (
                 <ErrorSpan>{errors.contents.message}</ErrorSpan>
+              ) : errors.noImg ? (
+                <ErrorSpan>{errors.noImg.message}</ErrorSpan>
               ) : null}
               <SubmitBtn type="submit">등록</SubmitBtn>
             </div>
@@ -511,11 +540,7 @@ function Upload() {
               return (
                 <ImgBox key={index}>
                   {index === 0 && <span>대표</span>}
-                  <ImgPreview
-                    src={`data:image/jpeg;base64,${item}`}
-                    // src={imgURLs ? item : `../../Img/banana.png`}
-                    alt="프로필 이미지"
-                  />
+                  <ImgPreview src={`data:image/jpeg;base64,${item}`} />
                   <Xbtn
                     onClick={(event) => {
                       event.preventDefault();
