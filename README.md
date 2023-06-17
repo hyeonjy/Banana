@@ -123,6 +123,109 @@
 
 ## 4. 개발 기록
 
+📋 게시물(post) 수정 - 1. 기존 이미지 미리보기 가져오기
+- 게시물 작성 시에는 로컬에서 업로드한 이미지의 미리보기를 위해 createObjectURL 로 접근했지만, 게시물 수정시에는 서버로부터 전달받은 base64 타입의 이미지 데이터를 URL로 변환하는데 실패했다.
+- 방법을 바꿔 FileReader 객체를 통해 로컬에서 업로드되는 이미지를 base64 타입로 처리했다.
+
+<br/>
+
+개선 이전 - 이미지가 뜨지 않음
+```javascript
+   // 기존 이미지 미리보기 띄우기
+   function base64ToImgUrl(base64) {
+      const blob = new Blob([base64], { type: 'image/jpeg' });
+      const url = URL.createObjectURL(blob);
+      return url;
+    }
+    useEffect(() => {
+        if (state) {
+          //....
+          let imgurls = [];
+          for (let i = 0; i < state.item.imgs.length; i++) {
+            imgurls.push(base64ToImgUrl(state.item.imgs[i].data)); // base64 데이터 - > ObjectURL
+          }
+          setImgURLs(imgurls);
+       }
+    }, [state]);
+
+   // 로컬 이미지 업로드후 미리보기 띄우기
+    for (let i = 0; i < imageLists.length; i++) {
+      const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      imageUrlLists.push(currentImageUrl);
+    }
+    //...
+    setImgURLs(imageUrlLists);
+    
+    //...
+    
+    // 미리보기 이미지 컴포넌트
+    <ImgPreview src={imgURL} />
+```
+
+개선 이후
+```javascript
+  // 기존 이미지 미리보기 띄우기
+      //....
+      let imgurls = [];
+      for (let i = 0; i < state.item.imgs.length; i++) {
+         imgurls.push(state.item.imgs[i].data); // base64 데이터
+      }
+      setImgURLs(imgurls);
+
+    //....
+    
+    // 로컬 이미지 업로드
+     const reader = new FileReader();
+     reader.onload = () => {
+       const base64Data = reader.result;
+       setImgURLs((prevImgs) => [...prevImgs, base64Data.split(",")[1]]); // 이미지 미리보기 저장(base64형식)
+     };
+      
+  //...
+  // 미리보기 이미지 컴포넌트
+  <ImgPreview src={`data:image/jpeg;base64, ${imgURL}`} />
+ 
+```
+
+📋 게시물(post) 수정 - 2. 이미지 삭제
+- 어떤 기존 이미지가 삭제되었고 유지되며, 로컬에서 어떤 이미지가 추가&삭제되는지에 대해 처리해야 했다.
+- 처음에는 데이터를 모두 지운 다음 업데이트 된 데이터를 다시 insert 하는 방법을 선택했다가, 기존 이미지 데이터(base64형식)을 파일 형태로 전환하는데 어려움을 겪었다.
+- 다른 방법으로, 삭제할 데이터의 파일명과 새로 추가한 파일만 서버에 전송하는 방법을 택했다
+```javascript
+  const [imgURLs, setImgURLs] = useState([]); /**이미지 미리보기 */
+  const [imgFileName, setImgFileName] = useState([]); /** 기존 이미지 파일명 (수정) */
+  const [deleteFileList, setDeleteFileList] = useState([]); /** 삭제될 파일명 */
+  
+  useEffect(() => {
+    if (state) {
+       //.......
+       let imgurls = [];
+       let imgfilesname = [];
+       for (let i = 0; i < state.item.imgs.length; i++) {
+          imgurls.push(state.item.imgs[i].data); //base64 데이터 - 미리보기 관련
+          imgfilesname.push(state.item.imgs[i].filename);  // 기존 이미지 파일명
+       }
+       setImgURLs(imgurls);
+       setImgFileName(imgfilesname);
+    }
+  }, [state]);
+ 
+ //...
+   // 이미지 삭제시 실행 함수
+  const handleDelete = (index) => {
+    setImgURLs(imgURLs.filter((_, idx) => idx !== index)); // 미리보기 처리
+    if (index < imgFileName.length) { // 기존 이미지 데이터 삭제 
+      setDeleteFileList((prev) => [...prev, imgFileName[index]]);
+      setImgFileName(imgFileName.filter((_, idx) => idx !== index));
+    } else { // 로컬에서 추가된 이미지파일 삭제
+      setImgFile(
+        imgFile.filter((_, idx) => idx + imgFileName.length !== index)
+      );
+    }
+  };
+
+```
+
 ---
 
 📋 Modal 관련 버그 해결
