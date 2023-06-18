@@ -9,11 +9,11 @@ import SideNav from "../components/SideNav";
 
 import Paging from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
-import { ItemObj } from "../../Data/ItemObj";
-import { ShowItem } from "../components/ShowItem";
-import { useRecoilValue } from "recoil";
-import { postData } from "../../atom";
-import useAxios from "../../useAxio";
+import { Product, ShowItem, Thum } from "../components/ShowItem";
+
+import { useQuery } from "react-query";
+import { mainPostApi } from "../../Api";
+import Skeleton from "react-loading-skeleton";
 
 export const WrapDiv = styled(Container)`
   justify-content: space-evenly;
@@ -141,7 +141,7 @@ export const BackGround = styled.div`
 
 export const queryArray = ["최신등록순", "조회순", "관심순"];
 function Group() {
-  const data = useRecoilValue(postData);
+  const [currentQuery, setCurrentQuery] = useState(0);
 
   //url - 현재 카테고리 정보
   const location = useLocation();
@@ -149,46 +149,38 @@ function Group() {
   const categoryValue = searchParams.get("category"); // id( = main category)
   const Group = itemsGroup.find((item) => item.id === Number(categoryValue));
 
-  //현재 cate에 해당하는 item
-  const [cateItem, setCateItem] = useState(
-    data.filter((item) => item.main_category === Group.main)
-  );
   //페이지네이션
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
   const [count, setCount] = useState();
-
   const postPerPage = 12; // 한 페이지 아이템 수
 
+  //
   const history = useHistory();
-  const [currentQuery, setCurrentQuery] = useState(0);
+
+  const { data: cateItem, refetch } = useQuery([Group.main, currentQuery], () =>
+    mainPostApi(Group.main, currentQuery)
+  );
+
   function changeQuery(index) {
     const searchParams = new URLSearchParams(location.search);
     setCurrentQuery(index);
     searchParams.set("query", index);
     history.push({ search: searchParams.toString() });
   }
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/main/${Group.main}/${currentQuery}`,
-  });
 
   //강제 렌더링
   useEffect(() => {
-    executeGet();
     setCurrentPage(Number(pageValue));
-    setCount(cateItem.length);
   }, [categoryValue]); // 상위 카테고리 변경 시
 
   useEffect(() => {
-    executeGet();
-  }, [currentQuery]); // 쿼리 변경 시
+    refetch();
+  }, [currentQuery, categoryValue]); // 쿼리&카테고리 변경 시
 
   useEffect(() => {
-    if (!loading && !error) {
-      setCateItem(response);
-    }
-  }, [response, loading, error]);
+    if (cateItem) setCount(cateItem.length);
+  }, [cateItem]); // 데이터
 
   return (
     <div style={{ position: "relative" }}>
@@ -214,7 +206,7 @@ function Group() {
             </CategoryUl>
           </TopCate>
           {/* 카테고리 끝 */}
-          {cateItem.length > 0 ? (
+          {cateItem ? (
             <>
               <CurrentCateAndQuery>
                 <CurrentCate>
@@ -238,24 +230,51 @@ function Group() {
                 </QueryUl>
               </CurrentCateAndQuery>
 
-              <ItemDiv>
-                <ShowItem
-                  item={cateItem.slice(
-                    postPerPage * (currentPage - 1),
-                    postPerPage * (currentPage - 1) + postPerPage
-                  )}
-                  state={true}
-                />
-              </ItemDiv>
-              <Paging
-                page={currentPage}
-                count={count}
-                setCurrentPage={setCurrentPage}
-                postPerPage={postPerPage}
-              />
+              {cateItem.length > 0 ? (
+                <>
+                  <ItemDiv>
+                    <ShowItem
+                      item={cateItem?.slice(
+                        postPerPage * (currentPage - 1),
+                        postPerPage * (currentPage - 1) + postPerPage
+                      )}
+                      state={true}
+                    />
+                  </ItemDiv>
+                  <Paging
+                    currentPage={currentPage}
+                    count={count}
+                    setCurrentPage={setCurrentPage}
+                    postPerPage={postPerPage}
+                  />
+                </>
+              ) : (
+                <NoItem />
+              )}
             </>
           ) : (
-            <NoItem />
+            <>
+              <CurrentCateAndQuery>
+                <CurrentCate>
+                  <Skeleton height={35} width={100} />
+                </CurrentCate>
+                <QueryUl>
+                  <Skeleton height={35} width={150} />
+                </QueryUl>
+              </CurrentCateAndQuery>
+
+              <ItemDiv>
+                {Array(12)
+                  .fill()
+                  .map((_, index) => (
+                    <Product key={index} layout="col">
+                      <Thum layout="col">
+                        <Skeleton height={200} width={200} />
+                      </Thum>
+                    </Product>
+                  ))}
+              </ItemDiv>
+            </>
           )}
         </CateContainer>
       </WrapDiv>

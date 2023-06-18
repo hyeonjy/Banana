@@ -23,10 +23,13 @@ import {
 import Paging, { SetPage } from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
 import { ItemObj } from "../../Data/ItemObj";
-import { ShowItem } from "../components/ShowItem";
+import { Product, ShowItem, Thum } from "../components/ShowItem";
 import { useRecoilValue } from "recoil";
 import { postData } from "../../atom";
 import useAxios from "../../useAxio";
+import { useQuery } from "react-query";
+import { subPostApi } from "../../Api";
+import Skeleton from "react-loading-skeleton";
 
 const SubCateContainer = styled(CateContainer)``;
 const MainCate = styled(CategoryMain)`
@@ -63,22 +66,13 @@ function SubGroup() {
 
   const mainGroup = itemsGroup.find((item) => item.id === Number(main));
 
-  const data = useRecoilValue(postData);
-  const subItems = data.filter(
-    (item) =>
-      item.sub_category === categoryValue &&
-      item.main_category === mainGroup.main
-  );
-  const [subItem, setSubItem] = useState(subItems);
+  // const [subItem, setSubItem] = useState(subItems);
   const [currentIdx, setCurrentIdx] = useState(
     mainGroup.sub.indexOf(categoryValue)
   );
 
   //페이지네이션
-  // const { pageValue, currentPage, setCurrentPage, count, setCount } = SetPage(
-  //   searchParams,
-  //   subItems
-  // );
+
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
   const [count, setCount] = useState();
@@ -93,23 +87,23 @@ function SubGroup() {
     searchParams.set("query", index);
     history.push({ search: searchParams.toString() });
   }
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: `http://localhost:8080/sub/${categoryValue}/${currentQuery}`,
-  });
+
+  const { data: subItem, refetch } = useQuery(
+    [categoryValue, currentQuery],
+    () => subPostApi(categoryValue, currentQuery)
+  );
 
   useEffect(() => {
-    if (!loading && !error) {
-      setSubItem(response);
+    if (subItem) {
       setCurrentIdx(mainGroup.sub.indexOf(categoryValue));
       setCurrentPage(Number(pageValue));
-      setCount(response.length);
+      setCount(subItem.length);
     }
-  }, [response, loading, error]);
+  }, [subItem]);
 
   //강제 렌더링
   useEffect(() => {
-    executeGet();
+    refetch();
   }, [categoryValue, currentQuery]);
 
   return (
@@ -152,7 +146,7 @@ function SubGroup() {
           </TopCate>
 
           {/*Query*/}
-          {subItems.length > 0 ? (
+          {subItem ? (
             <>
               <CurrentCateAndQuery>
                 {/* 상단 카테고리 경로(ex:상의 > 티셔츠) */}
@@ -166,7 +160,7 @@ function SubGroup() {
                     >
                       {mainGroup.main}
                     </Link>
-                    &nbsp; &gt; &nbsp;{categoryValue} ({subItems.length})
+                    &nbsp; &gt; &nbsp;{categoryValue} ({subItem.length})
                   </span>
                 </CurrentCate>
 
@@ -185,27 +179,54 @@ function SubGroup() {
                 </QueryUl>
               </CurrentCateAndQuery>
 
-              {/*Item List */}
-              <ItemDiv>
-                <ShowItem
-                  item={subItem.slice(
-                    postPerPage * (currentPage - 1),
-                    postPerPage * (currentPage - 1) + postPerPage
-                  )}
-                  state={true}
-                />
-              </ItemDiv>
+              {subItem.length > 0 ? (
+                <>
+                  {/*Item List */}
+                  <ItemDiv>
+                    <ShowItem
+                      item={subItem?.slice(
+                        postPerPage * (currentPage - 1),
+                        postPerPage * (currentPage - 1) + postPerPage
+                      )}
+                      state={true}
+                    />
+                  </ItemDiv>
 
-              {/*Pagination */}
-              <Paging
-                page={currentPage}
-                count={count}
-                setCurrentPage={setCurrentPage}
-                postPerPage={postPerPage}
-              />
+                  {/*Pagination */}
+                  <Paging
+                    currentPage={currentPage}
+                    count={count}
+                    setCurrentPage={setCurrentPage}
+                    postPerPage={postPerPage}
+                  />
+                </>
+              ) : (
+                <NoItem />
+              )}
             </>
           ) : (
-            <NoItem />
+            <>
+              <CurrentCateAndQuery>
+                <CurrentCate>
+                  <Skeleton height={35} width={100} />
+                </CurrentCate>
+                <QueryUl>
+                  <Skeleton height={35} width={150} />
+                </QueryUl>
+              </CurrentCateAndQuery>
+
+              <ItemDiv>
+                {Array(12)
+                  .fill()
+                  .map((_, index) => (
+                    <Product key={index} layout="col">
+                      <Thum layout="col">
+                        <Skeleton height={200} width={200} />
+                      </Thum>
+                    </Product>
+                  ))}
+              </ItemDiv>
+            </>
           )}
         </SubCateContainer>
       </WrapDiv>

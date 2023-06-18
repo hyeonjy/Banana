@@ -77,3 +77,14 @@ export function categoryPostApi(main, sub) {
     .get(`${BASE_URL}/categorydata/${main}/${sub}`)
     .then((response) => response.data);
 }
+export function mainPostApi(main, sort) {
+  return axios
+    .get(`${BASE_URL}/main/${main}/${sort}`)
+    .then((response) => response.data);
+}
+
+export function subPostApi(sub, sort) {
+  return axios
+    .get(`${BASE_URL}/sub/${sub}/${sort}`)
+    .then((response) => response.data);
+}
