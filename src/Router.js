@@ -16,6 +16,7 @@ import Chats from "./DesktopView/routes/Chats";
 import UserInfo from "./DesktopView/routes/UserReview";
 import WriteReview from "./DesktopView/routes/WriteReview";
 import SignUp from "./DesktopView/routes/SignUp";
+import Auth from "./DesktopView/routes/Auth";
 export function DeskTopRouter() {
   return (
     <BrowserRouter>
@@ -51,6 +52,14 @@ export function DeskTopRouter() {
         <Route path="/login">
           <Login />
         </Route>
+        <Route path="/signup">
+          <SignUp />
+        </Route>
+
+        <Route path="/auth">
+          <Auth />
+        </Route>
+
         <Route path="/upload" exact>
           <Upload />
         </Route>
@@ -66,10 +75,6 @@ export function DeskTopRouter() {
         </Route>
         <Route path="/write">
           <WriteReview />
-        </Route>
-
-        <Route path="/signup">
-          <SignUp />
         </Route>
       </Switch>
       <Footer />

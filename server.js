@@ -1,7 +1,9 @@
 // const HOST_IP = "172.30.72.97"; //스벅
 // const HOST_IP = "172.30.1.48"; //커나
-const HOST_IP = "172.16.61.69"; //세종
+// const HOST_IP = "172.16.61.69"; //세종
 // const HOST_IP = "localhost";
+const HOST_IP = "172.30.1.18"; //파바
+
 /*서버 연동 */
 const express = require("express");
 const path = require("path");
@@ -24,6 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const mysql = require("mysql");
+const { default: axios } = require("axios");
+const { error } = require("console");
 
 app.use(express.static(path.join(__dirname, "build")));
 
@@ -152,6 +156,7 @@ app.get("/searchdata/:searchkey/:sort", function (req, res) {
   );
 });
 
+//데스트탑용
 app.get("/main/:main/:sort", function (req, res) {
   let option = null;
   const sort = req.params.sort;
@@ -210,6 +215,7 @@ app.get("/main/:main/:sort", function (req, res) {
     connection.end();
   });
 });
+//데스크탑용
 app.get("/sub/:sub/:sort", function (req, res) {
   let option = null;
   const sort = req.params.sort;
@@ -327,7 +333,7 @@ app.get("/postdata/:postId", function (req, res) {
                 const imageData = fs.readFileSync(imagePath);
                 const imageBase64 = imageData.toString("base64");
                 results[1][i].img_src = {
-                  filename: results[i].img_src,
+                  filename: results[1][i].img_src,
                   data: imageBase64,
                   file: imageData,
                 };
@@ -640,42 +646,41 @@ app.post("/postUpdate", upload.array("images"), (req, res) => {
     database: "mydatabase",
     multipleStatements: true,
   });
-  const { title, contents, major, minor, area, postId } = req.body;
+  const { title, contents, major, minor, area, postId, deletePost } = req.body;
 
   const imgFiles = req.files;
   const filenames = [];
 
   for (const file of imgFiles) {
     filenames.push(file.filename);
-    console.log(file.filename);
   }
   const values = filenames.map((filename) => [filename]);
 
   const UpdatePostSQL = `UPDATE mydatabase.post SET title='${title}', content='${contents}', main_category='${major}', sub_category='${minor}', area='${area}' WHERE post_id=${postId};`;
-  const DeletePostImgSql = `DELETE FROM mydatabase.post_img WHERE fk_post_id=${postId};`;
-  const imgSQL = `
-  INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?);
-`;
+  const ImgAddSQL = `INSERT INTO mydatabase.post_img (fk_post_id,  img_src) VALUES (${postId}, ?); `;
+  const DeleteImgSQL = `DELETE FROM mydatabase.post_img WHERE img_src=? ;`;
 
   connection.query(UpdatePostSQL, (error, result) => {
     if (error) throw error;
     else {
-      connection.query(DeletePostImgSql, (error, result) => {
-        if (error) throw error;
-        else {
-          values.forEach((filename) => {
-            connection.query(imgSQL, [filename], (error, result) => {
-              if (error) throw error;
-            });
-          });
-          connection.end();
-          res.json(postId);
-        }
+      deletePost.forEach((filename) => {
+        connection.query(DeleteImgSQL, [filename], (error, result) => {
+          if (error) throw error;
+        });
       });
+      if (imgFiles.length > 0) {
+        values.forEach((filename) => {
+          connection.query(ImgAddSQL, [filename], (error, result) => {
+            if (error) throw error;
+          });
+        });
+      }
+      res.json(postId);
     }
   });
 });
 
+//모바일용
 app.get("/categorydata/:main/:sub", function (req, res) {
   const main = req.params.main;
   const sub = req.params.sub;
@@ -782,6 +787,62 @@ app.get("/regiondata/:region", function (req, res) {
     }
     connection.end();
   });
+});
+
+//카카오 로그인
+app.post("/kakao/user", (req, res) => {
+  const connection = mysql.createConnection({
+    host: HOST_IP,
+    user: "banana",
+    password: process.env.DB_PASSWORD,
+    database: "mydatabase",
+    multipleStatements: true,
+  });
+  const { access_token } = req.body;
+  if (access_token) {
+    axios
+      .post(
+        "https://kapi.kakao.com/v2/user/me",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      )
+      .then((response) => {
+        // console.log("Success");
+
+        const data = response.data;
+        const {
+          email,
+          profile: { nickname },
+        } = data.kakao_account;
+
+        console.log("nickname", nickname);
+        console.log("email", email);
+        const userData = { email: email, nickname: nickname };
+        const isUserSQL =
+          "SELECT COUNT(*) AS count FROM mydatabase.user WHERE email = ?";
+        // const createUser = ` INSERT INTO mydatabase.user (email, password, nickname, profile, grade) VALUES (${email}, ${}, ${nickname}, "bananaface.png", 0);`;
+
+        //DB에 유저가 있는지 확인
+        connection.query(isUserSQL, (error, result) => {
+          if (error) throw error;
+          else {
+            const userExists = result[0].count > 0;
+            if (!userExists) {
+            }
+          }
+        });
+
+        res.send(userData);
+      });
+  } else {
+    console.log("토큰 XX");
+    res.sendStatus(404);
+  }
 });
 
 app.get("*", function (request, response) {

@@ -50,6 +50,13 @@ function Login() {
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
   const regExgPw = /^[A-Za-z0-9]{8,12}$/;
 
+  //1. 인가 코드 받기(로그인 창)
+
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&response_type=code`;
+  const kakaoLogin = () => {
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div style={{}}>
       <LoginContainer>
@@ -112,6 +119,16 @@ function Login() {
             </Link>
             <MLogin.DetailSpan>계정 찾기</MLogin.DetailSpan>
           </MLogin.DetailDiv>
+
+          <MLogin.SubmitBtn style={{ cursor: "pointer", marginTop: "20px" }}>
+            Google 로그인
+          </MLogin.SubmitBtn>
+          <MLogin.SubmitBtn
+            onClick={kakaoLogin}
+            style={{ cursor: "pointer", marginTop: "20px" }}
+          >
+            KAKAO 로그인
+          </MLogin.SubmitBtn>
         </LoginDiv>
       </LoginContainer>
     </div>

@@ -105,7 +105,6 @@ function Post() {
 
   useEffect(() => {
     if (data) {
-      console.log(data.post.imgs);
       setIsWriter(LoginId === data.post.nickname);
     }
   }, [data]);
