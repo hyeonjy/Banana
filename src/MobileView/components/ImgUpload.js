@@ -2,7 +2,7 @@ import { faCamera, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import MUploadImgFull from "../routes/MUploadImgFull";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 
 const ImgDiv = styled.div`
@@ -123,27 +123,38 @@ const Represent = styled.div`
 `;
 
 //이미지 업로드 fn
-function ImgUpload({ imgFile, setImgFile }) {
+function ImgUpload({ imgFile, setImgFile, imgURLs, setImgURLs }) {
   // 이미지 저장 함수
-  const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
+  // const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
   const imgRef = useRef();
 
+  // 이미지 저장 함수
   const saveImgFile = (e) => {
     const imageLists = e.target.files;
 
-    let imageFileLists = [...imgFile, ...imageLists];
-    let imageUrlLists = [...imgURLs];
+    let imageFileLists = [...imgFile];
+    // let imageUrlLists = [...imgURLs];
 
+    const readerArray = [];
     for (let i = 0; i < imageLists.length; i++) {
-      const currentImageUrl = URL.createObjectURL(imageLists[i]);
-      imageUrlLists.push(currentImageUrl);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64Data = reader.result;
+        const dataWithoutPrefix = base64Data.split(",")[1];
+        setImgURLs((prevImgs) => [...prevImgs, dataWithoutPrefix]);
+      };
+      readerArray.push(reader);
+      if (i < 5) {
+        reader.readAsDataURL(imageLists[i]);
+        imageFileLists.push(imageLists[i]);
+      } else {
+        alert("최대 5장까지만 업로드 됩니다.");
+      }
+      // const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      // imageUrlLists.push(currentImageUrl);
     }
-    if (imageUrlLists.length > 5) {
-      alert("최대 5장까지만 업로드 합니다.");
-      imageUrlLists = imageUrlLists.slice(0, 5);
-    }
+    console.log(imageFileLists);
     setImgFile(imageFileLists);
-    setImgURLs(imageUrlLists);
   };
 
   // 이미지 삭제시 실행되는 함수
@@ -166,7 +177,7 @@ function ImgUpload({ imgFile, setImgFile }) {
             height: "78px",
           }}
         >
-          <ImgLabel htmlFor="input-file" onChange={saveImgFile}>
+          <ImgLabel htmlFor="input-file">
             <CameraIcon icon={faCamera} />
             <span>{imgFile.length} / 10</span>
             <ImgInput
@@ -176,20 +187,22 @@ function ImgUpload({ imgFile, setImgFile }) {
               onChange={saveImgFile}
               ref={imgRef}
               multiple
-              required
             />
           </ImgLabel>
 
           <ImgList>
-            {imgURLs.map((image, id) => (
+            {imgURLs.map((item, id) => (
               <EachImgDiv key={id}>
                 <EachImg
                   onClick={() => {
                     setIndex(id);
                     setImgFull(true);
                   }}
-                  src={image}
-                  alt={`${image}-${id}`}
+                  // src={image}
+                  // alt={`${image}-${id}`}
+                  src={`data:image/jpeg;base64,${item}`}
+                  // src={imgURLs ? item : `../../Img/banana.png`}
+                  alt="프로필 이미지"
                 />
                 {id === 0 && <Represent>대표사진</Represent>}
                 <XIcon
