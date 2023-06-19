@@ -323,6 +323,13 @@ function MDetailpost() {
     });
   };
 
+  const handleUpdatePost = () => {
+    history.push({
+      pathname: "/upload",
+      state: { item: data.post, mode: "edit", postId: postId },
+    });
+  };
+
   const handleChangeSelect = (e) => {
     mutateState({ postId, state: e.target.value });
   };
@@ -426,16 +433,7 @@ function MDetailpost() {
                 <div style={{ position: "relative" }} ref={dropMenuRef}>
                   {EllipsisToggle && (
                     <EllipsisDiv EllipsisToggle={EllipsisToggle}>
-                      <EllipsisOption
-                        onClick={() =>
-                          handleUpdateClick(
-                            data.post.title,
-                            data.post.content,
-                            data.post.main_category,
-                            data.post.sub_category
-                          )
-                        }
-                      >
+                      <EllipsisOption onClick={handleUpdatePost}>
                         수정하기
                       </EllipsisOption>
                       <EllipsisOption onClick={handleDeletePost}>
