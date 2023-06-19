@@ -225,6 +225,34 @@
   };
 
 ```
+ ---
+
+📋 파일명 중복 저장 버그
+- 게시물 작성시 업로드 되는 이미지는 node.js의 multer 라이브러리로 저장
+- 업로드 시간(Date.now())으로 파일 이름을 구분하려 하였으나 크기가 작은 파일(ex:.png)의 경우 처리속도가 빨라 같은 시간에 처리되어 동일한 파일이름으로 저장되는 문제 발생
+
+<br/>
+개선 전
+
+```javascript
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname);
+    const filename = `${Date.now()}${extension}`;
+    cb(null, filename);
+  },
+```
+
+개선 이후
+- 업로드 시간과 기존 파일명을 혼합하여 파일명을 수정함
+- 기존 파일명이 한글일 경우 문자가 깨지는 경우를 multer를 1.4.4 버전으로 다운그레이드하여 해결
+```javascript
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname);
+    const name = file.originalname.split(".")[0];
+    const filename = `${Date.now()}${name}${extension}`;
+    cb(null, filename);
+  },
+```
 
 ---
 
