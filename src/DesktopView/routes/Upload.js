@@ -385,11 +385,11 @@ function Upload() {
 
     //!!!!!!!!!!!!!!!!!!유저 아이디 변경해야함!!!!!!!!!!!!!!!!!!!!!!!!
     formdata.append("userId", 1);
-    // if (state?.mode === "edit") {
-    //   formdata.append("postId", state.postId);
-    //   formdata.append("deletePost[]", deleteFileList);
-    //   updateMutate(formdata);
-    // } else writeMutate(formdata);
+    if (state?.mode === "edit") {
+      formdata.append("postId", state.postId);
+      formdata.append("deletePost[]", deleteFileList);
+      updateMutate(formdata);
+    } else writeMutate(formdata);
   };
 
   // 이미지 썸네일 가로 스크롤
