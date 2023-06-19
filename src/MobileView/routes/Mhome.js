@@ -123,7 +123,8 @@ const EmptyPage = styled.div`
 function Mhome() {
   const [currentCate, setCurrentCate] = useState(categoryList[0]);
   const [currentSubCate, setCurrentSubCate] = useState(categoryList[0].sub[0]);
-
+  console.log("curr: " + currentCate);
+  console.log("sub: " + currentCate.sub);
   return (
     <Container>
       <HeaderComponent />
@@ -155,7 +156,7 @@ function Mhome() {
             <CategoryLi
               key={categoryItem.id}
               onClick={() => {
-                setCurrentCate(categoryItem.main);
+                setCurrentCate(categoryItem);
                 setCurrentSubCate(categoryItem.sub[0]);
               }}
               isActive={categoryItem === currentCate}

@@ -17,7 +17,7 @@ import ImgUpload from "../components/ImgUpload";
 import { useEffect } from "react";
 import useAxios from "../../useAxio";
 import { useMutation, useQueryClient } from "react-query";
-import { postWriteApi } from "../../Api";
+import { postUpdateApi, postWriteApi } from "../../Api";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 const UploadContainer = styled.div`
   font-size: 14px;
@@ -118,13 +118,35 @@ const Form = styled.form`
 function MUpload() {
   const [minor, setMinor] = useState(["선택하세요"]); /**옷 소분류 */
   const [imgFile, setImgFile] = useState([]); /**이미지 파일 */
+  const [imgURLs, setImgURLs] = useState([]); /**이미지 URL */
   // const imgRef = useRef();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const titleValue = searchParams.get("title");
-  const contentValue = searchParams.get("content");
-  const mainValue = searchParams.get("main");
-  const subValue = searchParams.get("sub");
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (state) {
+      console.log(state.item);
+
+      setValue("title", state.item.title);
+      setValue("contents", state.item.content);
+      setValue("area", state.item.area);
+      setValue("major", state.item.main_category);
+      const main = itemsGroup.find(
+        (item) => state.item.main_category === item.main
+      );
+      setMinor(main.sub);
+      console.log("minor: " + minor);
+      let imgurls = [];
+      for (let i = 0; i < state.item.imgs.length; i++) {
+        imgurls.push(state.item.imgs[i].data);
+      }
+      setImgURLs(imgurls);
+      let imgfiles = [];
+      for (let i = 0; i < state.item.imgs.length; i++) {
+        imgfiles.push(state.item.imgs[i].file);
+      }
+      setImgFile(imgfiles);
+    }
+  }, [state]);
 
   const {
     watch,
@@ -140,22 +162,13 @@ function MUpload() {
   const optionChange = (e) => {
     const item = itemsGroup.find((item) => e.target.value === item.main);
     setMinor(item.sub);
-    setValue("minor", item.sub[0]);
+    setValue(item.sub[0]);
+    console.log("minor option: " + minor);
+    console.log("minor option: " + item.sub[0]);
   };
 
   const history = useHistory();
   const queryClient = useQueryClient();
-  const { mutate } = useMutation((formdata) => postWriteApi(formdata), {
-    onSuccess: (postId) => {
-      queryClient.invalidateQueries("lastpost");
-      queryClient.invalidateQueries("mypage");
-      alert("등록되었습니다");
-      history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
-    },
-    onError: () => {
-      alert("Error!");
-    },
-  });
 
   const [btnClick, setBtnClick] = useState(false); // 등록 버튼을 누른 후에 error 출력
 
@@ -167,12 +180,34 @@ function MUpload() {
     }
   }, [imgFile, btnClick]);
 
-  useEffect(() => {
-    if (mainValue !== undefined && subValue !== undefined) {
-      setValue("major", mainValue);
-      setValue("minor", subValue);
+  const { mutate: writeMutate } = useMutation(
+    (formdata) => postWriteApi(formdata),
+    {
+      onSuccess: (postId) => {
+        queryClient.invalidateQueries({ exact: false });
+
+        alert("등록되었습니다");
+        history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
+      },
+      onError: () => {
+        alert("Error!");
+      },
     }
-  }, []);
+  );
+
+  const { mutate: updateMutate } = useMutation(
+    (formdata) => postUpdateApi(formdata),
+    {
+      onSuccess: (postId) => {
+        queryClient.invalidateQueries({ exact: false });
+        alert("수정되었습니다");
+        history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
+      },
+      onError: () => {
+        alert("Error!");
+      },
+    }
+  );
 
   //form 유효할 때 실행
   const onValid = (data) => {
@@ -190,7 +225,12 @@ function MUpload() {
       formdata.append(`images`, image);
     });
     formdata.append("userId", 1);
-    mutate(formdata);
+    if (state?.mode === "edit") {
+      console.log("edit in!!!");
+      formdata.append("postId", state.postId);
+      formdata.append("deletePost[]", []);
+      updateMutate(formdata);
+    } else writeMutate(formdata);
   };
 
   return (
@@ -215,7 +255,6 @@ function MUpload() {
                 message: "제목은 30자 이하로 작성해주세요",
               },
             })}
-            defaultValue={titleValue}
           />
           {/* 메인 카테고리 */}
           <div style={{ display: "flex" }}>
@@ -226,9 +265,6 @@ function MUpload() {
               })}
               onChange={optionChange}
             >
-              <Option value="" disabled>
-                카테고리 선택
-              </Option>
               {itemsGroup.map((area, index) => (
                 <Option key={index}>{area.main}</Option>
               ))}
@@ -241,11 +277,13 @@ function MUpload() {
                 required: "하위 카테고리를 선택해주세요",
               })}
             >
-              <Option value="" disabled style={{ fontSize: "8px" }}>
-                하위 카테고리
-              </Option>
-              {minor &&
-                minor.map((sub, index) => <Option key={index}>{sub}</Option>)}
+              {minor.map((item, index) => {
+                return (
+                  <Option key={index} value={item}>
+                    {item}
+                  </Option>
+                );
+              })}
             </SelectCategory>
           </div>
 
@@ -263,7 +301,12 @@ function MUpload() {
           </SelectArea>
 
           {/* 사진 업로드 */}
-          <ImgUpload imgFile={imgFile} setImgFile={setImgFile} />
+          <ImgUpload
+            imgFile={imgFile}
+            setImgFile={setImgFile}
+            imgURLs={imgURLs}
+            setImgURLs={setImgURLs}
+          />
 
           {/* 글 내용 */}
           <Contents
@@ -275,7 +318,6 @@ function MUpload() {
                 message: "내용은 400자 이하로 작성해주세요",
               },
             })}
-            defaultValue={contentValue}
           ></Contents>
 
           {/*form valid ERROR 메세지 */}
