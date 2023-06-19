@@ -68,28 +68,6 @@ function Search() {
     refetch();
   }, [searchValue, currentQuery]);
 
-  // const { response, loading, error, executeGet } = useAxios({
-  //   method: "get",
-  //   url: `http://localhost:8080/searchdata/${searchValue}/${currentQuery}`,
-  // });
-
-  // useEffect(() => {
-  //   executeGet();
-  // }, [searchValue, currentQuery]);
-
-  // useEffect(() => {
-  //   if (!loading && !error) {
-  //     setSearchItem(response);
-  //   }
-  // }, [response, loading, error]);
-
-  //강제 렌더링
-  // useEffect(() => {
-  //   if (searchItem) {
-  //     setCount(searchItem.length);
-  //   }
-  // }, [searchItem]);
-
   function changeQuery(index) {
     const searchParams = new URLSearchParams(location.search);
     setCurrentQuery(index);
