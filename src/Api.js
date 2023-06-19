@@ -88,3 +88,31 @@ export function subPostApi(sub, sort) {
     .get(`${BASE_URL}/sub/${sub}/${sort}`)
     .then((response) => response.data);
 }
+
+export function Authorization(URL) {
+  return axios
+    .post(
+      `${URL}`,
+      {},
+      {
+        headers: {
+          "	Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      }
+    )
+    .then((response) => {
+      const { data } = response;
+      const { access_token } = data;
+      console.log(access_token);
+      if (access_token) {
+        axios
+          .post(`${BASE_URL}/kakao/user`, { access_token: access_token })
+          .then((res) => {
+            console.log("Success");
+            console.log(res);
+          });
+      } else {
+        console.log("토큰 XX");
+      }
+    });
+}

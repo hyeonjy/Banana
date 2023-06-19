@@ -282,6 +282,7 @@ function Upload() {
   const optionChange = (e) => {
     const main = itemsGroup.find((item) => e.target.value === item.main);
     setMinor(main.sub);
+    setValue("minor", main.sub[0]);
   };
 
   // 이미지 저장 함수
@@ -367,7 +368,7 @@ function Upload() {
 
   //form 유효할 때 실행
   const onValid = (data) => {
-    // console.log("data:", data);
+    console.log("data:", data);
     // console.log("imgFile:", imgFile);
     // console.log("deleteFileList:", deleteFileList);
     //data: title, content, major, minor
@@ -384,11 +385,11 @@ function Upload() {
 
     //!!!!!!!!!!!!!!!!!!유저 아이디 변경해야함!!!!!!!!!!!!!!!!!!!!!!!!
     formdata.append("userId", 1);
-    if (state?.mode === "edit") {
-      formdata.append("postId", state.postId);
-      formdata.append("deletePost[]", deleteFileList);
-      updateMutate(formdata);
-    } else writeMutate(formdata);
+    // if (state?.mode === "edit") {
+    //   formdata.append("postId", state.postId);
+    //   formdata.append("deletePost[]", deleteFileList);
+    //   updateMutate(formdata);
+    // } else writeMutate(formdata);
   };
 
   // 이미지 썸네일 가로 스크롤
