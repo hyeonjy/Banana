@@ -40,7 +40,10 @@
 
 <div style="display:flex">
   <img alt="nodedotjs" src="https://img.shields.io/badge/nodedotjs-339933.svg?&style=for-the-badge&logo=nodedotjs&logoColor=black"/>
+  <img alt="express" src="https://img.shields.io/badge/express-000000.svg?&style=for-the-badge&logo=express&logoColor=black"/>
   <img alt="mysql" src="https://img.shields.io/badge/mysql-4479A1.svg?&style=for-the-badge&logo=mysql&logoColor=black"/> 
+
+ 
 </div>
 <br/>
 
