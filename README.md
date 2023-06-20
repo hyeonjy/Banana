@@ -48,13 +48,13 @@
 <br/>
 
 ✏️ 사용 라이브러리
-- React Query : 상태관리 (useQuery, useMutation)
 - Styled-components : 컴포넌트 기반 스타일링
-- react-device-detect : BrowserView 와 MobileView 로 나누어 작업  
+- React Query : 상태관리 (useQuery, useMutation)
+- React-device-detect : BrowserView 와 MobileView 로 나누어 작업  
 - React-hook-form : form 을 구현 및 유효성 검사
 - React Swiper & Slick : 이미지 Slider 구현
 - React-loading-skeleton : 로딩 UI&UX 개선
-- react-js-pagination : 페이지네이션
+- React-js-pagination : 페이지네이션
 
 ## 3. 구현 기능 
 ### 1. 로그인 & 회원가입
