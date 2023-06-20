@@ -58,7 +58,7 @@
 - OAuth 2.0 기반 소셜 로그인 & React-hook-form 라이브러리를 활용한 회원가입
 - jwt을 활용한 로그인 상태 유지
 
-### 1. 나눔 글 작성 & 수정
+### 2. 나눔 글 작성 & 수정
  -  React-hook-form 라이브러리를 활용한 유효성 검사 후 에러 메세지가 표시됩니다.
  -  이미지 파일 추가 & 삭제 & 대표사진을 확인할 수 있습니다.
  
@@ -69,7 +69,7 @@
 <br/>
 <br/>
  
-### 2. 나눔 글 페이지 & 이미지 슬라이더
+### 3. 나눔 글 페이지 & 이미지 슬라이더
 - React-Swiper & Slick Library를 사용하였습니다.
 - 이미지를 크게 보는 경우 modal 형태로 나타나도록 구현했습니다.
  <div style="display:flex; gap:10px; ">
@@ -79,7 +79,7 @@
 <br/>
 <br/>
 
-### 3. 위시리스트 추가 &  목록 확인
+### 4. 위시리스트 추가 &  목록 확인
 - React Query 와 Optimistic Update를 활용하였습니다
 - 서버 요청 완료 전 UI를 업데이트를 통해 빠른 반응속도를 느낄 수 있습니다.
  <div style="display:flex; gap:10px; ">
@@ -88,7 +88,7 @@
 <br/>
 <br/>
 
-### 4. 나의 나눔목록 & 스켈레톤 컴포넌트
+### 5. 나의 나눔목록 & 스켈레톤 컴포넌트
 - 로그인 유저의 마이페이지에서 나눔 목록을 확인합니다.
 - React-loading-skeleton library를 통해 스켈레톤 컴포넌트를 구현했습니다.
  <div style="display:flex; gap:10px; ">
@@ -97,7 +97,7 @@
 <br/>
 <br/>
 
-### 5. 글 작성자의 프로필 확인 
+### 6. 글 작성자의 프로필 확인 
 - 다른 유저의 나눔 목록, 유저가 받은 후기를 확인할 수 있습니다.
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/abcd1425-5183-4d59-a29a-3948022ddbf1" width="500" height="375" />
@@ -105,7 +105,7 @@
 <br/>
 <br/>
 
-### 6. 게시물 검색 기능
+### 7. 게시물 검색 기능
 - 검색 키워드가 제목 혹은 내용에 포함되는 게시물을 검색할 수 있습니다.
 
  <div style="display:flex; gap:10px; ">
@@ -114,7 +114,7 @@
 <br/>
 <br/>
 
-### 7. 최신순, 조회순 등 게시물 정렬 기능 (카테고리)
+### 8. 최신순, 조회순 등 게시물 정렬 기능 (카테고리)
 - 등록순, 조회순 등 게시물을 정렬할 수 있습니다. 
  <div style="display:flex; gap:10px; ">
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/59a14fee-4e56-47b6-a781-e5230d7d09d9" width="500" height="375" />
@@ -122,7 +122,7 @@
 <br/>
 <br/>
 
-### 8. (예정) WebSocket을 이용한 채팅 기능 구현
+### 9. (예정) WebSocket을 이용한 채팅 기능 구현
 
 
 ## 4. 개발 기록
