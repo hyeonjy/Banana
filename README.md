@@ -51,17 +51,20 @@
 ✏️ 사용 라이브러리
 - Styled-components : 컴포넌트 기반 스타일링
 - React Query : 상태관리 (useQuery, useMutation)
-- Recoil : (로그인) 전역 상태 관리 
+- Recoil : 로그인 상태 관리
+- jsonwebtoken : 로그인 유저 권한 부여
 - React-device-detect : BrowserView 와 MobileView 로 나누어 작업  
 - React-hook-form : form 을 구현 및 유효성 검사
 - React Swiper & Slick : 이미지 Slider 구현
 - React-loading-skeleton : 로딩 UI&UX 개선
 - React-js-pagination : 페이지네이션
 
+
 ## 3. 구현 기능 
 ### 1. 로그인 & 회원가입
-- OAuth 2.0 기반 소셜 로그인 & React-hook-form 라이브러리를 활용한 회원가입
-- jwt & Recoil 을 통한 로그인 상태 유지
+- OAuth 2.0 기반 소셜 로그인 & React-hook-form 라이브러리를 활용한 회원가입이 가능합니다.(카카오 & 구글)
+- JWT(+Refresh token)을 통한 유저 권한 부여했으며 Recoil 을 통해 로그인 상태를 관리합니다.
+
 
 ### 2. 나눔 글 작성 & 수정
  -  React-hook-form 라이브러리를 활용한 유효성 검사 후 에러 메세지가 표시됩니다.
