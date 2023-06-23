@@ -50,7 +50,7 @@
 
 ✏️ 사용 라이브러리
 - Styled-components : 컴포넌트 기반 스타일링
-- React Query : 상태관리 (useQuery, useMutation)
+- React Query : 데이터 상태관리 (useQuery, useMutation)
 - Recoil : 로그인 상태 관리
 - jsonwebtoken : 로그인 유저 권한 부여
 - React-device-detect : BrowserView 와 MobileView 로 나누어 작업  
