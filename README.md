@@ -33,6 +33,7 @@
 <div style="display:flex">
   <img alt="React" src="https://img.shields.io/badge/React-61DAFB.svg?&style=for-the-badge&logo=React&logoColor=black"/>
   <img alt="reactquery" src="https://img.shields.io/badge/reactquery-FF4154.svg?&style=for-the-badge&logo=reactquery&logoColor=black"/>
+  <img alt="reactquery" src="https://img.shields.io/badge/reactquery-FF4154.svg?&style=for-the-badge&logo=reactquery&logoColor=black"/>
   <img alt="styledcomponents" src="https://img.shields.io/badge/styledcomponents-DB7093.svg?&style=for-the-badge&logo=styledcomponents&logoColor=black"/>
   <img alt="reacthookform" src="https://img.shields.io/badge/reacthookform-EC5990.svg?&style=for-the-badge&logo=reacthookform&logoColor=black"/>
  
@@ -50,6 +51,7 @@
 ✏️ 사용 라이브러리
 - Styled-components : 컴포넌트 기반 스타일링
 - React Query : 상태관리 (useQuery, useMutation)
+- Recoil : (로그인) 전역 상태 관리 
 - React-device-detect : BrowserView 와 MobileView 로 나누어 작업  
 - React-hook-form : form 을 구현 및 유효성 검사
 - React Swiper & Slick : 이미지 Slider 구현
