@@ -63,7 +63,7 @@
 ### 1. 로그인 & 회원가입
 - OAuth 2.0 기반 소셜 로그인 및 React-hook-form 라이브러리를 활용한 회원가입 기능입니다.(카카오 & 구글)
 - JWT(+Refresh token)을 통한 유저 권한 부여했으며 Recoil 을 통해 로그인 상태를 관리합니다.
-
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/7fb81bec-81dc-40c0-8709-a8eb8922bc75" width="500" height="375" />
 
 ### 2. 나눔 글 작성 & 수정
  -  React-hook-form 라이브러리를 활용한 유효성 검사 후 에러 메세지가 표시됩니다.
