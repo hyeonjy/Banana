@@ -24,7 +24,11 @@ const Products = styled.div`
   align-items: center;
   padding: 50px 0;
   //margin-bottom: 100px;
-  width: 1050px;
+  /* width: 1050px; */
+  width: 75vw;
+  @media (max-width: 768px) {
+    width: 85vw;
+  }
   margin: 0 auto;
 `;
 
@@ -143,7 +147,7 @@ function Home() {
           <Nav />
           <Container>
             {/* 배너 3개 */}
-            <div style={{ minWidth: "1015px" }}>
+            <div style={{ Width: "100vw" }}>
               <Banner />
             </div>
 
@@ -153,7 +157,7 @@ function Home() {
               {lastItem ? (
                 <>
                   <ProductsBox>
-                    <ShowItem item={lastItem.slice(0, 8)} />
+                    <ShowItem item={lastItem.slice(0, 8)} isHome={true} />
                   </ProductsBox>
                   <MoreBtn onClick={() => handleImageClick("new")}>
                     더보기

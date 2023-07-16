@@ -41,8 +41,7 @@ function MypageContents({ item, cate }) {
   const postPerPage = 8; // 한 페이지 아이템 수
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
-  const [count, setCount] = useState(item.length);
-
+  const count = item.length;
   return (
     <PageContainer>
       <NavTitle>
@@ -50,26 +49,29 @@ function MypageContents({ item, cate }) {
       </NavTitle>
       <div style={{ minHeight: "430px" }}>
         <ItemWrap>
-          {item ? (
-            <ShowItem
-              item={item.slice(
-                postPerPage * (currentPage - 1),
-                postPerPage * (currentPage - 1) + postPerPage
-              )}
-              layout="row"
-            />
+          {item.length > 0 ? (
+            <>
+              <ShowItem
+                item={item.slice(
+                  postPerPage * (currentPage - 1),
+                  postPerPage * (currentPage - 1) + postPerPage
+                )}
+                layout="row"
+              />
+            </>
           ) : (
             <NoItemPage>목록이 없습니다</NoItemPage>
           )}
         </ItemWrap>
+        {item.length > 0 && (
+          <Paging
+            currentPage={currentPage}
+            count={count}
+            setCurrentPage={setCurrentPage}
+            postPerPage={postPerPage}
+          />
+        )}
       </div>
-
-      <Paging
-        currentPage={currentPage}
-        count={count}
-        setCurrentPage={setCurrentPage}
-        postPerPage={postPerPage}
-      />
     </PageContainer>
   );
 }

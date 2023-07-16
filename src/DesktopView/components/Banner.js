@@ -6,6 +6,9 @@ import earth3 from "../../Img/earth3.png";
 import present from "../../Img/present.png";
 import { Navigation, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
+import banner1 from "../../Img/banner1.png";
+import banner2 from "../../Img/banner2.png";
+import banner3 from "../../Img/banner3.png";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -14,7 +17,9 @@ import "swiper/css/scrollbar";
 import "../Desktop.css";
 
 const Container = styled.div`
-  height: 400px;
+  /* height: 420px; */
+  height: 30vw;
+  min-height: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +27,13 @@ const Container = styled.div`
 
 /*배너 1 - 시작 */
 const Banner1Box = styled(Container)`
-  background-color: #fae100;
+  /* background-color: #fae100; */
+  background-color: #ffda44;
+  background-image: url(${banner1});
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  /* background-size: cover; */
 `;
 
 const Banner1Img = styled.div`
@@ -79,7 +90,7 @@ const Banner1ContentBox = styled.div`
   line-height: 20px;
   border-radius: 20px;
   padding: 15px 22px;
-  background-color: rgb(27 27 27 / 8%); ;
+  background-color: rgb(27 27 27 / 8%);
 `;
 const Banner1Content = styled.h1`
   font-size: 12px;
@@ -95,6 +106,11 @@ const Banner2Box = styled(Container)`
   background-color: #cef2be;
   position: relative;
   overflow: hidden;
+
+  background-image: url(${banner2});
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 `;
 
 const Banner2Img = styled.img.attrs({
@@ -149,10 +165,17 @@ const Banner2Triangle = styled.div`
 /*배너3 -시작*/
 const Banner3Box = styled(Container)`
   background-color: #fac2c2;
+  /* background-color: #ffda44; */
+  background-image: url(${banner3});
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 `;
 
 const Banner3Detail = styled.div`
-  width: 50%;
+  /* width: 50%; */
+  margin-left: 100px;
+  width: 394px;
 
   display: flex;
   flex-direction: column;
@@ -208,10 +231,19 @@ const Banner3Img = styled.img.attrs({
 `;
 /*배너3 -끝*/
 
+// const Banner1IMG = styled.div`
+//   background-image: url(${banner1});
+//   background-repeat: no-repeat;
+//   background-size: contain;
+//   width: 100%;
+//   height: 100%;
+// `;
+
 const Banner1 = () => {
   return (
     <Banner1Box>
-      <Banner1Img />
+      {/* <Banner1IMG /> */}
+      {/* <Banner1Img />
       <Banner1Detail>
         <Banner1TitleBox>
           <Banner1TitleSpan>
@@ -233,7 +265,7 @@ const Banner1 = () => {
             친환경적인 세상을 만듭니다.
           </Banner1Content>
         </Banner1ContentBox>
-      </Banner1Detail>
+      </Banner1Detail> */}
     </Banner1Box>
   );
 };
@@ -241,7 +273,7 @@ const Banner1 = () => {
 const Banner2 = () => {
   return (
     <Banner2Box>
-      <Banner2Detail>
+      {/* <Banner2Detail>
         <Banner2TitleBox>
           <Banner2TitleSpan>
             나는 <span style={{ color: "#E06666" }}>옷</span>가
@@ -254,7 +286,7 @@ const Banner2 = () => {
         </Banner2TitleBox>
       </Banner2Detail>
       <Banner2Img />
-      <Banner2Triangle />
+      <Banner2Triangle /> */}
     </Banner2Box>
   );
 };
@@ -262,7 +294,7 @@ const Banner2 = () => {
 const Banner3 = () => {
   return (
     <Banner3Box>
-      <Banner3Detail>
+      {/* <Banner3Detail>
         <Banner3Content>
           <BananaIcon icon={faLeaf} />
           노랑 멤버십 달성 시
@@ -273,7 +305,7 @@ const Banner3 = () => {
         </Banner3TitleBox>
       </Banner3Detail>
 
-      <Banner3Img />
+      <Banner3Img /> */}
     </Banner3Box>
   );
 };
@@ -288,7 +320,7 @@ function Banner() {
         slidesPerView={1}
         navigation
         pagination={{ clickable: true }}
-        //autoplay={{ delay: 3000, disableOnInteraction: false }}
+        // autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
       >
         <SwiperSlide>

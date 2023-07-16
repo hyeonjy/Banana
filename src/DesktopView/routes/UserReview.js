@@ -83,7 +83,11 @@ function UserInfo() {
           {data?.user ? (
             <>
               <Header as="div">
-                <ProfImg img={require(`../../Img/${data.user.profile}`)} />
+                <ProfImg
+                  // img={require(`../../Img/${data.user.profile}`)}
+                  src={`data:image/jpeg;base64,${data.user.profile.data}`}
+                  alt={data.user.profile.filename}
+                />
                 <ProfileName style={{ fontSize: "17px" }}>
                   {data.user.nickname}
                 </ProfileName>

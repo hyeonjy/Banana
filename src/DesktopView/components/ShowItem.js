@@ -10,11 +10,6 @@ export const Product = styled(Link)`
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
-      @media screen and (max-width: 830px) {
-        width: 90%;
-        padding-left: 8%;
-        justify-content: flex-start;
-      }
     `}
   ${(props) =>
     props.layout === "col" &&
@@ -28,6 +23,19 @@ export const Product = styled(Link)`
         margin-left: 4%;
       }
       margin-bottom: 30px;
+    `}
+      ${(props) =>
+    props.isHome &&
+    css`
+      @media (max-width: 768px) {
+        width: 30%;
+        &:not(:nth-of-type(4n + 1)) {
+          margin-left: 0%;
+        }
+        &:not(:nth-of-type(3n + 1)) {
+          margin-left: 4%;
+        }
+      }
     `}
 `;
 
@@ -224,6 +232,7 @@ export function calcTimeAgo(item) {
 }
 export function ShowItem({
   item,
+  isHome = false,
   responsive = false,
   state = false,
   layout = "col",
@@ -245,10 +254,8 @@ export function ShowItem({
                 }}
               >
                 <ResProductImg
-                  src={`data:image/jpeg;base64,${item.img_src.data}`}
+                  src={`data:image/webp;base64,${item.img_src.data}`}
                   alt={item.img_src.filename}
-                  // src={require(`../../../upload/${item.img_src}`)}
-                  // src={require(`../../Data/Img/${item.img_src}`)}
                 />
                 <ResProductTitle>{item.title}</ResProductTitle>
                 <ResProductDetail>
@@ -269,6 +276,7 @@ export function ShowItem({
             <Product
               layout={layout}
               key={index}
+              isHome={isHome}
               to={{
                 pathname: `/post/${item.post_id}`,
                 state: {
@@ -279,7 +287,7 @@ export function ShowItem({
               <Thum layout={layout}>
                 <ProductImg
                   layout={layout}
-                  src={`data:image/jpeg;base64,${item.img_src.data}`}
+                  src={`data:image/webp;base64,${item.img_src.data}`}
                   alt={item.img_src.filename}
                   // src={require(`../../../upload/${item.img_src}`)}
                   // src={require(`../../Data/Img/${item.img_src}`)}

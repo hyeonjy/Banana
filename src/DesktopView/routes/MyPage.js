@@ -6,10 +6,10 @@ import Modal, { GradeIcon, gradeList } from "../../Modal";
 import Review from "./Review";
 import HeartList from "./HeartList";
 import ShareList from "./ShareList";
-import useAxios from "../../useAxio";
 import Skeleton from "react-loading-skeleton";
 import { useQuery } from "react-query";
-import { userPageHeartListaApi, userPageaApi } from "../../Api";
+import { mypageApi, userPageHeartListaApi } from "../../Api";
+import ProfileSet from "./ProfileSet";
 
 const Container = styled.div`
   padding-top: 70px;
@@ -30,15 +30,13 @@ export const ProfileHeader = styled.div`
   border-bottom: 1px solid #bbbbbb6b;
 `;
 
-export const ProfileImg = styled.div`
+export const ProfileImg = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 50%;
-
-  background-image: ${(props) => (props.img ? `url(${props.img})` : "")};
   background-color: whitesmoke;
-  background-size: contain;
   margin-right: 15px;
+  object-fit: cover;
 `;
 export const ProfileName = styled.div`
   flex-grow: 1;
@@ -94,12 +92,13 @@ const ContentDiv = styled.div`
 const navItem = [
   { title: "나눔 목록", path: "/mypage/share" },
   { title: "찜 목록", path: "/mypage/heart" },
+  { title: "프로필 설정", path: "/mypage/profile" },
   { title: "나눔 후기", path: "/mypage/review" },
   { title: "테마설정", path: "/mypage" },
   { title: "공지사항", path: "/mypage" },
   { title: "고객센터", path: "/mypage" },
   { title: "개인정보 처리방침", path: "" },
-  { title: "로그아웃", path: "/login" },
+  // { title: "로그아웃", path: "/login" },
 ];
 const SideNav = styled.div`
   width: 180px;
@@ -126,15 +125,17 @@ function MyPage() {
   const [currentPage, setCurrentPage] = useState(""); // sideNav 현재 페이지에 따라 Active
   const heartPage = useRouteMatch("/mypage/heart"); //현재 찜 페이지인지 여부 (t/f)
   const sharePage = useRouteMatch("/mypage/share"); // .. 나눔목록 페이지
+  const profilePage = useRouteMatch("/mypage/profile"); // .. 나눔목록 페이지
   const reviewPage = useRouteMatch("/mypage/review"); // .. 리뷰 페이지
 
-  const { data } = useQuery("mypage", userPageaApi);
+  const { data } = useQuery("mypage", mypageApi);
   const { data: HeartPosts } = useQuery("heartPosts", userPageHeartListaApi);
 
   //페이지 이동
   useEffect(() => {
     if (heartPage) setCurrentPage("/mypage/heart");
     else if (sharePage) setCurrentPage("/mypage/share");
+    else if (profilePage) setCurrentPage("/mypage/profile");
     else if (reviewPage) setCurrentPage("/mypage/review");
     else setCurrentPage("");
   }, [heartPage, sharePage, reviewPage]);
@@ -144,7 +145,10 @@ function MyPage() {
       <Container activeGrade={activeGrade}>
         {data?.user ? (
           <ProfileHeader>
-            <ProfileImg img={require(`../../Img/${data.user.profile}`)} />
+            <ProfileImg
+              src={`data:image/jpeg;base64,${data.user.profile.data}`}
+              alt={data.user.profile.filename}
+            />
             <ProfileName>{data.user.nickname} 님</ProfileName>
             <MembershipDiv>
               <MembershipTitle>
@@ -219,6 +223,10 @@ function MyPage() {
             <Route path="/mypage/share">
               <ShareList item={data ? data.posts : false} />
             </Route>
+            <Route path="/mypage/profile">
+              <ProfileSet user={data ? data.user : false} />
+            </Route>
+
             <Route path="/mypage/review">
               <Review reviews={data ? data.reviews : false} />
             </Route>

@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import { LoginId, UserObj } from "../../Data/UserObj";
 import * as MLogin from "../../MobileView/routes/Mlogin";
 import * as Login from "../routes/Login";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
+import { useMutation } from "react-query";
+import { signUpApi } from "../../Api";
+import { useSetRecoilState } from "recoil";
+import { LoginState } from "../../atom";
 
 const Container = styled.div`
   width: 510px;
@@ -46,10 +48,12 @@ const Input = styled(MLogin.LoginInput)`
 const SubmitBtn = styled(MLogin.SubmitBtn)`
   border-radius: 15px;
   margin-top: 10px;
+  cursor: pointer;
 `;
 
 const ErrorP = styled.p`
   font-size: 14px;
+  font-weight: 600;
   color: red;
   padding-left: 5px;
   margin-top: 10px;
@@ -71,7 +75,7 @@ function SignUp() {
   const regExgPw = /^[A-Za-z0-9]{8,12}$/;
 
   useEffect(() => {
-    console.log(watch("password") !== watch("passwordConfirm"));
+    // console.log(watch("password") !== watch("passwordConfirm"));
     if (watch("password") !== watch("passwordConfirm")) {
       setError("passwordConfirm", {
         message: "비밀번호가 일치하지 않습니다.",
@@ -81,6 +85,28 @@ function SignUp() {
     }
   }, [watch("password"), watch("passwordConfirm")]);
 
+  const setLogin = useSetRecoilState(LoginState);
+
+  const { mutate: signUpMutate } = useMutation(
+    (formdata) => signUpApi(formdata),
+    {
+      onSuccess: (res) => {
+        //회원가입 성공
+        localStorage.setItem("token", res.access_token);
+        localStorage.setItem("refreshToken", res.refreshToken);
+        localStorage.setItem("expiresAt", res.expiresIn);
+        localStorage.setItem("refreshExpiresAt", res.refreshExpiresAt);
+        setLogin(true);
+        history.push("/");
+      },
+      onError: (error) => {
+        //아이디가 중복인 경우
+        if (error.response?.status === 401) {
+          setError("existEmail", { message: error.response.data.error });
+        }
+      },
+    }
+  );
   const onValid = (data) => {
     if (data.password !== data.passwordConfirm) {
       setError(
@@ -89,19 +115,13 @@ function SignUp() {
         { shouldFocus: true }
       );
     } else {
-      UserObj.push({
-        chats: [],
-        id: data.nickname,
-        src: "bananaface.png",
-        grade: "bananaIcon.png",
-        itemIdList: [],
-        reviews: [],
-      });
-      console.log(UserObj);
-      history.push("/login");
-    }
+      const formdata = new FormData();
 
-    // alert("등록되었습니다");
+      formdata.append("id", data.id);
+      formdata.append("password", data.password);
+      formdata.append("nickname", data.nickname);
+      signUpMutate(formdata);
+    }
   };
 
   return (
@@ -117,6 +137,7 @@ function SignUp() {
               id="id"
               type="email"
               name="id"
+              autoComplete="off"
               {...register("id", {
                 required: "이메일을 입력해주세요",
                 patter: regExpEm,
@@ -165,6 +186,7 @@ function SignUp() {
               type="text"
               name="nickname"
               placeholder="닉네임"
+              autoComplete="off"
               {...register("nickname", {
                 required: "닉네임을 입력해주세요",
                 maxLength: {
@@ -175,7 +197,19 @@ function SignUp() {
             />
             {errors.nickname && <ErrorP>{errors.nickname.message}</ErrorP>}
           </InputDiv>
-          <SubmitBtn type="submit">등록</SubmitBtn>
+          {errors.existEmail && (
+            <ErrorP style={{ marginBottom: "10px" }}>
+              {errors.existEmail.message}
+            </ErrorP>
+          )}
+          <SubmitBtn
+            type="submit"
+            onClick={() => {
+              clearErrors("existEmail");
+            }}
+          >
+            등록
+          </SubmitBtn>
         </SignForm>
       </SignDiv>
     </Container>

@@ -44,6 +44,9 @@ const List = styled(Link)`
   font-size: 17px;
   cursor: pointer;
   width: 140px;
+  @media screen and (max-width: 830px) {
+    width: 90px;
+  }
   box-sizing: border-box;
 
   font-weight: 600;
@@ -71,6 +74,9 @@ const SubListBox = styled.div`
 
 const SubList = styled(Link)`
   width: 140px;
+  @media screen and (max-width: 830px) {
+    width: 90px;
+  }
   font-size: 14px;
   flex-grow: 1;
   cursor: pointer;

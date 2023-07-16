@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./ImgFullPage.css";
 const ImgContainer = styled.div`
-  position: absolute;
+  position: fixed;
   z-index: 500;
-  top: 0px;
+  top: ${(props) => props.topPosition};
   bottom: 0;
   left: 0;
   right: 0;
@@ -59,20 +59,11 @@ const GoBackBtn = styled(FontAwesomeIcon)`
 `;
 const ImgFullPage = ({ item, index, setImgFullModal }) => {
   //서버에서 이미지 불러오려고 하다가 - 모달로 변경
+  // 스크롤 위치
+  let scrollTop = document.documentElement.scrollTop;
 
-  // const location = useLocation();
-  // const history = useHistory(); //goBack
-
-  //query string - (EX:img?object=0) - 이미지 query
-  // const searchParams = new URLSearchParams(location.search);
-  // const objectValue = searchParams.get("object"); // id(=object) 값 가져오기
-  // const item = ItemObj.find(
-  //   (item) => item.itemId === Number(objectValue)
-  // );
-  // post page에서 클릭한 Img 그대로 DP
-  //const index = Number(searchParams.get("index"));
   return (
-    <ImgContainer>
+    <ImgContainer topPosition={scrollTop}>
       <StyledSwiper
         initialSlide={index}
         modules={[Navigation, Pagination]}

@@ -8,6 +8,9 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { Link, useHistory } from "react-router-dom";
 import "../../App.css";
 import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { LoginState } from "../../atom";
+import { useQueryClient } from "react-query";
 
 export const Container = styled.div`
   width: 100%;
@@ -139,9 +142,24 @@ const UserBox = styled.div`
   }
 `;
 
+const LoginBtn = styled.button`
+  border: 0;
+  background-color: #ffee00;
+  border-radius: 15px;
+  width: 80px;
+  height: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover {
+    background-color: #ffd100;
+  }
+`;
+
 function Header() {
   const { register, handleSubmit, setValue } = useForm();
+  const [isLoggedin, setIsLoggedIn] = useRecoilState(LoginState);
   const history = useHistory();
+
   //form 유효할 때 실행
   const onValid = (data) => {
     setValue("searchContent", "");
@@ -149,6 +167,23 @@ function Header() {
       pathname: "/search",
       search: `?content=${data.searchContent}&page=${1}`,
     });
+  };
+
+  //로그인
+  const logginClick = () => {
+    history.push("/login");
+  };
+
+  //로그아웃
+  const queryClient = useQueryClient();
+  const logOutClick = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("expiresAt");
+    localStorage.removeItem("refreshExpiresAt");
+    queryClient.invalidateQueries({ exact: false });
+    history.push("/");
   };
 
   return (
@@ -165,24 +200,37 @@ function Header() {
         </SearchInput>
       </SearchBox>
       <UserBox>
-        <UserDropdown isuser="true">
-          <UserIcon icon={faUser} />
-          <DropdownMenu>
-            <Link to={{ pathname: "/mypage/share", search: `?page=${1}` }}>
-              <span>마이페이지</span>
-            </Link>
+        {isLoggedin ? (
+          <>
+            <UserDropdown isuser="true">
+              <UserIcon icon={faUser} />
+              <DropdownMenu>
+                <Link to={{ pathname: "/mypage/share", search: `?page=${1}` }}>
+                  <span>마이페이지</span>
+                </Link>
 
-            <Link to="/upload">
-              <span>글쓰기</span>
-            </Link>
-            <Link to="/chat">
-              <span>채팅하기</span>
-            </Link>
-          </DropdownMenu>
-        </UserDropdown>
-        <ShopIconLink to={{ pathname: "/mypage/heart", search: `?page=${1}` }}>
-          <ShoppingIcon icon={faCartShopping} />
-        </ShopIconLink>
+                <Link to="/upload">
+                  <span>글쓰기</span>
+                </Link>
+                <Link to="/chat">
+                  <span>채팅하기</span>
+                </Link>
+                <div onClick={logOutClick}>
+                  <span>로그아웃</span>
+                </div>
+              </DropdownMenu>
+            </UserDropdown>
+            <ShopIconLink
+              to={{ pathname: "/mypage/heart", search: `?page=${1}` }}
+            >
+              <ShoppingIcon icon={faCartShopping} />
+            </ShopIconLink>
+          </>
+        ) : (
+          <>
+            <LoginBtn onClick={logginClick}>로그인</LoginBtn>
+          </>
+        )}
       </UserBox>
     </Container>
   );

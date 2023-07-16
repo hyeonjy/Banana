@@ -152,7 +152,7 @@ function Group() {
   //페이지네이션
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(0);
   const postPerPage = 12; // 한 페이지 아이템 수
 
   //
@@ -267,7 +267,7 @@ function Group() {
                 {Array(12)
                   .fill()
                   .map((_, index) => (
-                    <Product key={index} layout="col">
+                    <Product as="div" key={index} layout="col">
                       <Thum layout="col">
                         <Skeleton height={200} width={200} />
                       </Thum>

@@ -250,7 +250,6 @@ function Upload() {
   const { state } = useLocation();
   useEffect(() => {
     if (state) {
-      console.log(state.item);
       setValue("title", state.item.title);
       setValue("contents", state.item.content);
       setValue("area", state.item.area);
@@ -348,7 +347,6 @@ function Upload() {
     {
       onSuccess: (postId) => {
         alert("수정되었습니다");
-        console.log("수정성공~!");
         queryClient.invalidateQueries({ exact: false });
         history.push(`/post/${postId}`); // 쓴 글 페이지로 이동
       },
@@ -368,9 +366,6 @@ function Upload() {
 
   //form 유효할 때 실행
   const onValid = (data) => {
-    console.log("data:", data);
-    // console.log("imgFile:", imgFile);
-    // console.log("deleteFileList:", deleteFileList);
     //data: title, content, major, minor
     const formdata = new FormData();
     formdata.append("title", data.title);
@@ -383,8 +378,7 @@ function Upload() {
       formdata.append(`images`, image);
     });
 
-    //!!!!!!!!!!!!!!!!!!유저 아이디 변경해야함!!!!!!!!!!!!!!!!!!!!!!!!
-    formdata.append("userId", 1);
+    //유저 아이디는 header로 전달
     if (state?.mode === "edit") {
       formdata.append("postId", state.postId);
       formdata.append("deletePost[]", deleteFileList);

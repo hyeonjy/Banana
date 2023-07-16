@@ -2,12 +2,14 @@ import { BrowserView, MobileView } from "react-device-detect";
 import styled, { createGlobalStyle } from "styled-components";
 import { MobileRouter } from "./Mrouter";
 import { DeskTopRouter } from "./Router";
-import { useRecoilState } from "recoil";
-import { postData } from "./atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { LoginState, postData } from "./atom";
 import { useEffect } from "react";
 import useAxios from "./useAxio";
 import { DotWave } from "@uiball/loaders";
 import { Pulsar } from "@uiball/loaders";
+import { refreshToken } from "./Api";
+import { useState } from "react";
 const GlobalStyle = createGlobalStyle`
 
   html, body, div, span, applet, object, iframe,
@@ -76,49 +78,55 @@ const Banana = styled.span`
 `;
 
 function App() {
-  const [posts, setPosts] = useRecoilState(postData);
-  const { response, loading, error, executeGet } = useAxios({
-    method: "get",
-    url: "http://localhost:8080/data/last",
-  });
+  // const [posts, setPosts] = useRecoilState(postData);
+  // const { response, loading, error, executeGet } = useAxios({
+  //   method: "get",
+  //   url: "http://localhost:8080/data/last",
+  // });
 
+  //새로고침 시 로그인 상태 저장하기 - recoil
+  const token = localStorage.getItem("token");
+  const setIsLoggedIn = useSetRecoilState(LoginState);
   useEffect(() => {
-    executeGet();
-    console.log("app.js");
-  }, []);
-  useEffect(() => {
-    if (!loading && !error && response) {
-      console.log(response);
-      setPosts(response);
-    }
-  }, [response, loading, error]);
+    setIsLoggedIn(token ? true : false);
+  }, [token]);
+
+  // useEffect(() => {
+  //   executeGet();
+  // }, []);
+  // useEffect(() => {
+  //   if (!loading && !error && response) {
+  //     setPosts(response);
+  //   }
+  // }, [response, loading, error]);
   return (
     <>
       <GlobalStyle />
       <BrowserView>
-        {loading || error || posts.length === 0 ? (
+        <DeskTopRouter />
+        {/* {loading || error || posts.length === 0 ? (
           <div className="loadingWrap">
             <Banana>BANANA</Banana>
             <Pulsar size={60} speed={1.75} color="#fae100" />
-            {/* <DotWave size={60} speed={1} color="#fae100" /> */}
           </div>
         ) : (
-          <>
-            <DeskTopRouter />
-          </>
-        )}
+          <></>
+        )} */}
       </BrowserView>
-      <MobileView>
+      {/** 
+       * 
+       *      <MobileView>
         {loading || error || posts.length === 0 ? (
           <div className="loadingWrap">
             <Banana>BANANA</Banana>
             <Pulsar size={60} speed={1.75} color="#fae100" />
-            {/* <DotWave size={60} speed={1} color="#fae100" /> */}
           </div>
         ) : (
           <MobileRouter />
         )}
       </MobileView>
+       * 
+      */}
     </>
   );
 }

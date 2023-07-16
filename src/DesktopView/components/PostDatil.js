@@ -3,7 +3,6 @@ import { ProfileHeader, ProfileImg, ProfileName } from "../routes/MyPage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsis,
-  faPen,
   faPencil,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,19 +12,18 @@ import { StateSelect } from "../../MobileView/routes/MDetailpost";
 import { GradeIcon, gradeList } from "../../Modal";
 import { calcTimeAgo } from "./ShowItem";
 import { useMutation, useQueryClient } from "react-query";
-import {
-  deletePost,
-  deletePostApi,
-  heartChangeApi,
-  postStateChangeApi,
-} from "../../Api";
+import { deletePostApi, heartChangeApi, postStateChangeApi } from "../../Api";
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import jwtDecode from "jwt-decode";
 
 //-----------오른쪽 컨테이너-----------//
 export const PostRightDiv = styled.div`
   width: 470px;
   height: 400px;
+  @media screen and (max-width: 830px) {
+    width: 500px;
+  }
 `;
 
 //---------Header(유저프로필)--------//
@@ -219,12 +217,18 @@ const EllipsisIcon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
-const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
-  // const [heart, setHeart] = useState(initHeart);
+const PostRightContents = ({
+  item,
+  user,
+  setActiveGrade,
+  isWriter,
+  isLoggedin,
+  initHeart,
+}) => {
+  const [isAnimated, setIsAnimated] = useState(false); //찜 아이콘 애니메이션 적용
   const history = useHistory();
   const { postId } = useParams();
   const queryClient = useQueryClient();
-
   //나눔 상태 변경
   const { mutate: mutateState } = useMutation(
     (state) => postStateChangeApi(state),
@@ -236,30 +240,26 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
     }
   );
   //찜 상태 변경
-
   const { mutate: mutateHeart } = useMutation(
     (heart) => heartChangeApi(heart),
     {
-      // onSuccess: () => {
-      //   queryClient.invalidateQueries(["postDatail", postId]);
-      // },
-
       onMutate: async (newData) => {
-        // await queryClient.cancelQueries(["postDatail", postId]);
         const previousHeartData = queryClient.getQueryData([
           "postDatail",
           postId,
         ]);
+
         queryClient.setQueryData(["postDatail", postId], (olddata) => {
           return { ...olddata, heart: !newData.heart };
         });
+
         return previousHeartData;
       },
       onError: (rollback) => rollback(),
-      // onSettled: () => {
-      //   // 요청 성공 or 실패 후
-      //   queryClient.invalidateQueries(["postDatail", postId]);
-      // },
+      onSettled: () => {
+        // 요청 성공 or 실패 후
+        queryClient.invalidateQueries("heartPosts");
+      },
     }
   );
 
@@ -280,7 +280,14 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
     mutateState({ postId, state: e.target.value });
   };
   const handleHeart = () => {
-    mutateHeart({ heart: initHeart, userId: 1, postId });
+    if (isLoggedin) {
+      if (!initHeart) setIsAnimated(true);
+      const decodedToken = jwtDecode(localStorage.getItem("token"));
+      const currentUserId = decodedToken?.userId;
+      mutateHeart({ heart: initHeart, userId: currentUserId, postId });
+    } else {
+      alert("로그인 후 이용해주세요");
+    }
   };
 
   const handleDeletePost = () => {
@@ -331,7 +338,11 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
         as={Link}
         to={{ pathname: "/user", search: `?id=${item.userId}` }}
       >
-        <ProfImg img={require(`../../Img/${item.profile}`)} />
+        <ProfImg
+          // img={require(`../../Img/${item.profile}`)}
+          src={`data:image/jpeg;base64,${item.src.data}`}
+          alt={item.src.filename}
+        />
         <ProfileName style={{ fontSize: "17px" }}>{item.nickname}</ProfileName>
 
         <MembershipWrap>
@@ -377,7 +388,7 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
         <ButtomBtnDiv>
           <IconBtnDiv>
             <HeartSvg
-              heart={initHeart}
+              heart={isAnimated}
               width="35"
               height="35"
               viewBox="12 10 30 40"
@@ -418,7 +429,9 @@ const PostRightContents = ({ item, setActiveGrade, isWriter, initHeart }) => {
             // <GoChatBtn>삭제하기</GoChatBtn>
             <GoChatBtn
               onClick={() => {
-                //handleChatClick(postWriter, postId);
+                if (isLoggedin) {
+                  // handleChatClick(postWriter, postId);
+                } else alert("로그인 후 이용해주세요");
               }}
             >
               채팅하기

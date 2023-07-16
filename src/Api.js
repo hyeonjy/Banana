@@ -1,4 +1,5 @@
 import axios from "axios";
+import protectedAPI from "./Refresh"; //로그인 제한된 api -> protectedAPI
 
 const BASE_URL = "http://localhost:8080";
 
@@ -16,21 +17,21 @@ export function SearchDataApi(searchValue, currentQuery) {
     .then((response) => response.data);
 }
 
-export function userPageaApi() {
-  return axios
-    .get(`${BASE_URL}/userpage/data/1`)
+export function mypageApi() {
+  return protectedAPI
+    .get(`${BASE_URL}/mypage`)
     .then((response) => response.data);
 }
 
 export function userPageHeartListaApi() {
-  return axios
-    .get(`${BASE_URL}/userpage/heartdata/1`)
+  return protectedAPI
+    .get(`${BASE_URL}/mypage/heart`)
     .then((response) => response.data);
 }
 
-export function postPageApi(postId) {
+export function postPageApi({ postId, currentUserId }) {
   return axios
-    .get(`${BASE_URL}/postdata/${postId}`)
+    .get(`${BASE_URL}/postdata/${postId}/${currentUserId}`)
     .then((response) => response.data);
 }
 
@@ -57,7 +58,7 @@ export function userPageApi(userId) {
     .then((response) => response.data);
 }
 export function postWriteApi(formdata) {
-  return axios
+  return protectedAPI
     .post(`${BASE_URL}/postwrite`, formdata)
     .then((response) => response.data);
 }
@@ -89,7 +90,8 @@ export function subPostApi(sub, sort) {
     .then((response) => response.data);
 }
 
-export function Authorization(URL) {
+//카카오 로그인
+export function KaKaoAuthorization(URL) {
   return axios
     .post(
       `${URL}`,
@@ -103,16 +105,66 @@ export function Authorization(URL) {
     .then((response) => {
       const { data } = response;
       const { access_token } = data;
-      console.log(access_token);
       if (access_token) {
         axios
           .post(`${BASE_URL}/kakao/user`, { access_token: access_token })
           .then((res) => {
-            console.log("Success");
-            console.log(res);
+            localStorage.setItem("token", res.data.access_token);
+            localStorage.setItem("refreshToken", res.data.refreshToken);
+            localStorage.setItem("expiresAt", res.data.expiresIn);
+            localStorage.setItem("refreshExpiresAt", res.data.refreshExpiresAt);
+            window.location.href = "/";
           });
       } else {
         console.log("토큰 XX");
       }
     });
+}
+
+//구글 로그인
+export function GoogleLogin(code) {
+  return axios
+    .post(
+      `${BASE_URL}/google/user`,
+      { code },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((res) => {
+      localStorage.setItem("token", res.data.access_token);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
+      localStorage.setItem("expiresAt", res.data.expiresIn);
+      localStorage.setItem("refreshExpiresAt", res.data.refreshExpiresAt);
+      window.location.href = "/";
+    });
+}
+
+//일반 회원가입
+export function signUpApi(formdata) {
+  return axios
+    .post(`${BASE_URL}/signup`, formdata, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.data);
+}
+//일반 로그인
+export function loggedInApi(formdata) {
+  return axios
+    .post(`${BASE_URL}/login`, formdata, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.data);
+}
+
+export function ProfileEdit(formdata) {
+  return axios
+    .post(`${BASE_URL}/profile/edit`, formdata)
+    .then((res) => res.data);
 }

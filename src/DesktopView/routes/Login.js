@@ -3,6 +3,13 @@ import * as MLogin from "../../MobileView/routes/Mlogin";
 import { Container } from "./Home";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import kakao from "../../Img/kakao.png";
+import google from "../../Img/google.png";
+import { useMutation } from "react-query";
+import { loggedInApi } from "../../Api";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { LoginState } from "../../atom";
+import { useSetRecoilState } from "recoil";
 
 const LoginContainer = styled(Container)`
   width: 510px;
@@ -13,7 +20,7 @@ const LoginContainer = styled(Container)`
 export const LoginDiv = styled(MLogin.Container)`
   justify-content: flex-start;
 
-  padding: 70px 0;
+  padding: 60px 0 25px;
   margin: 30px 0;
   height: fit-content;
   border-radius: 20px;
@@ -25,7 +32,7 @@ const LoginForm = styled(MLogin.LoginForm)`
   margin-top: 20px;
 `;
 
-const ErrorP = styled.p`
+export const ErrorP = styled.p`
   font-size: 14px;
   font-weight: 600;
   color: red;
@@ -33,29 +40,92 @@ const ErrorP = styled.p`
   margin-top: 10px;
 `;
 
+const SocaiLoginContainer = styled.div`
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+`;
+
+const SocialLoggedinBtn = styled.div`
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 50%;
+  background-position: center;
+`;
+const KakaoLogin = styled(SocialLoggedinBtn)`
+  background-image: url(${kakao});
+  background-size: contain;
+  background-color: transparent;
+`;
+const GoogleLogin = styled(SocialLoggedinBtn)`
+  background-image: url(${google});
+  background-size: 30px 30px;
+  background-color: white;
+  background-repeat: no-repeat;
+  border: 1px solid #80808045;
+`;
+
 function Login() {
+  //카카오 로그인 -  인가 코드 받기(로그인 창)
+  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&response_type=code`;
+  const kakaoLogin = () => {
+    window.location.href = kakaoAuthUrl;
+  };
+
+  //구글 로그인
+  const googleLogin = () => {
+    const clientId = process.env.REACT_APP_GOOGLE_CLINET_ID;
+    const redirectUri = process.env.REACT_APP_REDIRECT_URL;
+    const responseType = "code";
+    const scope =
+      "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+    window.location.href = url;
+  };
+
+  //일반 로그인
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm();
+  const history = useHistory();
+  const setLogin = useSetRecoilState(LoginState);
+  const { mutate: loginMutate } = useMutation(
+    (formdata) => loggedInApi(formdata),
+    {
+      onSuccess: (res) => {
+        //로그인 성공 후 jwt 설정
+        localStorage.setItem("token", res.access_token);
+        localStorage.setItem("refreshToken", res.refreshToken);
+        localStorage.setItem("expiresAt", res.expiresIn);
+        localStorage.setItem("refreshExpiresAt", res.refreshExpiresAt);
 
+        setLogin(true);
+        history.push("/");
+      },
+      onError: (error) => {
+        if (error.response?.status === 401) {
+          //유저가 아닌 경우
+          setError("NotUser", { message: error.response.data.error });
+        }
+      },
+    }
+  );
   const onValid = (data) => {
-    console.log(data);
-
-    // alert("등록되었습니다");
+    const formdata = new FormData();
+    formdata.append("email", data.id);
+    formdata.append("password", data.password);
+    loginMutate(formdata);
   };
 
   const regExpEm =
     /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
   const regExgPw = /^[A-Za-z0-9]{8,12}$/;
-
-  //1. 인가 코드 받기(로그인 창)
-
-  const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&response_type=code`;
-  const kakaoLogin = () => {
-    window.location.href = kakaoAuthUrl;
-  };
 
   return (
     <div style={{}}>
@@ -75,6 +145,7 @@ function Login() {
               type="email"
               name="id"
               placeholder="이메일"
+              autoComplete="off"
               {...register("id", {
                 required: "이메일을 입력해주세요",
                 patter: regExpEm,
@@ -95,20 +166,24 @@ function Login() {
                 <ErrorP>{errors.id.message}</ErrorP>
               ) : (
                 <>
-                  {errors.password?.type === "required" && (
+                  {errors.password?.type === "required" ? (
                     <ErrorP>{errors.password.message}</ErrorP>
-                  )}
-                  {errors?.password?.type === "pattern" && (
+                  ) : errors?.password?.type === "pattern" ? (
                     <ErrorP>
                       비밀번호는 영문, 숫자 조합하여 8~12자리로 입력해 주세요.
                     </ErrorP>
-                  )}
+                  ) : errors?.NotUser ? (
+                    <ErrorP>{errors.NotUser.message}</ErrorP>
+                  ) : null}
                 </>
               )}
             </div>
             <MLogin.SubmitBtn
               type="submit"
               style={{ cursor: "pointer", marginTop: "20px" }}
+              onClick={() => {
+                clearErrors("NotUser");
+              }}
             >
               Log In
             </MLogin.SubmitBtn>
@@ -120,15 +195,10 @@ function Login() {
             <MLogin.DetailSpan>계정 찾기</MLogin.DetailSpan>
           </MLogin.DetailDiv>
 
-          <MLogin.SubmitBtn style={{ cursor: "pointer", marginTop: "20px" }}>
-            Google 로그인
-          </MLogin.SubmitBtn>
-          <MLogin.SubmitBtn
-            onClick={kakaoLogin}
-            style={{ cursor: "pointer", marginTop: "20px" }}
-          >
-            KAKAO 로그인
-          </MLogin.SubmitBtn>
+          <SocaiLoginContainer>
+            <KakaoLogin onClick={kakaoLogin} />
+            <GoogleLogin onClick={googleLogin} />
+          </SocaiLoginContainer>
         </LoginDiv>
       </LoginContainer>
     </div>

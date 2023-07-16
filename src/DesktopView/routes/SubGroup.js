@@ -20,13 +20,9 @@ import {
   CurrentCateAndQuery,
   CurrentCate,
 } from "./Gruop";
-import Paging, { SetPage } from "../components/Paging";
+import Paging from "../components/Paging";
 import { itemsGroup } from "../../Data/ItemGroup";
-import { ItemObj } from "../../Data/ItemObj";
 import { Product, ShowItem, Thum } from "../components/ShowItem";
-import { useRecoilValue } from "recoil";
-import { postData } from "../../atom";
-import useAxios from "../../useAxio";
 import { useQuery } from "react-query";
 import { subPostApi } from "../../Api";
 import Skeleton from "react-loading-skeleton";
@@ -75,7 +71,7 @@ function SubGroup() {
 
   const pageValue = searchParams.get("page");
   const [currentPage, setCurrentPage] = useState(Number(pageValue));
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(0);
   const postPerPage = 12; // 한 페이지 아이템 수
 
   const [currentQuery, setCurrentQuery] = useState(0);
@@ -219,7 +215,7 @@ function SubGroup() {
                 {Array(12)
                   .fill()
                   .map((_, index) => (
-                    <Product key={index} layout="col">
+                    <Product as="div" key={index} layout="col">
                       <Thum layout="col">
                         <Skeleton height={200} width={200} />
                       </Thum>

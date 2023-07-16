@@ -90,6 +90,7 @@ const EachDetail = styled.span`
 function NewItem() {
   const { data: lastItem } = useQuery("lastPost", LastDataApi);
   const [currentPage, setCurrentPage] = useState(1); // Swiper 현재 Page
+
   return (
     <>
       <NewContainer>

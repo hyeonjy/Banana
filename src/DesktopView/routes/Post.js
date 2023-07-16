@@ -24,16 +24,22 @@ import PostRightContents, {
   PostContents,
   PostRightDiv,
 } from "../components/PostDatil";
-import { LoginId } from "../../Data/UserObj";
 import { useEffect } from "react";
 import ImgFullPage from "./ImgFullPage";
 import Skeleton from "react-loading-skeleton";
 import { useQuery } from "react-query";
 import { postPageApi } from "../../Api";
+import jwtDecode from "jwt-decode";
+import { useRecoilValue } from "recoil";
+import { LoginState } from "../../atom";
 
 const PageContainer = styled.div`
   max-width: 900px;
   min-width: 900px;
+  @media screen and (max-width: 830px) {
+    width: 100vw;
+    min-width: unset;
+  }
   margin: ${(props) =>
     props.activeModal && !props.activeGrade ? "0px auto" : "70px auto"};
   padding-top: 30px;
@@ -45,6 +51,10 @@ const PostContainer = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid rgba(187, 187, 187, 0.42);
   padding-bottom: 30px;
+  @media screen and (max-width: 830px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 //-----------이미지(+Swiper)-----------//
@@ -61,6 +71,10 @@ const NavRight = styled(FontAwesomeIcon)`
 `;
 const StyledSwiper = styled(Swiper)`
   width: 400px;
+  @media screen and (max-width: 830px) {
+    width: 500px;
+    height: 500px;
+  }
   position: relative;
   &:hover {
     ${NavLeft} {
@@ -78,15 +92,35 @@ const ImgSlide = styled(SwiperSlide)``;
 const PostImg = styled.img`
   width: 400px;
   height: 400px;
+  @media screen and (max-width: 830px) {
+    width: 500px;
+    height: 500px;
+  }
   object-fit: cover;
 `;
 //-----이미지(+swiper) 끝-----//
 
+//스켈레톤
+const SkeletonDetail = styled(Skeleton)`
+  margin: 10px 0 0 0px;
+
+  @media (max-width: 830px) {
+    margin: 15px 0;
+  }
+`;
+const SkeletonUser = styled(Skeleton)`
+  margin: 0 0 10px 0px;
+
+  @media (max-width: 830px) {
+    margin: 15px 0;
+  }
+`;
+
 function Post() {
   const { postId } = useParams();
   const [imgCurrentIdx, setImgCurrentIdx] = useState(0); // 현재 img 페이지 index
-  const [loopIdx, setLoopIdx] = useState(0);
   const [activeGrade, setActiveGrade] = useState(false); // modal - 나머지 blur
+  const isLoggedin = useRecoilValue(LoginState); //로그인 상태
 
   //img 1개 -> Navigation hidden
   const shouldHideNavigation = true; //item.img.length <= 1;
@@ -95,17 +129,26 @@ function Post() {
   // 수정 권한 - 본인 글인지 확인
   const [isWriter, setIsWriter] = useState(false); //item.userId === LoginId;
 
-  // 패치
-  const { data, refetch } = useQuery(["postDatail", postId], () =>
-    postPageApi(postId)
-  );
+  // 게시글 패치
+  const { data, refetch } = useQuery(["postDatail", postId], () => {
+    return postPageApi({
+      postId,
+      currentUserId: isLoggedin
+        ? jwtDecode(localStorage.getItem("token")).userId
+        : undefined,
+    });
+  });
   useEffect(() => {
     refetch();
   }, [postId]);
 
   useEffect(() => {
-    if (data) {
-      setIsWriter(LoginId === data.post.nickname);
+    if (data && isLoggedin) {
+      const decodedToken = jwtDecode(localStorage.getItem("token"));
+      const currentUserId = decodedToken?.userId;
+      if (currentUserId) {
+        setIsWriter(currentUserId === data.post.userId);
+      }
     }
   }, [data]);
 
@@ -124,6 +167,22 @@ function Post() {
     return () => body.classList.remove("no-scroll");
   }, [imgFullModal, activeGrade]);
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <PageContainer
@@ -132,16 +191,20 @@ function Post() {
       >
         {!data?.post ? (
           <PostContainer>
-            <Skeleton height={"400px"} width={"400px"} />
+            <Skeleton
+              height={windowWidth > 830 ? "400px" : "500px"}
+              width={windowWidth > 830 ? "400px" : "500px"}
+            />
             <PostRightDiv>
-              <Header styled={{ paddingLeft: "30px" }}>
-                <Skeleton height={"55px"} width={440} />
-              </Header>
-              <PostContents>
-                <PostContent>
-                  <Skeleton height={"190px"} width={"100%"} />
-                </PostContent>
-              </PostContents>
+              <SkeletonUser
+                height={"55px"}
+                width={windowWidth > 830 ? "440px" : "500px"}
+              />
+
+              <SkeletonDetail
+                height={"250px"}
+                width={windowWidth > 830 ? "440px" : "500px"}
+              />
             </PostRightDiv>
           </PostContainer>
         ) : (
@@ -203,14 +266,15 @@ function Post() {
             <PostRightContents
               setActiveGrade={setActiveGrade}
               item={data.post}
+              user={data.user}
               isWriter={isWriter}
+              isLoggedin={isLoggedin}
               initHeart={data.heart}
               // setHeart={setHeart}
             />
           </PostContainer>
         )}
-
-        <NewItem />
+        {windowWidth > 830 && <NewItem />}
       </PageContainer>
 
       {/* 모달 : 등급 & 이미지 full */}
