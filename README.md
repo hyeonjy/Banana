@@ -59,8 +59,12 @@
 - React-js-pagination : 페이지네이션
 
 ## 3. 기획 및 설계
-### 1. API 임시 설계 (수정 예정)
+### 1. ERD 설계
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/15bb7fa2-9563-4afc-85ef-d5f26bcbfae0" width="600" height="500" />
+
+### 2. API 임시 설계 (수정ing)
 <img src="https://github.com/hyeonjy/Banana/assets/86361624/cc35f25c-4e1c-49e9-8cbf-8545c2238d78" width="600" height="500" />
+
 
 ## 4 . 구현 기능 
 ### 1. 로그인 & 회원가입
