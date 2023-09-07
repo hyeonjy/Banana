@@ -59,6 +59,11 @@
 - React-js-pagination : 페이지네이션
 
 ## 3. 기획 및 설계
+### 0. 기획 및 디자인 설계
+🔗[FIGMA](https://www.figma.com/file/be5wCaUOCt3xtXiWncwl95/BANANA---%EA%B8%B0%ED%9A%8D-%EB%B0%8F-%EB%94%94%EC%9E%90%EC%9D%B8?type=design&node-id=0%3A1&mode=design&t=sBm3TpUJRj7F9AQp-1)
+
+<img src="https://github.com/hyeonjy/Banana/assets/101038390/78bd4e5a-a770-4b27-9cad-1dbb8bb6f177" width="800" height="550" />
+
 ### 1. ERD 설계
 <img src="https://github.com/hyeonjy/Banana/assets/101038390/15bb7fa2-9563-4afc-85ef-d5f26bcbfae0" width="600" height="500" />
 
@@ -66,7 +71,7 @@
 <img src="https://github.com/hyeonjy/Banana/assets/86361624/cc35f25c-4e1c-49e9-8cbf-8545c2238d78" width="600" height="500" />
 
 
-## 4 . 구현 기능 
+## 3 . 구현 기능 
 ### 1. 로그인 & 회원가입
 - OAuth 2.0 기반 소셜 로그인 및 React-hook-form 라이브러리를 활용한 회원가입 기능입니다.(카카오 & 구글)
 - JWT(+Refresh token)을 통한 유저 권한 부여했으며 Recoil 을 통해 로그인 상태를 관리합니다.
